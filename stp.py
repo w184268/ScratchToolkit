@@ -1,4 +1,5 @@
-import zipfile,os
+import zipfile
+import os,sys
 
 THISPATH=os.getcwd()
 class PathTool:
@@ -32,7 +33,14 @@ class UnPackingScratch3File:
             else: #如果是一段文件名
                 self.p=PathTool(fp,mode='n')
                 f.extractall(self.p.join((THISPATH,self.p.NAME)))
-
+def main(fp:str='./tests/work1.sb3',path=True):
+    a=UnPackingScratch3File(fp,path)
 if __name__=='__main__':
-    a=UnPackingScratch3File('./tests/work1.sb3')
+    match len(sys.argv):
+        case 1:
+            main()
+        case 2:
+            main(sys.argv[1])
+        case 3:
+            main(sys.argv[1],bool(int(sys.argv[2])))
         
