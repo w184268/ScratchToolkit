@@ -25,11 +25,14 @@ class PathTool:
         
 class UnPackingScratch3File:
     def __init__(self,fp:str,ispath=True):
-        with zipfile.ZipFile(fp,'r') as f:
-            if ispath:
+        with zipfile.ZipFile(fp,'r') as f: #解压.sb3文件
+            if ispath: #如果是一段路径
                 self.p=PathTool(fp)
                 f.extractall(self.p.join((self.p.DIR,self.p.NAME)))
-            else:
+            else: #如果是一段文件名
                 self.p=PathTool(fp,mode='n')
-                f.extractall()
+                f.extractall(self.p.join((THISPATH,self.p.NAME)))
+
+if __name__=='__main__':
+    a=UnPackingScratch3File('./tests/work1.sb3')
         
