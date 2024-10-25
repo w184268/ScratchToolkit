@@ -1,6 +1,7 @@
 import zipfile
 import os,sys
 import pygame as pg
+import cairosvg as csvg
 
 class Config:
     # Key maps to convert the key option in blocks to pygame constants
@@ -129,13 +130,19 @@ class UnPackingScratch3File:
             self.outdir=self.p.join((self.cdir,'output'))
             f.extractall(self.cdir)
             os.makedirs(self.outdir,exist_ok=True)
-    
+            for fn in os.listdir(self.cdir): #批量转换
+                p=PathTool(fn,'n')
+                if p.SUFFIX=='svg':
+                    csvg.svg2png(url=p.join((self.cdir,p.FILE)),
+                                 write_to=p.join((self.outdir,p.FILE)))
+
     def getdir(self):
         return self.cdir,self.outdir
     
 class CodeMaker: #转换核心，生成python代码
     def __init__(self):
-        self.modules=[] #根据情况导入所需要的库
+        self.modules:list[str]=[] #根据情况导入所需要的库
+
 
 def main(fp:str='./tests/work1.sb3',path=True):
     UnPackingScratch3File(fp,path)
