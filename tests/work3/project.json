@@ -7,6 +7,10 @@
                 "`jEk@4|i[#Fk?(8x)AV.-my variable": [
                     "我的变量",
                     0
+                ],
+                "9!aB04pk})qnB{]}A+,{": [
+                    "t2",
+                    0
                 ]
             },
             "lists": {},
@@ -35,7 +39,12 @@
         {
             "isStage": false,
             "name": "角色1",
-            "variables": {},
+            "variables": {
+                "30?xzCdUa%xJ2H_y6M@x": [
+                    "t3",
+                    0
+                ]
+            },
             "lists": {},
             "broadcasts": {},
             "blocks": {
@@ -317,7 +326,7 @@
             "volume": 100,
             "layerOrder": 1,
             "visible": true,
-            "x": 30,
+            "x": 50,
             "y": 0,
             "size": 100,
             "direction": 90,
@@ -325,7 +334,44 @@
             "rotationStyle": "all around"
         }
     ],
-    "monitors": [],
+    "monitors": [
+        {
+            "id": "9!aB04pk})qnB{]}A+,{",
+            "mode": "default",
+            "opcode": "data_variable",
+            "params": {
+                "VARIABLE": "t2"
+            },
+            "spriteName": null,
+            "value": 0,
+            "width": 0,
+            "height": 0,
+            "x": 5,
+            "y": 5,
+            "visible": true,
+            "sliderMin": 0,
+            "sliderMax": 100,
+            "isDiscrete": true
+        },
+        {
+            "id": "30?xzCdUa%xJ2H_y6M@x",
+            "mode": "default",
+            "opcode": "data_variable",
+            "params": {
+                "VARIABLE": "t3"
+            },
+            "spriteName": "角色1",
+            "value": 0,
+            "width": 0,
+            "height": 0,
+            "x": 5,
+            "y": 32,
+            "visible": true,
+            "sliderMin": 0,
+            "sliderMax": 100,
+            "isDiscrete": true
+        }
+    ],
     "extensions": [],
     "meta": {
         "semver": "3.0.0",

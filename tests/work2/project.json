@@ -16,10 +16,10 @@
             "currentCostume": 0,
             "costumes": [
                 {
-                    "assetId": "cd21514d0531fdffb22204e0ec5ed84a",
                     "name": "背景1",
-                    "md5ext": "cd21514d0531fdffb22204e0ec5ed84a.svg",
                     "dataFormat": "svg",
+                    "assetId": "cd21514d0531fdffb22204e0ec5ed84a",
+                    "md5ext": "cd21514d0531fdffb22204e0ec5ed84a.svg",
                     "rotationCenterX": 240,
                     "rotationCenterY": 180
                 }
@@ -41,7 +41,7 @@
             "blocks": {
                 "j": {
                     "opcode": "event_whenflagclicked",
-                    "next": "e",
+                    "next": "d",
                     "parent": null,
                     "inputs": {},
                     "fields": {},
@@ -52,8 +52,8 @@
                 },
                 "e": {
                     "opcode": "motion_movesteps",
-                    "next": null,
-                    "parent": "j",
+                    "next": "g",
+                    "parent": "f",
                     "inputs": {
                         "STEPS": [
                             1,
@@ -91,7 +91,7 @@
                 "d": {
                     "opcode": "control_forever",
                     "next": null,
-                    "parent": null,
+                    "parent": "j",
                     "inputs": {
                         "SUBSTACK": [
                             2,
@@ -100,13 +100,11 @@
                     },
                     "fields": {},
                     "shadow": false,
-                    "topLevel": true,
-                    "x": 428,
-                    "y": 99
+                    "topLevel": false
                 },
                 "f": {
                     "opcode": "control_wait",
-                    "next": null,
+                    "next": "e",
                     "parent": "a",
                     "inputs": {
                         "DURATION": [
@@ -141,7 +139,7 @@
                 "g": {
                     "opcode": "motion_turnleft",
                     "next": "h",
-                    "parent": null,
+                    "parent": "e",
                     "inputs": {
                         "DEGREES": [
                             1,
@@ -153,9 +151,7 @@
                     },
                     "fields": {},
                     "shadow": false,
-                    "topLevel": true,
-                    "x": 280,
-                    "y": 430
+                    "topLevel": false
                 },
                 "b": {
                     "opcode": "motion_goto",
@@ -304,11 +300,11 @@
             "currentCostume": 0,
             "costumes": [
                 {
-                    "assetId": "927d672925e7b99f7813735c484c6922",
                     "name": "造型1",
                     "bitmapResolution": 1,
-                    "md5ext": "927d672925e7b99f7813735c484c6922.svg",
                     "dataFormat": "svg",
+                    "assetId": "927d672925e7b99f7813735c484c6922",
+                    "md5ext": "927d672925e7b99f7813735c484c6922.svg",
                     "rotationCenterX": 30.74937882782359,
                     "rotationCenterY": 58.864768144346826
                 }
@@ -317,7 +313,7 @@
             "volume": 100,
             "layerOrder": 1,
             "visible": true,
-            "x": 30,
+            "x": 0,
             "y": 0,
             "size": 100,
             "direction": 90,
@@ -329,7 +325,11 @@
     "extensions": [],
     "meta": {
         "semver": "3.0.0",
-        "vm": "0.2.0-prerelease.20220222132735",
-        "agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Scratch/3.29.1 Chrome/94.0.4606.81 Electron/15.3.1 Safari/537.36"
+        "vm": "0.2.0",
+        "agent": "",
+        "platform": {
+            "name": "TurboWarp",
+            "url": "https://turbowarp.org/"
+        }
     }
 }

@@ -1,4 +1,4 @@
-import zipfile
+import zipfile,json
 import os,sys
 
 try:
@@ -143,14 +143,18 @@ class UnPackingScratch3File:
                 if p.SUFFIX=='.svg':
                     csvg.svg2png(url=p.join((self.cdir,p.FILE)),
                                  write_to=p.join((self.cdir,p.NAME+".png")))
+                    os.remove(p.join((self.cdir,p.FILE)))
 
     def getdir(self):
         return self.cdir,self.outdir
-    
-class CodeMaker: #转换核心，生成python代码
+class CodeParser: #解析project.json
     def __init__(self):
-        self.modules:list[str]=[] #根据情况导入所需要的库
+        self.mod:list[str]=[] #根据情况导入所需要的库
+        self.var=dict() #存储变量
 
+class CodeMaker: #转换核心，生成python代码
+    def __init__(self,parser:CodeParser):
+        pass
 
 def main(fp:str='./tests/work1.sb3',path=True):
     UnPackingScratch3File(fp,path)
