@@ -147,6 +147,7 @@ class UnPackingScratch3File:
 
     def getdir(self):
         return self.cdir,self.outdir
+    
 class CodeParser: #解析project.json
     def __init__(self):
         self.mod:list[str]=[] #根据情况导入所需要的库
