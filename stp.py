@@ -1,7 +1,15 @@
 import zipfile
 import os,sys
-import pygame as pg
-import cairosvg as csvg
+
+try:
+    import pygame as pg
+    import loguru as log
+    import cairosvg as csvg
+except ImportError:
+    print("You didn't install pygame,loguru or cairosvg!")
+    os.system('pip install pygame loguru cairosvg')
+except Exception:
+    print("Please install gtk3 in ./bin!")
 
 class Config:
     # Key maps to convert the key option in blocks to pygame constants
@@ -132,9 +140,9 @@ class UnPackingScratch3File:
             os.makedirs(self.outdir,exist_ok=True)
             for fn in os.listdir(self.cdir): #批量转换
                 p=PathTool(fn,'n')
-                if p.SUFFIX=='svg':
+                if p.SUFFIX=='.svg':
                     csvg.svg2png(url=p.join((self.cdir,p.FILE)),
-                                 write_to=p.join((self.outdir,p.FILE)))
+                                 write_to=p.join((self.cdir,p.NAME+".png")))
 
     def getdir(self):
         return self.cdir,self.outdir
