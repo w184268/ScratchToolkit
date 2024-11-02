@@ -2,106 +2,15 @@ import zipfile,json
 import os,sys
 
 try:
-    import pygame as pg
+    import config
     import loguru as log
     import cairosvg as csvg
 except ImportError:
     print("You didn't install pygame,loguru or cairosvg!")
     os.system('pip install pygame loguru cairosvg')
 except Exception:
-    print("Please install gtk3 in ./bin!")
+    print("Please install gtk3 in ./bin!") 
 
-class Config:
-    # Key maps to convert the key option in blocks to pygame constants
-    KEY_MAPPING = {
-        "up arrow": pg.K_UP,
-        "down arrow": pg.K_DOWN,
-        "left arrow": pg.K_LEFT,
-        "right arrow": pg.K_RIGHT,
-        "space": pg.K_SPACE,
-        "a": pg.K_a,
-        "b": pg.K_b,
-        "c": pg.K_c,
-        "d": pg.K_d,
-        "e": pg.K_e,
-        "f": pg.K_f,
-        "g": pg.K_g,
-        "h": pg.K_h,
-        "i": pg.K_i,
-        "j": pg.K_j,
-        "k": pg.K_k,
-        "l": pg.K_l,
-        "m": pg.K_m,
-        "n": pg.K_n,
-        "o": pg.K_o,
-        "p": pg.K_p,
-        "q": pg.K_q,
-        "r": pg.K_r,
-        "s": pg.K_s,
-        "t": pg.K_t,
-        "u": pg.K_u,
-        "v": pg.K_v,
-        "w": pg.K_w,
-        "x": pg.K_x,
-        "y": pg.K_y,
-        "z": pg.K_z,
-        "0": pg.K_0,
-        "1": pg.K_1,
-        "2": pg.K_2,
-        "3": pg.K_3,
-        "4": pg.K_4,
-        "5": pg.K_5,
-        "6": pg.K_6,
-        "7": pg.K_7,
-        "8": pg.K_8,
-        "9": pg.K_9,
-
-        # Scratch supports these keys internally
-        "enter": pg.K_RETURN,
-        "<": pg.K_LESS,
-        ">": pg.K_GREATER,
-        "+": pg.K_PLUS,
-        "-": pg.K_MINUS,
-        "=": pg.K_EQUALS,
-        ".": pg.K_PERIOD,
-        ",": pg.K_COMMA,
-        "%": pg.K_PERCENT,
-        "$": pg.K_DOLLAR,
-        "#": pg.K_HASH,
-        "@": pg.K_AT,
-        "!": pg.K_EXCLAIM,
-        "^": pg.K_CARET,
-        "&": pg.K_AMPERSAND,
-        "*": pg.K_ASTERISK,
-        "(": pg.K_LEFTPAREN,
-        ")": pg.K_RIGHTPAREN,
-        "[": pg.K_LEFTBRACKET,
-        "]": pg.K_RIGHTBRACKET,
-        "?": pg.K_QUESTION,
-        "\\": pg.K_BACKSLASH,
-        "/": pg.K_SLASH,
-        "'": pg.K_QUOTE,
-        "\"": pg.K_QUOTEDBL,
-        "`": pg.K_BACKQUOTE,
-
-        "backspace": pg.K_BACKSPACE,
-        "escape": pg.K_ESCAPE,
-        "f1": pg.K_F1,
-        "f2": pg.K_F2,
-        "f3": pg.K_F3,
-        "f4": pg.K_F4,
-        "f5": pg.K_F5,
-        "f6": pg.K_F6,
-        "f7": pg.K_F7,
-        "f8": pg.K_F8,
-        "f9": pg.K_F9,
-        "f10": pg.K_F10,
-        "f11": pg.K_F11,
-        "f12": pg.K_F12,
-    }
-    def get_mapping(self,key):
-        return self.KEY_MAPPING.get(key,None)
-    
 THISPATH=os.getcwd()
 class PathTool:
     def __init__(self,fp:str|tuple[str],mode='p'):
