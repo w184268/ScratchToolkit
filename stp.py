@@ -149,16 +149,18 @@ class UnPackingScratch3File:
         return self.cdir,self.outdir
     
 class CodeParser: #解析project.json
-    def __init__(self):
+    def __init__(self,last:UnPackingScratch3File):
         self.mod:list[str]=[] #根据情况导入所需要的库
         self.var=dict() #存储变量
+        self.cdir,self.outdir=last.getdir()
 
 class CodeMaker: #转换核心，生成python代码
     def __init__(self,parser:CodeParser):
         pass
 
 def main(fp:str='./tests/work1.sb3',path=True):
-    UnPackingScratch3File(fp,path)
+    info=UnPackingScratch3File(fp,path)
+    CodeParser(info)
 
 if __name__=='__main__':
     match len(sys.argv):
