@@ -37,38 +37,45 @@ class PathTool:
         
 class UnPackingScratch3File:
     def __init__(self,fp:str,ispath=True):
-        with zipfile.ZipFile(fp,'r') as f: #解压.sb3文件
+        with zipfile.ZipFile(fp,'r') as self.f: #解压.sb3文件
             if ispath: #如果是一段路径
                 self.p=PathTool(fp)
                 self.cdir=self.p.join((self.p.DIR,self.p.NAME))
             else: #如果是一段文件名
                 self.p=PathTool(fp,mode='n')
                 self.cdir=self.p.join((THISPATH,self.p.NAME))
-            self.outdir=self.p.join((self.cdir,'output'))
-            f.extractall(self.cdir)
-            os.makedirs(self.outdir,exist_ok=True)
-            for fn in os.listdir(self.cdir): #批量转换
-                p=PathTool(fn,'n')
-                if p.SUFFIX=='.svg':
-                    csvg.svg2png(url=p.join((self.cdir,p.FILE)),
-                                 write_to=p.join((self.cdir,p.NAME+".png")))
-                    os.remove(p.join((self.cdir,p.FILE)))
 
-    def getdir(self):
-        return self.cdir,self.outdir
+    def convert(self):
+        self.outdir=self.p.join((self.cdir,'output'))
+        self.f.extractall(self.cdir)
+        os.makedirs(self.outdir,exist_ok=True)
+        for fn in os.listdir(self.cdir): #批量转换
+            p=PathTool(fn,'n')
+            if p.SUFFIX=='.svg':
+                csvg.svg2png(url=p.join((self.cdir,p.FILE)),
+                                write_to=p.join((self.cdir,p.NAME+".png")))
+                os.remove(p.join((self.cdir,p.FILE)))
     
 class CodeParser: #解析project.json
     def __init__(self,last:UnPackingScratch3File):
         self.mod:list[str]=[] #根据情况导入所需要的库
         self.var=dict() #存储变量
-        self.cdir,self.outdir=last.getdir()
+        self.array=dict() #存储列表
+        self.cdir,self.outdir=last.cdir,last.outdir
+        self.t=PathTool(self.cdir)
+        with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8'): #导入project.json
+
 
 class CodeMaker: #转换核心，生成python代码
     def __init__(self,parser:CodeParser):
-        pass
+        self.tab=0 #Python代码的缩进
+        self.target=dict() #角色名:代码
+
+    def give(self,)
 
 def main(fp:str='./tests/work1.sb3',path=True):
     info=UnPackingScratch3File(fp,path)
+    info.convert()
     CodeParser(info)
 
 if __name__=='__main__':
