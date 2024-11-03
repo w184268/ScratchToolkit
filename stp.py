@@ -1,10 +1,14 @@
 import zipfile,json
 import os,sys
+import xml.etree.ElementTree as ET
+from datetime import datetime
 
 try:
     import config
-    import loguru as log
-    import cairosvg as csvg
+    from loguru import logger as log
+    from cairosvg import svg2png,surface
+    log.add(datetime.now().strftime("%Y-%m-%d %H:%M:%S")+".log",format="[{time:YYYY-MM-DD HH:MM:SS}] [{level}]: {message}")
+    log.add(sys.stdout,format="[{time:YYYY-MM-DD HH:MM:SS}] [{level}]: {message}")
 except ImportError:
     print("You didn't install pygame,loguru or cairosvg!")
     os.system('pip install pygame loguru cairosvg')
@@ -17,7 +21,7 @@ class PathTool:
         '''when mode is p,that means fp is a path; 
            when mode is n,that means fp is a file name.'''
         if isinstance(fp,str): fp=os.path.normpath(fp)
-
+        log.debug("Using the PathTool...")
         match mode:
             case 'p':
                 self.DIR=os.path.dirname(fp)
@@ -37,6 +41,7 @@ class PathTool:
         
 class UnPackingScratch3File:
     def __init__(self,fp:str,ispath=True):
+        log.debug(f"Unpacking {fp}...")
         with zipfile.ZipFile(fp,'r') as self.f: #解压.sb3文件
             if ispath: #如果是一段路径
                 self.p=PathTool(fp)
@@ -44,17 +49,31 @@ class UnPackingScratch3File:
             else: #如果是一段文件名
                 self.p=PathTool(fp,mode='n')
                 self.cdir=self.p.join((THISPATH,self.p.NAME))
+            self.f.extractall(self.cdir)
+        log.debug(f"Completed unpacking {fp} to {self.cdir}.")
 
     def convert(self):
         self.outdir=self.p.join((self.cdir,'output'))
-        self.f.extractall(self.cdir)
         os.makedirs(self.outdir,exist_ok=True)
         for fn in os.listdir(self.cdir): #批量转换
             p=PathTool(fn,'n')
             if p.SUFFIX=='.svg':
-                csvg.svg2png(url=p.join((self.cdir,p.FILE)),
-                                write_to=p.join((self.cdir,p.NAME+".png")))
+                #with open(p.join((self.cdir,p.FILE)), 'r',encoding='utf-8') as f:
+                #    svg_size = surface.SVGSurface(f.read(),).width, surface.SVGSurface(p.join((self.cdir,p.FILE))).height
+                tree = ET.parse(p.join((self.cdir,p.FILE)))
+                root = tree.getroot()
+                svg_size = int(root.attrib['width']), int(root.attrib['height'])
+                print(svg_size)
+                if svg_size != (0,0):
+                    svg2png(url=p.join((self.cdir,p.FILE)),
+                                    write_to=p.join((self.cdir,p.NAME+".png")),
+                                    unsafe=True,
+                                    parent_width=svg_size[0],
+                                    parent_height=svg_size[1])
+                else:
+                    log.warning(f"{fn} has no size!")
                 os.remove(p.join((self.cdir,p.FILE)))
+                log.debug(f"Removed {p.join((self.cdir,p.FILE))}.")
     
 class CodeParser: #解析project.json
     def __init__(self,last:UnPackingScratch3File):
@@ -88,14 +107,15 @@ class CodeMaker: #转换核心，生成python代码
             self.name.append('stp_'+args["name"])
         if args["isStage"]: #如果是舞台
             info=args["costumes"][0]
-            self.code.extend([f"        screen = pg.display.setmode(({info["rotationCenterX"]},{info["rotationCenterY"]}))"])
+            self.code.extend(["        screen = pg.display.setmode(("+str(info["rotationCenterX"])+","+str(info["rotationCenterY"])+"))"])
         else:
-            self.code.append(f"class {args["name"]}:")
+            self.code.append("class "+args["name"]+":")
 
     def return_result(self):
         return '\n'.join(self.code)
     
 def main(fp:str='./tests/work1.sb3',path=True):
+    log.debug("stp.py is running!")
     info=UnPackingScratch3File(fp,path)
     info.convert()
     CodeParser(info)
