@@ -63,16 +63,38 @@ class CodeParser: #解析project.json
         self.array=dict() #存储列表
         self.cdir,self.outdir=last.cdir,last.outdir
         self.t=PathTool(self.cdir)
-        with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8'): #导入project.json
+        with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8') as f: #导入project.json
+            self.pj=json.load(f)
+        self.make=CodeMaker(self.pj)
 
 
 class CodeMaker: #转换核心，生成python代码
-    def __init__(self,parser:CodeParser):
+    def __init__(self,pj):
         self.tab=0 #Python代码的缩进
-        self.target=dict() #角色名:代码
+        self.name=[] #角色名
+        self.code=[] #存储每行代码
+        self.targets=pj["targets"] #所有角色信息
+        self.code.extend(["import pygame as pg",
+                          "import sys",
+                          "",
+                          "class Game:",
+                          "    def __init__(self):"
+                          "        pg.init() #初始化"])
+        for t in self.targets:
+            self.give(t)
 
-    def give(self,)
+    def give(self,args): #给予信息,args为每一个角色的字典信息
+        if 'stp_'+args["name"] not in self.name:
+            self.name.append('stp_'+args["name"])
+        if args["isStage"]: #如果是舞台
+            info=args["costumes"][0]
+            self.code.extend([f"        screen = pg.display.setmode(({info["rotationCenterX"]},{info["rotationCenterY"]}))"])
+        else:
+            self.code.append(f"class {args["name"]}:")
 
+    def return_result(self):
+        return '\n'.join(self.code)
+    
 def main(fp:str='./tests/work1.sb3',path=True):
     info=UnPackingScratch3File(fp,path)
     info.convert()
