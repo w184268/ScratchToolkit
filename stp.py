@@ -8,7 +8,7 @@ try:
     from loguru import logger as log
     from cairosvg import svg2png
     log.remove()
-    log.add(sys.stdout,colorize=True,format="<level>[{time:YYYY-MM-DD HH:MM:SS}] [{level}]: {message}</level>")
+    log.add(sys.stdout,colorize=True,format="<level>[{time:YYYY-MM-DD HH:mm:ss}] [{level}]: {message}</level>")
 except ImportError:
     print("You didn't install pygame,loguru or cairosvg!")
     os.system('pip install pygame loguru cairosvg')
@@ -51,7 +51,7 @@ class UnPackingScratch3File:
                 self.p=PathTool(fp,mode='n')
                 self.cdir=self.p.join((THISPATH,self.p.NAME))
             self.f.extractall(self.cdir)
-        log.debug(f"Completed unpacking {fp} to {self.cdir}.")
+        log.success(f"Completed unpacking {fp} to {self.cdir}.")
 
     def convert(self):
         self.outdir=self.p.join((self.cdir,'output'))
@@ -74,7 +74,7 @@ class UnPackingScratch3File:
                 else:
                     log.warning(f"{fn} has no size!")
                 os.remove(p.join((self.cdir,p.FILE)))
-                log.debug(f"Removed {p.join((self.cdir,p.FILE))}.")
+                log.success(f"Removed {p.join((self.cdir,p.FILE))}.")
     
 class CodeParser: #解析project.json
     def __init__(self,last:UnPackingScratch3File):
