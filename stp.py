@@ -6,14 +6,15 @@ from datetime import datetime
 try:
     import config
     from loguru import logger as log
-    from cairosvg import svg2png,surface
-    log.add(datetime.now().strftime("%Y-%m-%d %H:%M:%S")+".log",format="[{time:YYYY-MM-DD HH:MM:SS}] [{level}]: {message}")
-    log.add(sys.stdout,format="[{time:YYYY-MM-DD HH:MM:SS}] [{level}]: {message}")
+    from cairosvg import svg2png
+    log.remove()
+    log.add(sys.stdout,colorize=True,format="<level>[{time:YYYY-MM-DD HH:MM:SS}] [{level}]: {message}</level>")
 except ImportError:
     print("You didn't install pygame,loguru or cairosvg!")
     os.system('pip install pygame loguru cairosvg')
-except Exception:
-    print("Please install gtk3 in ./bin!") 
+except Exception as e:
+    #print("Please install gtk3 in ./bin!") 
+    log.error(e)
 
 THISPATH=os.getcwd()
 class PathTool:
@@ -63,8 +64,8 @@ class UnPackingScratch3File:
                 tree = ET.parse(p.join((self.cdir,p.FILE)))
                 root = tree.getroot()
                 svg_size = int(root.attrib['width']), int(root.attrib['height'])
-                print(svg_size)
                 if svg_size != (0,0):
+                    log.debug(f"The size of {fn} is {svg_size}.")
                     svg2png(url=p.join((self.cdir,p.FILE)),
                                     write_to=p.join((self.cdir,p.NAME+".png")),
                                     unsafe=True,
