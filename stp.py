@@ -131,3 +131,4 @@ if __name__=='__main__':
                 main(sys.argv[1],bool(int(sys.argv[2])))
     except BaseException as e:
         log.error(e)
+        exit(1)
