@@ -13,8 +13,7 @@ except ImportError:
     print("You didn't install pygame,loguru or cairosvg!")
     os.system('pip install pygame loguru cairosvg')
 except Exception as e:
-    #print("Please install gtk3 in ./bin!") 
-    log.error(e)
+    print("Please install gtk3 in ./bin!")
 
 THISPATH=os.getcwd()
 class PathTool:
@@ -122,11 +121,13 @@ def main(fp:str='./tests/work1.sb3',path=True):
     CodeParser(info)
 
 if __name__=='__main__':
-    match len(sys.argv):
-        case 1:
-            main()
-        case 2:
-            main(sys.argv[1])
-        case 3:
-            main(sys.argv[1],bool(int(sys.argv[2])))
-        
+    try:
+        match len(sys.argv):
+            case 1:
+                main()
+            case 2:
+                main(sys.argv[1])
+            case 3:
+                main(sys.argv[1],bool(int(sys.argv[2])))
+    except BaseException as e:
+        log.error(e)
