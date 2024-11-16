@@ -7,11 +7,12 @@ try:
     import config
     from loguru import logger as log
     from cairosvg import svg2png
+    from PIL import Image
     log.remove()
     log.add(sys.stdout,colorize=True,format="<level>[{time:YYYY-MM-DD HH:mm:ss}] [{level}]: {message}</level>")
 except ImportError:
-    print("You didn't install pygame,loguru or cairosvg!")
-    os.system('pip install pygame loguru cairosvg')
+    print("You didn't install pygame,loguru,pillow or cairosvg!")
+    os.system('pip install -r requirements.txt')
 except Exception as e:
     print("Please install gtk3 in ./bin!")
 
@@ -62,7 +63,7 @@ class UnPackingScratch3File:
                 #    svg_size = surface.SVGSurface(f.read(),).width, surface.SVGSurface(p.join((self.cdir,p.FILE))).height
                 tree = ET.parse(p.join((self.cdir,p.FILE)))
                 root = tree.getroot()
-                svg_size = int(root.attrib['width']), int(root.attrib['height'])
+                svg_size = float(root.attrib['width']), float(root.attrib['height'])
                 if svg_size != (0,0):
                     log.debug(f"The size of {fn} is {svg_size}.")
                     svg2png(url=p.join((self.cdir,p.FILE)),
@@ -97,19 +98,28 @@ class CodeMaker: #转换核心，生成python代码
                           "import sys",
                           "",
                           "class Game:",
-                          "    def __init__(self):"
-                          "        pg.init() #初始化"])
+                          "    def __init__(self):",
+                          "        pg.init() #初始化",
+                          "        screen = pg.display.setmode(800,600)"])
         for t in self.targets:
             self.give(t)
 
-    def give(self,args): #给予信息,args为每一个角色的字典信息
-        if 'stp_'+args["name"] not in self.name:
-            self.name.append('stp_'+args["name"])
-        if args["isStage"]: #如果是舞台
-            info=args["costumes"][0]
-            self.code.extend(["        screen = pg.display.setmode(("+str(info["rotationCenterX"])+","+str(info["rotationCenterY"])+"))"])
+    def give(self,targets): #给予信息,args为每一个角色的字典信息
+        if 'stp_'+targets["name"] not in self.name:
+            self.name.append('stp_'+targets["name"])
+        if targets["isStage"]: #如果是舞台
+            info=targets["costumes"][0]
+            self.code.extend([""
+            ])
         else:
-            self.code.append("class "+args["name"]+":")
+            self.code.append("class "+targets["name"]+":")
+
+    def add(self,id:str,type_:str,tab:int,**kw): #积木管理
+        def restr(string:str):
+            return '    '*(self.tab+tab)+string
+        match id:
+            case _:
+                log.error(f'Unknown id "{id}"!')
 
     def return_result(self):
         return '\n'.join(self.code)
