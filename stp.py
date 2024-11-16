@@ -88,11 +88,12 @@ class CodeParser: #解析project.json
         with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8') as f: #导入project.json
             self.pj=json.load(f)
         self.make=CodeMaker(self.pj)
-
+        with open(self.t.join((self.outdir,last.p.NAME+".py")),'w',encoding='utf-8') as f:
+            f.write(self.make.return_result())
 
 class CodeMaker: #转换核心，生成python代码
     def __init__(self,pj):
-        self.tab=0 #Python代码的缩进
+        self.tab=2 #Python代码的缩进
         self.name=[] #角色名
         self.code=[] #存储每行代码
         self.targets=pj["targets"] #所有角色信息
@@ -102,7 +103,7 @@ class CodeMaker: #转换核心，生成python代码
                           "class Game:",
                           "    def __init__(self):",
                           "        pg.init() #初始化",
-                          "        screen = pg.display.setmode(800,600)"])
+                          "        screen = pg.display.set_mode(800,600)"])
         for t in self.targets:
             self.give(**t)
 
@@ -118,16 +119,53 @@ class CodeMaker: #转换核心，生成python代码
             self.code.append(f"class {classname}:")
         for block in tgs["blocks"].items():
             id,idinfo=block[0],block[1]
-            self.add(id,idinfo["opcode"],classname+"/"+id)
-    def add(self,id:str,opcode:str,type_:str,tab:int,**kw): #积木管理
+            try:
+                depth=self.get_nested_depth(tgs)   
+            except:
+                depth=self.get_nested_depth2(tgs)
+            self.add(id,f"{classname} -> {id}",depth,**idinfo)
+    def add(self,id:str,type_:str,tab:int,**kw): #积木管理
+        opcode=kw["opcode"]
+        log.debug(f"Converting {type_}({opcode})...")
         def restr(string:str):
             return '    '*(self.tab+tab)+string
-        match opcode:
+        match opcode: #匹配相应的积木名
             case _:
-                log.error(f'Unknown id "{id}"!')
+                log.error(f'Unknown id "{opcode}"!')
 
     def return_result(self):
         return '\n'.join(self.code)
+    
+    def get_nested_depth(self,block,depth=0):
+        """
+        递归函数，用于计算积木块的嵌套深度。
+        
+        :param block: 当前积木块
+        :param depth: 当前深度
+        :return: 积木块的嵌套深度
+        """
+        if 'topLevel' in block and block['topLevel']:
+            return depth
+        if 'parent' in block:
+            return self.get_nested_depth(block['parent'], depth + 1)
+        return depth
+    def get_nested_depth2(self,block): #备用方法
+        """
+        使用迭代方法计算积木块的嵌套深度。
+        
+        :param block: 当前积木块
+        :return: 积木块的嵌套深度
+        """
+        depth = 0
+        stack = [block]   
+        while stack:
+            current_block = stack.pop()
+            if 'topLevel' in current_block and current_block['topLevel']:
+                continue
+            if 'parent' in current_block:
+                stack.append(current_block['parent'])
+                depth += 1
+        return depth
     
 def main(fp:str='./tests/work1.sb3',path=True):
     log.debug("stp.py is running!")
