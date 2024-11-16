@@ -73,6 +73,8 @@ class UnPackingScratch3File:
                                     parent_height=svg_size[1])
                 else:
                     log.warning(f"{fn} has no size!")
+                    image = Image.new("RGB",(1, 1),(0,0,0))
+                    image.save(p.join((self.cdir,p.NAME+".png")))
                 os.remove(p.join((self.cdir,p.FILE)))
                 log.success(f"Removed {p.join((self.cdir,p.FILE))}.")
     
@@ -102,22 +104,25 @@ class CodeMaker: #转换核心，生成python代码
                           "        pg.init() #初始化",
                           "        screen = pg.display.setmode(800,600)"])
         for t in self.targets:
-            self.give(t)
+            self.give(**t)
 
-    def give(self,targets): #给予信息,args为每一个角色的字典信息
-        if 'stp_'+targets["name"] not in self.name:
-            self.name.append('stp_'+targets["name"])
-        if targets["isStage"]: #如果是舞台
-            info=targets["costumes"][0]
-            self.code.extend([""
-            ])
+    def give(self,**tgs): #给予信息,tgs为targets下每个信息
+        classname='stp_'+tgs["name"]
+        if classname not in self.name: #若角色名称未被记录
+            self.name.append('stp_'+tgs["name"])
+        if tgs["isStage"]: #如果是舞台
+            costumes=tgs["costumes"][0]
+            for costume in costumes:
+                self.code.append("")
         else:
-            self.code.append("class "+targets["name"]+":")
-
-    def add(self,id:str,type_:str,tab:int,**kw): #积木管理
+            self.code.append(f"class {classname}:")
+        for block in tgs["blocks"].items():
+            id,idinfo=block[0],block[1]
+            self.add(id,idinfo["opcode"],classname+"/"+id)
+    def add(self,id:str,opcode:str,type_:str,tab:int,**kw): #积木管理
         def restr(string:str):
             return '    '*(self.tab+tab)+string
-        match id:
+        match opcode:
             case _:
                 log.error(f'Unknown id "{id}"!')
 
