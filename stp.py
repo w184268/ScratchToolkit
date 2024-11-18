@@ -17,6 +17,21 @@ except Exception as e:
     print("Please install gtk3 in ./bin!")
 
 THISPATH=os.getcwd()
+INIT_CODE='''
+import pygame as pg
+import sys
+
+class Background(pygame.sprite.Sprite): #背景类
+    def __init__(self, image_file, location):
+        super().__init__()
+        self.image = pygame.image.load(image_file)
+        self.rect = self.image.get_rect()
+        self.rect.left, self.rect.top = location
+class Game:
+    def __init__(self):
+        pg.init() #初始化
+        screen = pg.display.set_mode(800,600) #舞台大小为800,600
+'''
 class PathTool:
     def __init__(self,fp:str|tuple[str],mode='p'):
         '''when mode is p,that means fp is a path; 
@@ -94,43 +109,44 @@ class CodeParser: #解析project.json
 
 class CodeMaker: #转换核心，生成python代码
     def __init__(self,pj):
-        self.tab=2 #Python代码的缩进
+        #self.tab=2 #Python代码的缩进
         self.name=[] #角色名
         self.code=[] #存储每行代码
         self.targets=pj["targets"] #所有角色信息
-        self.code.extend(["import pygame as pg",
-                          "import sys",
-                          "",
-                          "class Game:",
-                          "    def __init__(self):",
-                          "        pg.init() #初始化",
-                          "        screen = pg.display.set_mode(800,600)"])
+        self.code.append(INIT_CODE)
         for t in self.targets:
             self.give(**t)
 
     def give(self,**tgs): #给予信息,tgs为targets下每个信息
-        classname='stp_'+tgs["name"]
+        classname='char_'+tgs["name"]
         if classname not in self.name: #若角色名称未被记录
-            self.name.append('stp_'+tgs["name"])
+            self.name.append(classname)
         if tgs["isStage"]: #如果是舞台
             costumes=tgs["costumes"][0]
             for costume in costumes:
                 self.code.append("")
         else:
-            self.code.append(f"class {classname}:")
+            self.code.append(f"class {classname}(pg.sprite.Sprite):")
         for block in tgs["blocks"].items():
             id,idinfo=block[0],block[1]
             try:
-                depth=self.get_nested_depth(idinfo)   
-            except:
+                depth=self.get_nested_depth(idinfo)
+            except Exception as e:
+                log.warning(e)
                 depth=self.get_nested_depth2(idinfo)
             self.add(id,f"{classname} -> {id}",depth,**idinfo)
     def add(self,id:str,type_:str,tab:int,**kw): #积木管理
         opcode=kw["opcode"]
         log.debug(f'Converting {type_}(name="{opcode}" ,depth={tab})...')
-        def restr(string:str):
-            return '    '*(self.tab+tab)+string
+        def restr(string:str,func=False):
+            if func:
+                self.code.append('    '*(tab+1)+string)
+            else:
+                self.code.append('    '*(tab+2)+string)
+
         match opcode: #匹配相应的积木名
+            case "motion_movesteps":
+                pass
             case _:
                 log.error(f'Unknown id "{opcode}"!')
 
@@ -147,10 +163,12 @@ class CodeMaker: #转换核心，生成python代码
         """
         if 'topLevel' in block and block['topLevel']:
             return depth
+        if 'parent' in block and block["opcode"].endswith("_menu"):
+            return self.get_nested_depth(block['parent'], depth)
         if 'parent' in block:
             return self.get_nested_depth(block['parent'], depth + 1)
         return depth
-    def get_nested_depth2(self,block): #备用方法
+    def get_nested_depth2(self,block,depth=0): #备用方法
         """
         使用迭代方法计算积木块的嵌套深度。
         
@@ -160,7 +178,10 @@ class CodeMaker: #转换核心，生成python代码
         stack = [block]   
         while stack:
             current_block = stack.pop()
+            print(type(current_block))
             if 'topLevel' in current_block and current_block['topLevel']:
+                continue
+            if 'parent' in current_block and current_block.get("opcode","").endswith("_menu"):
                 continue
             if 'parent' in current_block:
                 stack.append(current_block['parent'])
