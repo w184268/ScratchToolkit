@@ -17,30 +17,9 @@ except Exception as e:
     print("Please install gtk3 in ./bin!")
 
 THISPATH=os.getcwd()
-INIT_CODE=''' \
-#  ____                          _            _               _____                   ____            _     _                     
-# / ___|    ___   _ __    __ _  | |_    ___  | |__           |_   _|   ___           |  _ \   _   _  | |_  | |__     ___    _ __  
-# \___ \   / __| | '__|  / _` | | __|  / __| | '_ \   _____    | |    / _ \   _____  | |_) | | | | | | __| | '_ \   / _ \  | '_ \ 
-#  ___) | | (__  | |    | (_| | | |_  | (__  | | | | |_____|   | |   | (_) | |_____| |  __/  | |_| | | |_  | | | | | (_) | | | | |
-# |____/   \___| |_|     \__,_|  \__|  \___| |_| |_|           |_|    \___/          |_|      \__, |  \__| |_| |_|  \___/  |_| |_|
-#                                                                                             |___/ 
-# Scratch-To-Python(Beta v0.0.1)
-# Made by EricDing618.            
-                  
-import pygame as pg
-import sys
+with open("./frame.py","r",encoding="utf-8") as f:
+    INIT_CODE=f.read()
 
-class Background(pg.sprite.Sprite): #背景类
-    def __init__(self, image_file, location):
-        super().__init__()
-        self.image = pg.image.load(image_file)
-        self.rect = self.image.get_rect()
-        self.rect.left, self.rect.top = location
-class Game:
-    def __init__(self):
-        pg.init() #初始化
-        screen = pg.display.set_mode(800,600) #舞台大小为800,600
-'''
 class PathTool:
     def __init__(self,fp:str|tuple[str],mode='p'):
         '''when mode is p,that means fp is a path; 
@@ -138,24 +117,24 @@ class CodeMaker: #转换核心，生成python代码
             self.code.append(f"class {classname}(pg.sprite.Sprite):")
         for block in tgs["blocks"].items():
             id,idinfo=block[0],block[1]
-            try:
-                depth=self.get_nested_depth(idinfo)
-            except Exception as e:
-                log.warning(e)
-                depth=self.get_nested_depth2(idinfo)
-            self.add(id,f"{classname} -> {id}",depth,**idinfo)
-    def add(self,id:str,type_:str,tab:int,**kw): #积木管理
+            self.add(id,f"{classname} -> {id}",**idinfo)
+    def add(self,id:str,type_:str,**kw): #积木管理
+        try:
+            depth=self.get_nested_depth(kw)
+        except Exception as e:
+            log.warning(e)
+            depth=self.get_nested_depth2(kw)
         opcode=kw["opcode"]
-        log.debug(f'Converting {type_}(name="{opcode}" ,depth={tab})...')
+        log.debug(f'Converting {type_}(name="{opcode}" ,depth={depth})...')
         def restr(string:str,func=False):
             if func:
-                self.code.append('    '*(tab+1)+string)
+                self.code.append('    '*(depth+1)+string)
             else:
-                self.code.append('    '*(tab+2)+string)
+                self.code.append('    '*(depth+2)+string)
 
         match opcode: #匹配相应的积木名
             case "motion_movesteps":
-                pass
+                restr()
             case _:
                 log.error(f'Unknown id "{opcode}"!')
 
@@ -196,7 +175,7 @@ class CodeMaker: #转换核心，生成python代码
                 stack.append(current_block['parent'])
                 depth += 1
         return depth
-    
+
 def main(fp:str='./tests/work1.sb3',path=True):
     log.debug("stp.py is running!")
     info=UnPackingScratch3File(fp,path)
