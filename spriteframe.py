@@ -9,7 +9,7 @@
                   
 import pygame as pg
 import sys
-class Character(pg.sprite.Sprite): #角色框架
+class Sprite(pg.sprite.Sprite): #角色框架
     def __init__(self, image_file, location):
         super().__init__()
         self.image = pg.image.load(image_file)
@@ -28,8 +28,3 @@ class Background(pg.sprite.Sprite): #背景类
         self.image = pg.image.load(image_file)
         self.rect = self.image.get_rect()
         self.rect.left, self.rect.top = location
-
-class Game:
-    def __init__(self):
-        pg.init() #初始化
-        screen = pg.display.set_mode(800,600) #舞台大小为800,600

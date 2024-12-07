@@ -17,8 +17,10 @@ except Exception as e:
     print("Please install gtk3 in ./bin!")
 
 THISPATH=os.getcwd()
-with open("./frame.py","r",encoding="utf-8") as f:
-    INIT_CODE=f.read()
+with open("./spriteframe.py","r",encoding="utf-8") as f:
+    SPRITE_INIT_CODE=f.read()
+with open("./gameframe.py","r",encoding="utf-8") as f:
+    GAME_INIT_CODE=''.join(f.read().split("import pygame as pg"))
 
 class PathTool:
     def __init__(self,fp:str|tuple[str],mode='p'):
@@ -101,24 +103,19 @@ class CodeMaker: #转换核心，生成python代码
         self.name=[] #角色名
         self.code=[] #存储每行代码
         self.targets=pj["targets"] #所有角色信息
-        self.code.append(INIT_CODE)
+        self.code.append(SPRITE_INIT_CODE+'\n'+GAME_INIT_CODE)
         for t in self.targets:
             self.give(**t)
 
     def give(self,**tgs): #给予信息,tgs为targets下每个信息
-        classname='char_'+tgs["name"]
+        classname='spr_'+tgs["name"]
         if classname not in self.name: #若角色名称未被记录
             self.name.append(classname)
-        if tgs["isStage"]: #如果是舞台
-            costumes=tgs["costumes"][0]
-            for costume in costumes:
-                self.code.append("")
-        else:
-            self.code.append(f"class {classname}(pg.sprite.Sprite):")
         for block in tgs["blocks"].items():
             id,idinfo=block[0],block[1]
-            self.add(id,f"{classname} -> {id}",**idinfo)
-    def add(self,id:str,type_:str,**kw): #积木管理
+            self.add(id,classname,tgs["isStage"],**idinfo)
+    def add(self,id:str,classname:str,isStage:bool,**kw): #积木管理
+        type_=f"{classname} -> {id}"
         try:
             depth=self.get_nested_depth(kw)
         except Exception as e:
@@ -126,15 +123,25 @@ class CodeMaker: #转换核心，生成python代码
             depth=self.get_nested_depth2(kw)
         opcode=kw["opcode"]
         log.debug(f'Converting {type_}(name="{opcode}" ,depth={depth})...')
-        def restr(string:str,func=False):
-            if func:
-                self.code.append('    '*(depth+1)+string)
-            else:
-                self.code.append('    '*(depth+2)+string)
-
+        def restr(mode=0,string="",args=()):
+            '''
+            mode=0: 调用积木方法，string为方法名，args为传参
+            mode=1: 创建一个类方法，string为方法名，args为参数名
+            mode=2: 创建一个角色，string与args均不必填
+            '''
+            match mode:
+                case 0:
+                    self.code.append('    '*(depth+2)+classname+'.'+string+'('+', '.join(args)+')')
+                case 1:
+                    self.code.append('    '*(depth+1)+"def "+string+'('+', '.join(args)+'):')
+                case 2:
+                    self.code.append()
+                
+        if isStage:
+            restr("")
         match opcode: #匹配相应的积木名
             case "motion_movesteps":
-                restr()
+                restr("")
             case _:
                 log.error(f'Unknown id "{opcode}"!')
 
