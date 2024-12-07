@@ -127,7 +127,7 @@ class CodeMaker: #转换核心，生成python代码
             '''
             mode=0: 调用积木方法，string为方法名，args为传参
             mode=1: 创建一个类方法，string为方法名，args为参数名
-            mode=2: 创建一个角色，string与args均不必填
+            mode=2: 创建一个角色，string不必填，args为(image_file, location)
             '''
             match mode:
                 case 0:
@@ -135,7 +135,7 @@ class CodeMaker: #转换核心，生成python代码
                 case 1:
                     self.code.append('    '*(depth+1)+"def "+string+'('+', '.join(args)+'):')
                 case 2:
-                    self.code.append()
+                    self.code.append('    '*(depth+2)+classname+'='+("Background" if isStage else "Sprite")+'()')
                 
         if isStage:
             restr("")
@@ -188,7 +188,7 @@ def main(fp:str='./tests/work1.sb3',path=True):
     info=UnPackingScratch3File(fp,path)
     info.convert()
     parser=CodeParser(info)
-    log.success(f"Converted successfully(at {parser.outpyfile}).")
+    log.success(f"Converted successfully (at {parser.outpyfile}) .")
 
 if __name__=='__main__':
     try:
