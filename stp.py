@@ -105,16 +105,17 @@ class CodeMaker: #转换核心，生成python代码
         self.targets=pj["targets"] #所有角色信息
         self.code.append(SPRITE_INIT_CODE+'\n'+GAME_INIT_CODE)
         for t in self.targets:
-            self.give(**t)
+            self.give(t)
 
-    def give(self,**tgs): #给予信息,tgs为targets下每个信息
+    def give(self,tgs): #给予信息,tgs为targets下每个信息
+        self.blocks=tgs["blocks"] #为方便add函数
         classname='spr_'+tgs["name"]
         if classname not in self.name: #若角色名称未被记录
             self.name.append(classname)
-        for block in tgs["blocks"].items():
+        for block in self.blocks.items():
             id,idinfo=block[0],block[1]
-            self.add(id,classname,tgs["isStage"],**idinfo)
-    def add(self,id:str,classname:str,isStage:bool,**kw): #积木管理
+            self.add(id,classname,tgs["isStage"],idinfo)
+    def add(self,id:str,classname:str,isStage:bool,kw): #积木管理
         type_=f"{classname} -> {id}"
         try:
             depth=self.get_nested_depth(kw)
@@ -156,12 +157,16 @@ class CodeMaker: #转换核心，生成python代码
         :param depth: 当前深度
         :return: 积木块的嵌套深度
         """
-        if 'topLevel' in block and block['topLevel']:
-            return depth
-        if 'parent' in block and block["opcode"].endswith("_menu"):
-            return self.get_nested_depth(block['parent'], depth)
-        if 'parent' in block:
-            return self.get_nested_depth(block['parent'], depth + 1)
+        print(block,type(block))
+        if isinstance(block,dict): #如果是字典信息
+            if 'topLevel' in block and block['topLevel']:
+                return depth
+            if 'parent' in block and block["opcode"].endswith("_menu"):
+                return self.get_nested_depth(block['parent'], depth)
+            if 'parent' in block:
+                return self.get_nested_depth(block['parent'], depth + 1)
+        elif isinstance(block,str): #如果是blocks代号符
+            if 
         return depth
     def get_nested_depth2(self,block,depth=0): #备用方法
         """
