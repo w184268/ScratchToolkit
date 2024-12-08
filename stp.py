@@ -166,15 +166,21 @@ class CodeMaker: #转换核心，生成python代码
         """
         #print(block,type(block))
         parentdict=self.blocks.get(block['parent'],{})
-        print(parentdict)
+        #print(parentdict)
         if block is not None and parentdict:
+            inputs=parentdict.get('inputs',{})
+            substack=inputs.get("SUBSTACK",[])
+            #print(inputs,substack)
             if parentdict['opcode'] != "event_whenflagclicked":
                 if 'topLevel' in block and block['topLevel']:
                     return depth
-                if 'parent' in block and not block["shadow"]:
-                    return self.get_nested_depth(parentdict, depth)
                 if 'parent' in block:
-                    return self.get_nested_depth(parentdict, depth + 1)
+                    if substack:
+                        return self.get_nested_depth(parentdict, depth+1)
+                    elif not block["shadow"]:
+                        return self.get_nested_depth(parentdict, depth)
+                    else:
+                        return self.get_nested_depth(parentdict, depth + 1)
 
         return depth
     def get_nested_depth2(self,block,depth=0): #备用方法
@@ -188,16 +194,22 @@ class CodeMaker: #转换核心，生成python代码
         while stack:
             current_block = stack.pop()
             parentdict=self.blocks.get(current_block['parent'],{})
+            inputs=parentdict.get('inputs',{})
+            substack=inputs.get("SUBSTACK",[])
             print(type(current_block))
             if current_block is not None and parentdict:
                 if parentdict['opcode'] != "event_whenflagclicked":
                     if 'topLevel' in current_block and current_block['topLevel']:
                         continue
-                    if 'parent' in current_block and not current_block["shadow"]:
-                        continue
                     if 'parent' in current_block:
-                        stack.append(current_block['parent'])
-                        depth += 1
+                        if substack:
+                            stack.append(parentdict)
+                            depth += 1
+                        elif not current_block["shadow"]:
+                            continue
+                        else:
+                            stack.append(parentdict)
+                            depth += 1
         return depth
 
 def main(fp:str='./tests/work1.sb3',path=True):
