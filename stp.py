@@ -227,6 +227,11 @@ Scratch-To-Pygame(Beta v0.0.1) is running!
     info.convert()
     parser=CodeParser(info)
     log.success(f"Converted successfully (at {parser.outpyfile}) .")
+    log.debug('Trying to run the output file...')
+    if os.system(f'python {parser.outpyfile}'):
+        log.error('There is something wrong above.')
+    else:
+        log.success('The file has no wrong.')
 
 if __name__=='__main__':
     try:
