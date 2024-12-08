@@ -56,6 +56,13 @@ class UnPackingScratch3File:
                 self.p=PathTool(fp,mode='n')
                 self.cdir=self.p.join((THISPATH,self.p.NAME))
             self.f.extractall(self.cdir)
+
+            #格式化.json文档
+            self.prj_path=self.p.join((self.cdir,'project.json'))
+            with open(self.prj_path,'r',encoding='utf-8') as f:
+               c=json.load(f)
+            with open(self.prj_path,'w',encoding='utf-8') as f:
+                json.dump(c,f,ensure_ascii=False,indent=4)
         log.success(f"Completed unpacking {fp} to {self.cdir}.")
 
     def convert(self):
@@ -108,7 +115,7 @@ class CodeMaker: #转换核心，生成python代码
             self.give(t)
 
     def give(self,tgs): #给予信息,tgs为targets下每个信息
-        self.blocks=tgs["blocks"] #为方便add函数
+        self.blocks:dict=tgs["blocks"] #为方便add函数
         classname='spr_'+tgs["name"]
         if classname not in self.name: #若角色名称未被记录
             self.name.append(classname)
@@ -139,7 +146,7 @@ class CodeMaker: #转换核心，生成python代码
                     self.code.append('    '*(depth+2)+classname+'='+("Background" if isStage else "Sprite")+'()')
                 
         if isStage:
-            restr("")
+            self.restr("")
         match opcode: #匹配相应的积木名
             case "motion_movesteps":
                 restr("")
@@ -157,16 +164,18 @@ class CodeMaker: #转换核心，生成python代码
         :param depth: 当前深度
         :return: 积木块的嵌套深度
         """
-        print(block,type(block))
-        if isinstance(block,dict): #如果是字典信息
-            if 'topLevel' in block and block['topLevel']:
-                return depth
-            if 'parent' in block and block["opcode"].endswith("_menu"):
-                return self.get_nested_depth(block['parent'], depth)
-            if 'parent' in block:
-                return self.get_nested_depth(block['parent'], depth + 1)
-        elif isinstance(block,str): #如果是blocks代号符
-            if 
+        #print(block,type(block))
+        parentdict=self.blocks.get(block['parent'],{})
+        print(parentdict)
+        if block is not None and parentdict:
+            if parentdict['opcode'] != "event_whenflagclicked":
+                if 'topLevel' in block and block['topLevel']:
+                    return depth
+                if 'parent' in block and not block["shadow"]:
+                    return self.get_nested_depth(parentdict, depth)
+                if 'parent' in block:
+                    return self.get_nested_depth(parentdict, depth + 1)
+
         return depth
     def get_nested_depth2(self,block,depth=0): #备用方法
         """
@@ -178,14 +187,17 @@ class CodeMaker: #转换核心，生成python代码
         stack = [block]   
         while stack:
             current_block = stack.pop()
+            parentdict=self.blocks.get(current_block['parent'],{})
             print(type(current_block))
-            if 'topLevel' in current_block and current_block['topLevel']:
-                continue
-            if 'parent' in current_block and current_block.get("opcode","").endswith("_menu"):
-                continue
-            if 'parent' in current_block:
-                stack.append(current_block['parent'])
-                depth += 1
+            if current_block is not None and parentdict:
+                if parentdict['opcode'] != "event_whenflagclicked":
+                    if 'topLevel' in current_block and current_block['topLevel']:
+                        continue
+                    if 'parent' in current_block and not current_block["shadow"]:
+                        continue
+                    if 'parent' in current_block:
+                        stack.append(current_block['parent'])
+                        depth += 1
         return depth
 
 def main(fp:str='./tests/work1.sb3',path=True):
