@@ -1,4 +1,4 @@
-<div align="center">
+<div style="text-align:center">
 
 # Scratch-To-Pygame
 ![GitHub repo size](https://img.shields.io/github/repo-size/EricDing618/Scratch-To-Pygame)
@@ -8,9 +8,25 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/EricDing618/Scratch-To-Pygame)
 ![GitHub Created At](https://img.shields.io/github/created-at/EricDing618/Scratch-To-Pygame)
 
-## 如何使用
+<div style="text-align:left">
+
+## 描述
+- Scratch-To-Pygame（STP）是一个用Python实现的将Scratch转换为Pygame的脚本工具，现已支持`.sb3`文件。
+## 快速使用
 在本仓库目录下使用`cmd`执行：
 ```bash
-pip install -r requirements.txt
 python stp.py <你的.sb3文件位置>
 ```
+## 第三方库
+- loguru==0.7.2
+- cairosvg==2.7.1
+- pillow==9.5.0
+- pygame==2.5.2
+- numpy==1.26.2
+- colorama==0.4.6
+
+若您还没有安装这些第三方库或已经遇到了`ImportError`，请使用`pip install -r requirements.txt`。
+## 报错解决
+- `ImportError`：详见**第三方库**。
+
+若这仍不能解决您的问题，请确保该问题没有在issues被提出并解决，然后创建issue并等待解决。

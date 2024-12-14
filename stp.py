@@ -1,22 +1,17 @@
+import config
+
 import zipfile,json
 import os,sys
 import xml.etree.ElementTree as ET
 from datetime import datetime
+
 from colorama import Fore
+from loguru import logger as log
+from cairosvg import svg2png
+from PIL import Image
 
-try:
-    import config
-    from loguru import logger as log
-    from cairosvg import svg2png
-    from PIL import Image
-    log.remove()
-    log.add(sys.stdout,colorize=True,format="<level>[{time:YYYY-MM-DD HH:mm:ss}] [{level}]: {message}</level>")
-except ImportError:
-    print("You didn't install pygame,loguru,pillow or cairosvg!")
-    os.system('pip install -r requirements.txt')
-except Exception as e:
-    print("Please install gtk3 in ./bin!")
-
+log.remove()
+log.add(sys.stdout,colorize=True,format="<level>[{time:YYYY-MM-DD HH:mm:ss}] [{level}]: {message}</level>")
 THISPATH=os.getcwd()
 with open("./spriteframe.py","r",encoding="utf-8") as f:
     SPRITE_INIT_CODE=f.read()
@@ -114,6 +109,10 @@ class CodeMaker: #转换核心，生成python代码
         self.code.append(SPRITE_INIT_CODE+'\n'+GAME_INIT_CODE)
         for t in self.targets:
             self.give(t)
+        self.code.extend(["",
+            "if __name__=='__main__':",
+            "   rungame=Game()"
+        ])
 
     def give(self,tgs): #给予信息,tgs为targets下每个信息
         self.blocks:dict=tgs["blocks"] #为方便add函数
@@ -136,7 +135,8 @@ class CodeMaker: #转换核心，生成python代码
             '''
             mode=0: 调用积木方法，string为方法名，args为传参
             mode=1: 创建一个类方法，string为方法名，args为参数名
-            mode=2: 创建一个角色，string不必填，args为(image_file, location)
+            mode=2: 创建一个角色，string不填，args为(image_file, location)
+            mode=3: 灵活性的，args不填，string可以是其他代码（如判断、循环等）
             '''
             match mode:
                 case 0:
@@ -144,7 +144,9 @@ class CodeMaker: #转换核心，生成python代码
                 case 1:
                     self.code.append('    '*(depth+1)+"def "+string+'('+', '.join(args)+'):')
                 case 2:
-                    self.code.append('    '*(depth+2)+classname+'='+("Background" if isStage else "Sprite")+'()')
+                    self.code.append('    '*(depth+2)+classname+'=Sprite()')
+                case 3:
+                    self.code.append('    '*(depth+2)+string)
                 
         if isStage:
             self.restr("")
