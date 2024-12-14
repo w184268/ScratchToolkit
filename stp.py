@@ -16,8 +16,9 @@ THISPATH=os.getcwd()
 with open("./spriteframe.py","r",encoding="utf-8") as f:
     SPRITE_INIT_CODE=f.read()
 with open("./gameframe.py","r",encoding="utf-8") as f:
-    GAME_INIT_CODE=''.join(f.read().split("import pygame as pg"))
-
+    GAME_INIT_CODE=''.join(i for i in f.readlines() if 'import' not in i)
+with open("./settings.json",'r',encoding='utf-8') as f:
+    USERSET:dict=json.load(f)
 class PathTool:
     def __init__(self,fp:str|tuple[str],mode='p'):
         '''when mode is p,that means fp is a path; 
@@ -102,9 +103,7 @@ class CodeParser: #解析project.json
 
 class CodeMaker: #转换核心，生成python代码
     def __init__(self,pj):
-        #self.tab=2 #Python代码的缩进
-        self.name=[] #角色名
-        self.code=[] #存储每行代码
+        self.code=[] #存储代码
         self.targets=pj["targets"] #所有角色信息
         self.code.append(SPRITE_INIT_CODE+'\n'+GAME_INIT_CODE)
         for t in self.targets:
@@ -114,11 +113,33 @@ class CodeMaker: #转换核心，生成python代码
             "   rungame=Game()"
         ])
 
-    def give(self,tgs): #给予信息,tgs为targets下每个信息
-        self.blocks:dict=tgs["blocks"] #为方便add函数
-        classname='spr_'+tgs["name"]
-        if classname not in self.name: #若角色名称未被记录
-            self.name.append(classname)
+    def give(self,tgs:dict): #给予信息,tgs为targets下每个信息
+        #为方便后面操作
+        self.isStage:bool=tgs['isStage'] #是否为舞台
+        self.name:str=tgs['name'] #角色名
+        self.vars:dict=tgs['variables'] #变量
+        self.lists:dict=tgs['lists'] #列表
+        self.broadcasts:dict=tgs['broadcasts'] #广播
+        self.blocks:dict=tgs["blocks"] #积木块
+        self.sounds:list=tgs["sounds"] #音频
+        self.volume:int=tgs['volume'] #音量
+        self.layerOrder:int=tgs["layerOrder"] #角色的图层顺序，值越大，角色越靠前
+        self.visible:bool=tgs.get("visible",True) #角色是否可见
+        self.x:float=tgs.get('x',None) #x坐标
+        self.y:float=tgs('y',None) #y坐标
+        self.size:int=tgs['size'] #放大与缩小，100是原始尺寸
+        self.direction:int=tgs['direction'] #朝向，0度表示朝右，90度表示朝上，180度表示朝左，270度表示朝下
+        self.draggable:bool=tgs['draggable'] #角色的可拖动性
+        self.rotation:str=tgs['rotationStyle'] #角色的旋转样式，可以是all around（围绕中心点旋转）、left-right（左右旋转）或don't rotate（不旋转）
+        if self.isStage: #舞台，有些全局设置
+            self.tempo:int=tgs['tempo'] #正常速度为60
+            self.comments:dict=tgs['comments'] #键是注释的ID，值是注释的内容
+            self.currentCostume:int=tgs['currentCostume'] #角色的当前服装索引
+            self.costumes:list[dict]=tgs['costumes'] #角色的服装
+            self.videoTransparency:int=tgs['videoTransparency'] #角色的视频透明度，范围是0到100，0表示完全透明，100表示完全不透明
+            self.videoState:str=tgs['videoState'] #角色的视频状态，可以是on（开启视频）或off（关闭视频）。
+            self.textToSpeechLanguage:str=tgs['textToSpeechLanguage'] #角色的文本到语音语言
+        classname='spr_'+self.name
         for block in self.blocks.items():
             id,idinfo=block[0],block[1]
             self.add(id,classname,tgs["isStage"],idinfo)
@@ -135,7 +156,7 @@ class CodeMaker: #转换核心，生成python代码
             '''
             mode=0: 调用积木方法，string为方法名，args为传参
             mode=1: 创建一个类方法，string为方法名，args为参数名
-            mode=2: 创建一个角色，string不填，args为(image_file, location)
+            mode=2: 创建一个角色，string不填，args为角色信息，按照实际操作
             mode=3: 灵活性的，args不填，string可以是其他代码（如判断、循环等）
             '''
             match mode:
@@ -144,12 +165,12 @@ class CodeMaker: #转换核心，生成python代码
                 case 1:
                     self.code.append('    '*(depth+1)+"def "+string+'('+', '.join(args)+'):')
                 case 2:
-                    self.code.append('    '*(depth+2)+classname+'=Sprite()')
+                    self.code.append('    '*(depth+2)+classname+'=Sprite('+','.join(args)+')')
                 case 3:
                     self.code.append('    '*(depth+2)+string)
                 
         if isStage:
-            self.restr("")
+            self.restr(2,"")
         match opcode: #匹配相应的积木名
             case "motion_movesteps":
                 restr("")
@@ -174,7 +195,7 @@ class CodeMaker: #转换核心，生成python代码
             inputs=parentdict.get('inputs',{})
             substack=inputs.get("SUBSTACK",[])
             #print(inputs,substack)
-            if parentdict['opcode'] != "event_whenflagclicked":
+            if parentdict['opcode'] not in USERSET["blocks"]['ignore']:
                 if 'topLevel' in block and block['topLevel']:
                     return depth
                 if 'parent' in block:
