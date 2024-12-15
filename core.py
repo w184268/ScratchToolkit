@@ -40,7 +40,7 @@ class CodeMaker: #转换核心，生成python代码
         self.layerOrder:int=tgs["layerOrder"] #角色的图层顺序，值越大，角色越靠前
         self.visible:bool=tgs.get("visible",True) #角色是否可见
         self.x:float=tgs.get('x',None) #x坐标
-        self.y:float=tgs('y',None) #y坐标
+        self.y:float=tgs.get('y',None) #y坐标
         self.size:int=tgs['size'] #放大与缩小，100是原始尺寸
         self.direction:int=tgs['direction'] #朝向，0度表示朝右，90度表示朝上，180度表示朝左，270度表示朝下
         self.draggable:bool=tgs['draggable'] #角色的可拖动性
