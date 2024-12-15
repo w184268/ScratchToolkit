@@ -8,17 +8,22 @@
 # Made by EricDing618.
                   
 import pygame as pg
-import sys
+import sys,math,random
 class Sprite(pg.sprite.Sprite): #角色框架
-    def __init__(self, image_file, location):
+    def __init__(self, image_file:str, initxy:tuple[float,float], direction:int):
         super().__init__()
         self.image = pg.image.load(image_file)
         self.rect = self.image.get_rect()
-        self.rect.left, self.rect.top = location
+        self.rect.x=initxy[0],self.rect.y=initxy[1]
 
-    def move(self, dx, dy):
-        self.rect.x += dx
-        self.rect.y += dy
+    def move(self,dx:float,dy:float):
+        self.rect.move_ip(dx,dy)
+    def move(self,dx:float,dy:float,duration:int|float):
+        distance=duration * 10
+        if dx != self.rect.x:
+            dx=distance*pg.math.cos(pg.math.radians(self.direction))
+        if dy != self.rect.y:
+            dy=distance*pg.math.sin(pg.math.radians(self.direction))
 
     def turn_right(self, degrees):
         self.image = pg.transform.rotate(self.image, degrees)
