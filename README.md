@@ -22,6 +22,7 @@ python stp.py <你的.sb3文件位置>
 - pygame==2.5.2
 - numpy==1.26.2
 - colorama==0.4.6
+
 软件：
 - gtk3 3.24.31
 
