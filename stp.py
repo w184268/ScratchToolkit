@@ -1,9 +1,5 @@
-from path import *
-
 import traceback
 import argparse as ap
-
-from colorama import Fore
 
 def main(fp:str='./tests/work1.sb3',path=True,run=False):
     log.debug('''
@@ -35,10 +31,13 @@ if __name__=='__main__':
         parser.add_argument('--run','-r',dest="run",action="store_true",default=False,help="Run and check the output file.")
         parser.add_argument('--no-log','-nl',dest="no_log",action="store_true",default=False,help="Do not show all the log.")
         args=parser.parse_args()
-        if args.no_log:
-            log.remove()
         if args.file_path:
+            from path import *
+            if args.no_log:
+                log.remove()
             main(args.file_path,args.mode=='path',args.run)
     except BaseException:
-        log.error('\n'+traceback.format_exc())
-        exit(1)
+        exc=traceback.format_exc()
+        if not 'SystemExit: 0' in exc: #强制防止因SystemExit: 0导致的误报错
+            log.error('\n'+exc)
+            exit(1)
