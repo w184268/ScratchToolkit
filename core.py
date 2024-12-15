@@ -38,13 +38,7 @@ class CodeMaker: #转换核心，生成python代码
         self.sounds:list=tgs["sounds"] #音频
         self.volume:int=tgs['volume'] #音量
         self.layerOrder:int=tgs["layerOrder"] #角色的图层顺序，值越大，角色越靠前
-        self.visible:bool=tgs.get("visible",True) #角色是否可见
-        self.x:float=tgs.get('x',None) #x坐标
-        self.y:float=tgs.get('y',None) #y坐标
-        self.size:int=tgs['size'] #放大与缩小，100是原始尺寸
-        self.direction:int=tgs['direction'] #朝向，0度表示朝右，90度表示朝上，180度表示朝左，270度表示朝下
-        self.draggable:bool=tgs['draggable'] #角色的可拖动性
-        self.rotation:str=tgs['rotationStyle'] #角色的旋转样式，可以是all around（围绕中心点旋转）、left-right（左右旋转）或don't rotate（不旋转）
+        
         if self.isStage: #舞台，有些全局设置
             self.tempo:int=tgs['tempo'] #正常速度为60
             self.comments:dict=tgs['comments'] #键是注释的ID，值是注释的内容
@@ -53,12 +47,21 @@ class CodeMaker: #转换核心，生成python代码
             self.videoTransparency:int=tgs['videoTransparency'] #角色的视频透明度，范围是0到100，0表示完全透明，100表示完全不透明
             self.videoState:str=tgs['videoState'] #角色的视频状态，可以是on（开启视频）或off（关闭视频）。
             self.textToSpeechLanguage:str=tgs['textToSpeechLanguage'] #角色的文本到语音语言
-        classname='spr_'+self.name
+            self.classname='stage_'+self.name
+        else:
+            self.visible:bool=tgs.get("visible",True) #角色是否可见
+            self.x:float=tgs['x'] #x坐标
+            self.y:float=['y'] #y坐标
+            self.size:int=tgs['size'] #放大与缩小，100是原始尺寸
+            self.direction:int=tgs['direction'] #朝向，0度表示朝右，90度表示朝上，180度表示朝左，270度表示朝下
+            self.draggable:bool=tgs['draggable'] #角色的可拖动性
+            self.rotation:str=tgs['rotationStyle'] #角色的旋转样式，可以是all around（围绕中心点旋转）、left-right（左右旋转）或don't rotate（不旋转）
+            self.classname='spr_'+self.name
         for block in self.blocks.items():
             id,idinfo=block[0],block[1]
-            self.add(id,classname,tgs["isStage"],idinfo)
-    def add(self,id:str,classname:str,isStage:bool,kw): #积木管理
-        type_=f"{classname} -> {id}"
+            self.add(id,idinfo)
+    def add(self,id:str,kw): #积木管理
+        type_=f"{self.classname} -> {id}"
         try:
             depth=self.get_nested_depth(kw)
         except Exception as e:
@@ -75,15 +78,15 @@ class CodeMaker: #转换核心，生成python代码
             '''
             match mode:
                 case 0:
-                    self.code.append('    '*(depth+2)+classname+'.'+string+'('+', '.join(args)+')')
+                    self.code.append('    '*(depth+2)+self.classname+'.'+string+'('+', '.join(args)+')')
                 case 1:
                     self.code.append('    '*(depth+1)+"def "+string+'('+', '.join(args)+'):')
                 case 2:
-                    self.code.append('    '*(depth+2)+classname+'=Sprite('+','.join(args)+')')
+                    self.code.append('    '*(depth+2)+self.classname+'=Sprite('+','.join(args)+')')
                 case 3:
                     self.code.append('    '*(depth+2)+string)
                 
-        if isStage:
+        if self.isStage:
             self.restr(2,"")
         match opcode: #匹配相应的积木名
             case "motion_movesteps":
