@@ -79,9 +79,7 @@ class CodeMaker:
             self.depth=self.get_nested_depth2(kw)
         opcode=kw["opcode"]
         log.debug(f'Converting {type_}(name="{opcode}" ,depth={self.depth})...')
-                
-        if self.isStage:
-            self.fstr("",2)
+
         match opcode: #匹配相应的积木名
             case "motion_movesteps":
                 self.fstr("")

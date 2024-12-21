@@ -8,7 +8,7 @@
 # Made by EricDing618.
                   
 import pygame as pg
-import sys,math,random
+import sys,math,random,threading
 class Sprite(pg.sprite.Sprite): #角色框架
     def __init__(self, image_file:tuple[str], initxy:tuple[float,float], direction:int):
         super().__init__()
