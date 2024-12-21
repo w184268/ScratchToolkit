@@ -66,6 +66,7 @@ class CodeMaker:
             self.draggable:bool=tgs['draggable'] #角色的可拖动性
             self.rotation:str=tgs['rotationStyle'] #角色的旋转样式，可以是all around（围绕中心点旋转）、left-right（左右旋转）或don't rotate（不旋转）
             self.classname='spr_'+self.name
+        self.fstr(mode=2,args=())
         for block in self.blocks.items():
             id,idinfo=block[0],block[1]
             self.add(id,idinfo)
