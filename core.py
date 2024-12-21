@@ -70,6 +70,7 @@ class CodeMaker:
         for block in self.blocks.items():
             id,idinfo=block[0],block[1]
             self.add(id,idinfo)
+            self.depth=0 #恢复默认
     def add(self,id:str,kw): #积木管理
         type_=f"{self.classname} -> {id}"
         try:
@@ -99,11 +100,12 @@ class CodeMaker:
             case 0:
                 self.code.append('    '*(self.depth+2)+self.classname+'.'+string+'('+', '.join(args)+')')
             case 1:
-                self.code.append('    '*(self.depth+1)+"def "+string+'('+', '.join(args)+'):')
+                self.code.append('    '*(self.depth+2)+"def "+string+'('+', '.join(args)+'):')
             case 2:
                 self.code.append('    '*(self.depth+2)+self.classname+'=Sprite('+','.join(args)+')')
             case 3:
                 self.code.append('    '*(self.depth+2)+string)
+
     def get_nested_depth(self,block,depth=0):
         """
         递归函数，用于计算积木块的嵌套深度。
