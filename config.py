@@ -1,5 +1,18 @@
 import pygame as pg
 from numpy import array,where
+from loguru import logger as log
+
+import json
+import os,sys
+
+THISPATH=os.getcwd()
+with open("./spriteframe.py","r",encoding="utf-8") as f:
+    SPRITE_INIT_CODE=f.read()
+with open("./gameframe.py","r",encoding="utf-8") as f:
+    GAME_INIT_CODE=''.join(i for i in f.readlines() if 'import' not in i)
+with open("./settings.json",'r',encoding='utf-8') as f:
+    USERSET:dict=json.load(f)
+
 
 class Config:
     def __init__(self):

@@ -1,25 +1,36 @@
-import config
-
-import json
-import os,sys
-
-from loguru import logger as log
+from .path import *
 
 log.remove()
 log.add(sys.stdout,colorize=True,format="<level>[{time:YYYY-MM-DD HH:mm:ss}] [{level}]: {message}</level>")
-THISPATH=os.getcwd()
-with open("./spriteframe.py","r",encoding="utf-8") as f:
-    SPRITE_INIT_CODE=f.read()
-with open("./gameframe.py","r",encoding="utf-8") as f:
-    GAME_INIT_CODE=''.join(i for i in f.readlines() if 'import' not in i)
-with open("./settings.json",'r',encoding='utf-8') as f:
-    USERSET:dict=json.load(f)
 
-class CodeMaker: #转换核心，生成python代码
-    def __init__(self,pj):
+class CodeParser: #解析project.json
+    def __init__(self,last:UnPackingScratch3File):
+        self.mod:list[str]=[] #根据情况导入所需要的库
+        self.var=dict() #存储变量
+        self.array=dict() #存储列表
+        self.cdir,self.outdir=last.cdir,last.outdir
+        self.t=PathTool(self.cdir)
+        with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8') as f: #导入project.json
+            self.pj=json.load(f)
+        self.make=CodeMaker(self.pj,last)
+        self.outpyfile=self.t.join((self.outdir,last.p.NAME+".py"))
+        with open(self.outpyfile,'w',encoding='utf-8') as f:
+            f.write(self.make.return_result())
+
+class CodeMaker:
+    def __init__(self,pj:dict,pt:UnPackingScratch3File):
+        """
+        转换核心，生成python代码。
+        
+        :param pj: project.json解析后的dict类型
+        :param pt: CodeParser类所使用过的类，用于获取文件信息
+        """
         self.code=[] #存储代码
         self.targets=pj["targets"] #所有角色信息
         self.code.append(SPRITE_INIT_CODE+'\n'+GAME_INIT_CODE)
+        self.code.extend([
+            self.fstr(f"pg.display.set_caption('{})",3)
+            ])
         for t in self.targets:
             self.give(t)
         self.code.extend(["",
@@ -63,40 +74,39 @@ class CodeMaker: #转换核心，生成python代码
     def add(self,id:str,kw): #积木管理
         type_=f"{self.classname} -> {id}"
         try:
-            depth=self.get_nested_depth(kw)
+            self.depth=self.get_nested_depth(kw)
         except Exception as e:
             log.warning(e)
-            depth=self.get_nested_depth2(kw)
+            self.depth=self.get_nested_depth2(kw)
         opcode=kw["opcode"]
-        log.debug(f'Converting {type_}(name="{opcode}" ,depth={depth})...')
-        def restr(mode=0,string="",args=()):
-            '''
-            mode=0: 调用积木方法，string为方法名，args为传参
-            mode=1: 创建一个类方法，string为方法名，args为参数名
-            mode=2: 创建一个角色，string不填，args为角色信息，按照实际操作
-            mode=3: 灵活性的，args不填，string可以是其他代码（如判断、循环等）
-            '''
-            match mode:
-                case 0:
-                    self.code.append('    '*(depth+2)+self.classname+'.'+string+'('+', '.join(args)+')')
-                case 1:
-                    self.code.append('    '*(depth+1)+"def "+string+'('+', '.join(args)+'):')
-                case 2:
-                    self.code.append('    '*(depth+2)+self.classname+'=Sprite('+','.join(args)+')')
-                case 3:
-                    self.code.append('    '*(depth+2)+string)
+        log.debug(f'Converting {type_}(name="{opcode}" ,depth={self.depth})...')
                 
         if self.isStage:
-            self.restr(2,"")
+            self.fstr("",2)
         match opcode: #匹配相应的积木名
             case "motion_movesteps":
-                restr("")
+                self.fstr("")
             case _:
                 log.error(f'Unknown id "{opcode}"!')
 
     def return_result(self):
         return '\n'.join(self.code)
-    
+    def fstr(self,string="",mode=0,args=()):
+        '''
+        mode=0: 调用积木方法，string为方法名，args为传参  
+        mode=1: 创建一个类方法，string为方法名，args为参数名  
+        mode=2: 创建一个角色，string不填，args为角色信息，按照实际操作  
+        mode=3: 灵活性的，args不填，string可以是其他代码（如判断、循环等） 
+        '''
+        match mode:
+            case 0:
+                self.code.append('    '*(self.depth+2)+self.classname+'.'+string+'('+', '.join(args)+')')
+            case 1:
+                self.code.append('    '*(self.depth+1)+"def "+string+'('+', '.join(args)+'):')
+            case 2:
+                self.code.append('    '*(self.depth+2)+self.classname+'=Sprite('+','.join(args)+')')
+            case 3:
+                self.code.append('    '*(self.depth+2)+string)
     def get_nested_depth(self,block,depth=0):
         """
         递归函数，用于计算积木块的嵌套深度。

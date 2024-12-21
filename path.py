@@ -1,4 +1,4 @@
-from core import *
+from .config import *
 
 import zipfile
 import xml.etree.ElementTree as ET
@@ -30,10 +30,15 @@ class PathTool:
             return os.path.join(*args)
         
 class UnPackingScratch3File:
-    def __init__(self,fp:str,ispath=True):
+    def __init__(self,fp:str):
+        """
+        解包.sb3文件。
+        
+        :param fp: .sb3文件位置
+        """
         log.debug(f"Unpacking {fp}...")
         with zipfile.ZipFile(fp,'r') as self.f: #解压.sb3文件
-            if ispath: #如果是一段路径
+            if os.path.basename(fp)!=fp: #如果是一段路径
                 self.p=PathTool(fp)
                 self.cdir=self.p.join((self.p.DIR,self.p.NAME))
             else: #如果是一段文件名
@@ -73,17 +78,3 @@ class UnPackingScratch3File:
                     image.save(p.join((self.cdir,p.NAME+".png")))
                 os.remove(p.join((self.cdir,p.FILE)))
                 log.success(f"Removed {p.join((self.cdir,p.FILE))}.")
-    
-class CodeParser: #解析project.json
-    def __init__(self,last:UnPackingScratch3File):
-        self.mod:list[str]=[] #根据情况导入所需要的库
-        self.var=dict() #存储变量
-        self.array=dict() #存储列表
-        self.cdir,self.outdir=last.cdir,last.outdir
-        self.t=PathTool(self.cdir)
-        with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8') as f: #导入project.json
-            self.pj=json.load(f)
-        self.make=CodeMaker(self.pj)
-        self.outpyfile=self.t.join((self.outdir,last.p.NAME+".py"))
-        with open(self.outpyfile,'w',encoding='utf-8') as f:
-            f.write(self.make.return_result())

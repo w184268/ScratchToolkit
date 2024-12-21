@@ -1,7 +1,7 @@
 import traceback
 import argparse as ap
 
-def main(fp:str='./tests/work1.sb3',path=True,run=False):
+def main(fp:str='./tests/work1.sb3',run=False):
     log.debug('''
 ==========================
   ____    _____   ____  
@@ -12,7 +12,7 @@ def main(fp:str='./tests/work1.sb3',path=True,run=False):
 ==========================
 Scratch-To-Pygame(Beta v0.0.1) is running!
 ''')
-    info=UnPackingScratch3File(fp,path)
+    info=UnPackingScratch3File(fp)
     info.convert()
     parser=CodeParser(info)
     log.success(f"Converted successfully (at {parser.outpyfile}) .")
@@ -33,10 +33,10 @@ if __name__=='__main__':
         args=parser.parse_args()
         fp=args.file_path
         if fp:
-            from path import *
+            from .core import *
             if args.no_log:
                 log.remove()
-            main(fp,os.path.basename(fp)!=fp,args.run)
+            main(fp,args.run)
     except SystemExit as e:
         if int(str(e)) != 0: #防止因SystemExit: 0导致的误报错
             log.error(f'SystemExit: {e}')
