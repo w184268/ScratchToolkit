@@ -36,8 +36,10 @@ if __name__=='__main__':
             if args.no_log:
                 log.remove()
             main(args.file_path,args.mode=='path',args.run)
+    except SystemExit as e:
+        if int(str(e)) != 0: #防止因SystemExit: 0导致的误报错
+            log.error(f'SystemExit: {e}')
     except BaseException:
         exc=traceback.format_exc()
-        if not 'SystemExit: 0' in exc: #强制防止因SystemExit: 0导致的误报错
-            log.error('\n'+exc)
-            exit(1)
+        log.error('\n'+exc)
+        exit(1)
