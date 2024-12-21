@@ -34,8 +34,8 @@ python stp.py <your .sb3 file path>
 软件：
 - GTK+ 3.24.31
 
-若您还没有安装这些第三方库或已经遇到了`ImportError`，请使用`pip install -r requirements.txt`，以及安装`bin`目录下的软件（仅支持Windows x64）。
+若您还没有安装这些第三方库或已经遇到了`ImportError`，请使用`pip install -r requirements.txt`，以及解压并安装`dependencies`分支下的软件（仅支持Windows x64）。
 ## 报错解决
-- `ImportError`：详见**第三方库**。
+- `ImportError`：详见**第三方库&软件**。
 
 若这仍不能解决您的问题，请确保该问题没有在issues被提出并解决，然后创建issue并等待解决。
