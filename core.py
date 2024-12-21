@@ -23,14 +23,12 @@ class CodeMaker:
         转换核心，生成python代码。
         
         :param pj: project.json解析后的dict类型
-        :param pt: CodeParser类所使用过的类，用于获取文件信息
         """
+        self.depth=0 #默认深度
         self.code=[] #存储代码
         self.targets=pj["targets"] #所有角色信息
         self.code.append(SPRITE_INIT_CODE+'\n'+GAME_INIT_CODE)
-        self.code.extend([
-            self.fstr(f"pg.display.set_caption('{PathTool(pt.prj_path).NAME}')",3)
-            ])
+        self.fstr(f"pg.display.set_caption('{pt.p.NAME}')",3)
         for t in self.targets:
             self.give(t)
         self.code.extend(["",
