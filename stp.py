@@ -24,23 +24,23 @@ Scratch-To-Pygame(Beta v0.0.1) is running!
             log.success('The file has no wrong.')
 
 if __name__=='__main__':
-    try:
-        parser=ap.ArgumentParser(description="The command list of Scratch-To-Python")
-        parser.add_argument('file_path',type=str,default=None,help="Your .sb3 file's name or path.")
-        #parser.add_argument('--mode','-m',dest="mode",choices=['path','name'],default="path",help='The type of <file_path>.')
-        parser.add_argument('--run','-r',dest="run",action="store_true",default=False,help="Run and check the output file.")
-        parser.add_argument('--no-log','-nl',dest="no_log",action="store_true",default=False,help="Do not show all the log.")
-        args=parser.parse_args()
-        fp=args.file_path
-        if fp:
-            from .core import *
-            if args.no_log:
-                log.remove()
+    parser=ap.ArgumentParser(description="The command list of Scratch-To-Python")
+    parser.add_argument('file_path',type=str,default=None,help="Your .sb3 file's name or path.")
+    #parser.add_argument('--mode','-m',dest="mode",choices=['path','name'],default="path",help='The type of <file_path>.')
+    parser.add_argument('--run','-r',dest="run",action="store_true",default=False,help="Run and check the output file.")
+    parser.add_argument('--no-log','-nl',dest="no_log",action="store_true",default=False,help="Do not show all the log.")
+    args=parser.parse_args()
+    fp=args.file_path
+    if fp:
+        from core import *
+        if args.no_log:
+            log.remove()
+        try:
             main(fp,args.run)
-    except SystemExit as e:
-        if int(str(e)) != 0: #防止因SystemExit: 0导致的误报错
-            log.error(f'SystemExit: {e}')
-    except BaseException:
-        exc=traceback.format_exc()
-        log.error('\n'+exc)
-        exit(1)
+        except SystemExit as e:
+            if int(str(e)) != 0: #防止因SystemExit: 0导致的误报错
+                log.error(f'SystemExit: {e}')
+        except BaseException:
+            exc=traceback.format_exc()
+            log.error('\n'+exc)
+            exit(1)

@@ -1,4 +1,4 @@
-from .path import *
+from path import *
 
 log.remove()
 log.add(sys.stdout,colorize=True,format="<level>[{time:YYYY-MM-DD HH:mm:ss}] [{level}]: {message}</level>")
@@ -29,7 +29,7 @@ class CodeMaker:
         self.targets=pj["targets"] #所有角色信息
         self.code.append(SPRITE_INIT_CODE+'\n'+GAME_INIT_CODE)
         self.code.extend([
-            self.fstr(f"pg.display.set_caption('{})",3)
+            self.fstr(f"pg.display.set_caption('{PathTool(pt.prj_path).NAME}')",3)
             ])
         for t in self.targets:
             self.give(t)
