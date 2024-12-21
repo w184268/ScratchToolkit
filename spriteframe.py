@@ -18,14 +18,16 @@ class Sprite(pg.sprite.Sprite): #角色框架
         self.rect = self.image.get_rect()
         self.rect.x=initxy[0],self.rect.y=initxy[1]
 
-    def move(self,dx:float,dy:float):
+    def motion_gotoxy(self,dx:float,dy:float):
         self.rect.move_ip(dx,dy)
-    def move(self,dx:float,dy:float,duration:int|float):
+    def motion_glidesecstoxy(self,dx:float,dy:float,duration:int|float):
         distance=duration * 10
         if dx != self.rect.x:
             dx=distance*pg.math.cos(pg.math.radians(self.direction))
         if dy != self.rect.y:
             dy=distance*pg.math.sin(pg.math.radians(self.direction))
 
-    def turn_right(self, degrees):
+    def motion_turnright(self, degrees):
         self.image = pg.transform.rotate(self.image, degrees)
+    def control_wait(self,s:float):
+        threading.Timer(s,lambda:0).start()

@@ -25,13 +25,18 @@ class CodeMaker:
         :param pj: project.json解析后的dict类型
         """
         self.depth=0 #默认深度
-        self.code=[] #存储代码
+        self.code=[] #存储代码（总）
+        self.sprcode=[] #代码（每个角色）
         self.targets=pj["targets"] #所有角色信息
-        self.code.append(SPRITE_INIT_CODE+'\n'+GAME_INIT_CODE)
+        self.code.append(SPRITE_INIT_CODE)
         self.fstr(f"pg.display.set_caption('{pt.p.NAME}')",3)
         for t in self.targets:
             self.give(t)
-        self.code.extend(["",
+            self.code.extend(self.sprcode)
+            self.sprcode=[] #恢复默认
+        self.code.extend([
+            GAME_INIT_CODE,
+            "",
             "if __name__=='__main__':",
             "   rungame=Game()"
         ])
@@ -67,6 +72,7 @@ class CodeMaker:
             self.rotation:str=tgs['rotationStyle'] #角色的旋转样式，可以是all around（围绕中心点旋转）、left-right（左右旋转）或don't rotate（不旋转）
             self.classname='spr_'+self.name
         self.fstr(mode=2,args=())
+        self.funccode=[] #代码（角色下函数）
         for block in self.blocks.items():
             id,idinfo=block[0],block[1]
             self.add(id,idinfo)
@@ -78,31 +84,41 @@ class CodeMaker:
         except Exception as e:
             log.warning(e)
             self.depth=self.get_nested_depth2(kw)
-        opcode=kw["opcode"]
-        log.debug(f'Converting {type_}(name="{opcode}" ,depth={self.depth})...')
+        self.opcode=kw["opcode"]
+        log.debug(f'Converting {type_}(name="{self.opcode}" ,depth={self.depth})...')
 
-        match opcode: #匹配相应的积木名
-            case "motion_movesteps":
+        match self.opcode: #匹配相应的积木名
+            case "control_wait":
                 self.fstr("")
+            case "control_forever":
+                self.fstr("while True:",3)
+            case "procedures_call":
+                self.fstr(kw["mutation"]["proccode"],1,args=())
             case _:
-                log.error(f'Unknown id "{opcode}"!')
+                log.error(f'Unknown id "{self.opcode}"!')
 
     def return_result(self):
         return '\n'.join(self.code)
     def fstr(self,string="",mode=0,args=()):
         '''
-        mode=0: 调用积木方法，string为方法名，args为传参  
-        mode=1: 创建一个类方法，string为方法名，args为参数名  
+        mode=0: 调用积木方法，string不填，args为传参  
+        mode=1: 创建一个函数，string为方法名，args为参数名  
         mode=2: 创建一个角色，string不填，args为角色信息，按照实际操作  
-        mode=3: 灵活性的，args不填，string可以是其他代码（如判断、循环等） 
+        mode=3: 灵活性的，args不填，string是代码（如判断、循环等）
         '''
+        args=(str(i) for i in args)
         match mode:
             case 0:
-                self.code.append('    '*(self.depth+2)+self.classname+'.'+string+'('+', '.join(args)+')')
+                self.sprcode.append('    '*(self.depth+2)+self.classname+'.'+self.opcode+'('+', '.join(args)+')')
             case 1:
-                self.code.append('    '*(self.depth+2)+"def "+string+'('+', '.join(args)+'):')
+                self.funccode.append('    '*(self.depth+1)+"def "+string+'(self,'+', '.join(args)+'):')
             case 2:
-                self.code.append('    '*(self.depth+2)+self.classname+'=Sprite('+','.join(args)+')')
+                #self.code.append('    '*(self.depth+2)+self.classname+'=Sprite('+','.join(args)+')')
+                self.code.extend([
+                    'class '+self.classname+'(Sprite):',
+                    '    def __init__(self,'+','.join(args)+'):',
+                    '        super().__init__()'
+                    ])
             case 3:
                 self.code.append('    '*(self.depth+2)+string)
 
