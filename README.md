@@ -1,4 +1,4 @@
-<center>
+<div align="center">
 
 # Scratch-To-Pygame
 ![GitHub repo size](https://img.shields.io/github/repo-size/EricDing618/Scratch-To-Pygame)
@@ -8,7 +8,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/EricDing618/Scratch-To-Pygame)
 ![GitHub Created At](https://img.shields.io/github/created-at/EricDing618/Scratch-To-Pygame)  
 
-</center>
+</div>
 
 ## 描述
 - Scratch-To-Pygame（STP）是一个用Python实现的将Scratch转换为Pygame的脚本工具，现已支持`.sb3`文件。
