@@ -10,9 +10,11 @@
 import pygame as pg
 import sys,math,random
 class Sprite(pg.sprite.Sprite): #角色框架
-    def __init__(self, image_file:str, initxy:tuple[float,float], direction:int):
+    def __init__(self, image_file:tuple[str], initxy:tuple[float,float], direction:int):
         super().__init__()
-        self.image = pg.image.load(image_file)
+        self.images={}
+        for i in image_file:
+            self.images[i]=pg.image.load(image_file)
         self.rect = self.image.get_rect()
         self.rect.x=initxy[0],self.rect.y=initxy[1]
 
