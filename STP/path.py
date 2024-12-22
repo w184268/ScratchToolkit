@@ -78,3 +78,16 @@ class UnPackingScratch3File:
                     image.save(p.join((self.cdir,p.NAME+".png")))
                 os.remove(p.join((self.cdir,p.FILE)))
                 log.success(f"Removed {p.join((self.cdir,p.FILE))}.")
+
+class PackingScratch3File:
+    def __init__(self,dp:str):
+        """
+        打包.sb3文件。
+        
+        :param dp: .sb3文件解包后文件夹位置
+        """
+        if os.path.isdir(dp) and 'project.json' in os.listdir(dp):
+            log.debug(f"Packing from {dp}...")
+        else:
+            log.error(f"{dp} is not a dir unpacked from a .sb3 file!")
+            exit(1)
