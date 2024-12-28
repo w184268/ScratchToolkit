@@ -164,7 +164,7 @@ class CodeMaker:
             substack=inputs.get("SUBSTACK",[])
             print(type(current_block))
             if current_block is not None and parentdict:
-                if parentdict['opcode'] != "event_whenflagclicked":
+                if parentdict['opcode'] not in USERSET["blocks"]['ignore']:
                     if 'topLevel' in current_block and current_block['topLevel']:
                         continue
                     if 'parent' in current_block:

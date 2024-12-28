@@ -26,7 +26,6 @@ Scratch-To-Pygame(Beta v0.0.1) is running!
 if __name__=='__main__':
     parser=ap.ArgumentParser(description="The command list of Scratch-To-Python")
     parser.add_argument('file_path',type=str,default=None,help="Your .sb3 file's name or path.")
-    #parser.add_argument('--mode','-m',dest="mode",choices=['path','name'],default="path",help='The type of <file_path>.')
     parser.add_argument('--run','-r',dest="run",action="store_true",default=False,help="Run and check the output file.")
     parser.add_argument('--no-log','-nl',dest="no_log",action="store_true",default=False,help="Do not show all the log.")
     args=parser.parse_args()
