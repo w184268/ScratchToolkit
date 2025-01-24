@@ -26,7 +26,7 @@ class CodeMaker:
         """
         self.depth=0 #默认深度
         self.code=[] #存储代码（总）
-        self.sprcode=[] #代码（每个角色）
+        self.sprcode={} #代码（每个角色）
         self.targets=pj["targets"] #所有角色信息
         self.code.append(SPRITE_INIT_CODE)
         self.fstr(f"pg.display.set_caption('{pt.p.NAME}')",3)
@@ -72,7 +72,7 @@ class CodeMaker:
             self.rotation:str=tgs['rotationStyle'] #角色的旋转样式，可以是all around（围绕中心点旋转）、left-right（左右旋转）或don't rotate（不旋转）
             self.classname='spr_'+self.name
         self.fstr(mode=2,args=())
-        self.funccode=[] #代码（角色下函数）
+        self.funccode={"__init__":[['self'],[]]} #代码（角色下函数）
         for block in self.blocks.items():
             id,idinfo=block[0],block[1]
             self.add(id,idinfo)
@@ -80,10 +80,10 @@ class CodeMaker:
     def add(self,id:str,kw): #积木管理
         type_=f"{self.classname} -> {id}"
         try:
-            self.depth=self.get_nested_depth(kw)
+            self.depth=self.get_nested_depth2(kw)[0]
         except Exception as e:
             log.warning(e)
-            self.depth=self.get_nested_depth2(kw)
+            self.depth=self.get_nested_depth(kw)[0]
         self.opcode=kw["opcode"]
         log.debug(f'Converting {type_}(name="{self.opcode}" ,depth={self.depth})...')
 
@@ -139,7 +139,7 @@ class CodeMaker:
             #print(inputs,substack)
             if parentdict['opcode'] not in USERSET["blocks"]['ignore']:
                 if 'topLevel' in block and block['topLevel']:
-                    return depth
+                    return depth,block
                 if 'parent' in block:
                     if substack:
                         return self.get_nested_depth(parentdict, depth+1)
@@ -176,4 +176,4 @@ class CodeMaker:
                         else:
                             stack.append(parentdict)
                             depth += 1
-        return depth
+        return depth,parentdict
