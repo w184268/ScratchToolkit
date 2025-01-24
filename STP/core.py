@@ -162,7 +162,7 @@ class CodeMaker:
             parentdict=self.blocks.get(current_block['parent'],{})
             inputs=parentdict.get('inputs',{})
             substack=inputs.get("SUBSTACK",[])
-            print(type(current_block))
+            #print(type(current_block))
             if current_block is not None and parentdict:
                 if parentdict['opcode'] not in USERSET["blocks"]['ignore']:
                     if 'topLevel' in current_block and current_block['topLevel']:
@@ -176,4 +176,4 @@ class CodeMaker:
                         else:
                             stack.append(parentdict)
                             depth += 1
-        return depth,parentdict
+        return depth,current_block
