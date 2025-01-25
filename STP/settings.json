@@ -1,7 +1,8 @@
 {
     "blocks":{
         "ignore":[
-            "event_whenflagclicked"
+            "event_whenflagclicked",
+            "procedures_definition"
         ]
     }
 }

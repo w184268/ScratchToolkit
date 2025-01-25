@@ -26,14 +26,14 @@ class CodeMaker:
         """
         self.depth=0 #默认深度
         self.code=[] #存储代码（总）
-        self.sprcode={} #代码（每个角色）
+        self.sprcode:dict[str,dict]={} #代码（每个角色）
         self.targets=pj["targets"] #所有角色信息
         self.code.append(SPRITE_INIT_CODE)
         self.fstr(f"pg.display.set_caption('{pt.p.NAME}')",3)
         for t in self.targets:
             self.give(t)
             self.code.extend(self.sprcode)
-            self.sprcode=[] #恢复默认
+            self.sprcode={} #恢复默认
         self.code.extend([
             GAME_INIT_CODE,
             "",
@@ -80,10 +80,11 @@ class CodeMaker:
     def add(self,id:str,kw): #积木管理
         type_=f"{self.classname} -> {id}"
         try:
-            self.depth=self.get_nested_depth2(kw)[0]
+            self.depth,self.base=self.get_nested_depth2(kw)
+            print(self.get_nested_depth(kw))
         except Exception as e:
             log.warning(e)
-            self.depth=self.get_nested_depth(kw)[0]
+            self.depth,self.base=self.get_nested_depth(kw)
         self.opcode=kw["opcode"]
         log.debug(f'Converting {type_}(name="{self.opcode}" ,depth={self.depth})...')
 
@@ -95,7 +96,7 @@ class CodeMaker:
             case "procedures_call":
                 self.fstr(kw["mutation"]["proccode"],1,args=())
             case _:
-                log.error(f'Unknown id "{self.opcode}"!')
+                log.warning(f'Unknown id "{self.opcode}"!')
 
     def return_result(self):
         return '\n'.join(self.code)
@@ -109,9 +110,12 @@ class CodeMaker:
         args=(str(i) for i in args)
         match mode:
             case 0:
-                self.sprcode.append('    '*(self.depth+2)+self.classname+'.'+self.opcode+'('+', '.join(args)+')')
+                #self.sprcode.append('    '*(self.depth+2)+self.classname+'.'+self.opcode+'('+', '.join(args)+')')
+                if self.base.get('opcode','').startswith('procedures_'):
+                    ...
             case 1:
-                self.funccode.append('    '*(self.depth+1)+"def "+string+'(self,'+', '.join(args)+'):')
+                #self.funccode.append('    '*(self.depth+1)+"def "+string+'(self,'+', '.join(args)+'):')
+                ...
             case 2:
                 #self.code.append('    '*(self.depth+2)+self.classname+'=Sprite('+','.join(args)+')')
                 self.code.extend([
@@ -130,7 +134,7 @@ class CodeMaker:
         :param depth: 当前深度
         :return: 积木块的嵌套深度
         """
-        #print(block,type(block))
+        print(block,type(block))
         parentdict=self.blocks.get(block['parent'],{})
         #print(parentdict)
         if block is not None and parentdict:
@@ -141,14 +145,17 @@ class CodeMaker:
                 if 'topLevel' in block and block['topLevel']:
                     return depth,block
                 if 'parent' in block:
-                    if substack:
+                    if substack: #嵌套类型
                         return self.get_nested_depth(parentdict, depth+1)
-                    elif not block["shadow"]:
+                    elif not block["shadow"]: #不隐藏的纯积木
                         return self.get_nested_depth(parentdict, depth)
                     else:
-                        return self.get_nested_depth(parentdict, depth + 1)
+                        #return self.get_nested_depth(parentdict, depth + 1)
+                        depth,block=None,None
+            else:
+                block={}
 
-        return depth
+        return depth,block
     def get_nested_depth2(self,block,depth=0): #备用方法
         """
         使用迭代方法计算积木块的嵌套深度。
@@ -176,4 +183,6 @@ class CodeMaker:
                         else:
                             stack.append(parentdict)
                             depth += 1
+                else:
+                    current_block={}
         return depth,current_block

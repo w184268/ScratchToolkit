@@ -13,7 +13,7 @@ class PathTool:
            mode = 'j': 只合并路径，fp的类型为tuple[str]。'''
         if fp:
             if isinstance(fp,str): fp=os.path.normpath(fp)
-            log.debug("Using the PathTool...")
+            #log.debug("Using the PathTool...")
             match mode:
                 case 'p':
                     self.DIR=os.path.dirname(fp)
