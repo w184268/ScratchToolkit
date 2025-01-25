@@ -75,8 +75,14 @@ class CodeMaker:
         self.funccode={"__init__":[['self'],[]]} #代码（角色下函数）
         for block in self.blocks.items():
             id,idinfo=block[0],block[1]
-            self.add(id,idinfo)
-            self.depth=0 #恢复默认
+            print(block)
+            if isinstance(idinfo,dict): #一般积木块
+                self.add(id,idinfo)
+                self.depth=0 #恢复默认
+            else: #变量、常量、列表类型
+                self.var_and_list(id,idinfo)
+    def var_and_list(self,id:str,kw): #变量、常量、列表管理
+        ...
     def add(self,id:str,kw): #积木管理
         type_=f"{self.classname} -> {id}"
         try:
@@ -126,7 +132,7 @@ class CodeMaker:
             case 3:
                 self.code.append('    '*(self.depth+2)+string)
 
-    def get_nested_depth(self,block,depth=0):
+    def get_nested_depth(self,block:dict,depth=0):
         """
         递归函数，用于计算积木块的嵌套深度。
         
@@ -135,14 +141,14 @@ class CodeMaker:
         :return: 积木块的嵌套深度
         """
         print(block,type(block))
-        parentdict=self.blocks.get(block['parent'],{})
+        parentdict=self.blocks.get(block.get('parent',''),{})
         #print(parentdict)
         if block is not None and parentdict:
             inputs=parentdict.get('inputs',{})
             substack=inputs.get("SUBSTACK",[])
             #print(inputs,substack)
             if parentdict['opcode'] not in USERSET["blocks"]['ignore']:
-                if 'topLevel' in block and block['topLevel']:
+                if block.get('topLevel',False):
                     return depth,block
                 if 'parent' in block:
                     if substack: #嵌套类型
@@ -151,7 +157,7 @@ class CodeMaker:
                         return self.get_nested_depth(parentdict, depth)
                     else:
                         #return self.get_nested_depth(parentdict, depth + 1)
-                        depth,block=None,None
+                        return self.get_nested_depth({}, depth+1)
             else:
                 block={}
 
@@ -163,16 +169,16 @@ class CodeMaker:
         :param block: 当前积木块
         :return: 积木块的嵌套深度
         """
-        stack = [block]   
+        stack:list[dict] = [block] 
         while stack:
             current_block = stack.pop()
-            parentdict=self.blocks.get(current_block['parent'],{})
+            parentdict=self.blocks.get(current_block.get('parent',''),{})
             inputs=parentdict.get('inputs',{})
             substack=inputs.get("SUBSTACK",[])
             #print(type(current_block))
             if current_block is not None and parentdict:
                 if parentdict['opcode'] not in USERSET["blocks"]['ignore']:
-                    if 'topLevel' in current_block and current_block['topLevel']:
+                    if current_block.get('topLevel',False):
                         continue
                     if 'parent' in current_block:
                         if substack:
@@ -181,7 +187,8 @@ class CodeMaker:
                         elif not current_block["shadow"]:
                             continue
                         else:
-                            stack.append(parentdict)
+                            #stack.append(parentdict)
+                            stack.append({})
                             depth += 1
                 else:
                     current_block={}

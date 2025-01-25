@@ -18,14 +18,15 @@
 ## 快速使用
 在本仓库目录下使用`cmd`执行：
 ```bash
-python stp.py <your .sb3 file path>
+python ./STP/stp.py <your .sb3 file path>
 ```
 更多使用方法：
 - `-h`和`--help`：显示命令帮助列表。
 - `-r`和`--run`：转换完毕后自动执行output文件。
 - `-nl`和`--no-log`：不显示输出日志。
-
-## 第三方库&软件
+## 将不考虑以下功能：
+- 变量、列表显示功能
+# 第三方库&软件
 库：
 - loguru==0.7.2
 - cairosvg==2.7.1

@@ -1,0 +1,30 @@
+name: "报告bug"
+description: "包括但不限于：报错、结果不符合预期"
+labels: [· Bug]
+body:
+- type: checkboxes
+  id: "yml-1"
+  attributes:
+    label: "检查项"
+    description: "请逐个检查下列项目，并勾选确认。"
+    options:
+    - label: "**我所使用的是Scratch3/Turbowarp。**"
+      required: true
+    - label: "**我没有用到任何扩展。"
+      required: false
+    - label: "我已在 [Issues 页面](https://github.com/EricDing618/ScratchToolkit/issues?q=is%3Aissue+) 中搜索，确认了这一 Bug 未被提交过。"
+      required: true
+- type: textarea
+  id: "yml-2"
+  attributes:
+    label: 描述
+    description: "详细描述操作还原步骤。"
+  validations:
+    required: true
+- type: textarea
+  id: "yml-3"
+  attributes:
+    label: Python文件输出日志
+    description: "loguru输出的所有日志"
+  validations:
+    required: true
