@@ -7,18 +7,16 @@ class CodeParser:
     def __init__(self,last:UnPackingScratch3File):
         """
         转换核心，解析project.json并生成python代码。
-        
-        :param pj: project.json解析后的dict类型
         """
         self.cdir,self.outdir=last.cdir,last.outdir
         self.t=PathTool(self.cdir)
         with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8') as f: #导入project.json
             self.pj=json.load(f)
         self.last=last
-        self.mod:list[str]=[] #根据情况导入所需要的库
+        self.mod={"internal":[],"third-party":[]} #根据情况导入所需要的库
         self.var=dict() #存储变量
         self.array=dict() #存储列表
-        
+
         self.depth=0 #默认深度
         self.code=[] #存储代码（总）
         self.sprcode:dict[str,dict]={} #代码（每个角色）
@@ -115,7 +113,7 @@ class CodeParser:
         match mode:
             case 0:
                 #self.sprcode.append('    '*(self.depth+2)+self.classname+'.'+self.opcode+'('+', '.join(args)+')')
-                if self.base.get('opcode','').startswith('procedures_'):
+                if self.base.get('opcode','').startswith('procedures_'): #在某个函数下
                     ...
             case 1:
                 #self.funccode.append('    '*(self.depth+1)+"def "+string+'(self,'+', '.join(args)+'):')
