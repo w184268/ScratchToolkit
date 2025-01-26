@@ -15,6 +15,7 @@ Scratch-To-Pygame(Beta v0.0.1) is running!
     info=UnPackingScratch3File(fp)
     info.convert()
     parser=CodeParser(info)
+    parser.write_result()
     log.success(f"Converted successfully (at {parser.outpyfile}) .")
     if run:
         log.debug('Trying to run the output file...')

@@ -5,31 +5,26 @@ log.add(sys.stdout,colorize=True,format="<level>[{time:YYYY-MM-DD HH:mm:ss}] [{l
 
 class CodeParser: #解析project.json
     def __init__(self,last:UnPackingScratch3File):
-        self.mod:list[str]=[] #根据情况导入所需要的库
-        self.var=dict() #存储变量
-        self.array=dict() #存储列表
-        self.cdir,self.outdir=last.cdir,last.outdir
-        self.t=PathTool(self.cdir)
-        with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8') as f: #导入project.json
-            self.pj=json.load(f)
-        self.make=CodeMaker(self.pj,last)
-        self.outpyfile=self.t.join((self.outdir,last.p.NAME+".py"))
-        with open(self.outpyfile,'w',encoding='utf-8') as f:
-            f.write(self.make.return_result())
-
-class CodeMaker:
-    def __init__(self,pj:dict,pt:UnPackingScratch3File):
         """
         转换核心，生成python代码。
         
         :param pj: project.json解析后的dict类型
         """
+        self.t=PathTool(self.cdir)
+        with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8') as f: #导入project.json
+            self.pj=json.load(f)
+        self.last=last
+        self.mod:list[str]=[] #根据情况导入所需要的库
+        self.var=dict() #存储变量
+        self.array=dict() #存储列表
+        self.cdir,self.outdir=last.cdir,last.outdir
+        
         self.depth=0 #默认深度
         self.code=[] #存储代码（总）
         self.sprcode:dict[str,dict]={} #代码（每个角色）
-        self.targets=pj["targets"] #所有角色信息
+        self.targets=self.pj["targets"] #所有角色信息
         self.code.append(SPRITE_INIT_CODE)
-        self.fstr(f"pg.display.set_caption('{pt.p.NAME}')",3)
+        self.fstr(f"pg.display.set_caption('{last.p.NAME}')",3)
         for t in self.targets:
             self.give(t)
             self.code.extend(self.sprcode)
@@ -105,8 +100,10 @@ class CodeMaker:
                 if self.opcode not in USERSET["blocks"]['ignore']:
                     log.warning(f'Unknown id "{self.opcode}"!')
 
-    def return_result(self):
-        return '\n'.join(self.code)
+    def write_result(self):
+        self.outpyfile=self.t.join((self.outdir,self.last.p.NAME+".py"))
+        with open(self.outpyfile,'w',encoding='utf-8') as f:
+            f.write('\n'.join(self.code))
     def fstr(self,string="",mode=0,args=()):
         '''
         mode=0: 调用积木方法，string不填，args为传参  
