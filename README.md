@@ -24,8 +24,11 @@ python ./STP/stp.py <your .sb3 file path>
 - `-h`和`--help`：显示命令帮助列表。
 - `-r`和`--run`：转换完毕后自动执行output文件。
 - `-nl`和`--no-log`：不显示输出日志。
-## 将不考虑以下功能：
+## 将不考虑支持以下功能：
 - 变量、列表显示功能
+- “说”“思考”“询问...并等待”显示功能
+- 除画笔、音乐以外的Scratch3扩展功能
+（注：你可以提交建议添加这些功能的Issue，但[EricDing618](https://github.com/EricDing618)可能不会添加，需要等待他人的PR。）
 # 第三方库&软件
 库：
 - loguru==0.7.2

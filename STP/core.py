@@ -72,10 +72,10 @@ class CodeMaker:
             self.rotation:str=tgs['rotationStyle'] #角色的旋转样式，可以是all around（围绕中心点旋转）、left-right（左右旋转）或don't rotate（不旋转）
             self.classname='spr_'+self.name
         self.fstr(mode=2,args=())
-        self.funccode={"__init__":[['self'],[]]} #代码（角色下函数）
+        self.funccode={"__init__":[[],[]]} #代码（角色下函数）
         for block in self.blocks.items():
-            id,idinfo=block[0],block[1]
-            print(block)
+            id,idinfo=block
+            #print(block)
             if isinstance(idinfo,dict): #一般积木块
                 self.add(id,idinfo)
                 self.depth=0 #恢复默认
@@ -87,12 +87,12 @@ class CodeMaker:
         type_=f"{self.classname} -> {id}"
         try:
             self.depth,self.base=self.get_nested_depth2(kw)
-            print(self.get_nested_depth(kw))
+            #print(self.get_nested_depth(kw))
         except Exception as e:
             log.warning(e)
             self.depth,self.base=self.get_nested_depth(kw)
         self.opcode=kw["opcode"]
-        log.debug(f'Converting {type_}(name="{self.opcode}" ,depth={self.depth})...')
+        log.debug(f'Converting {type_} (name="{self.opcode}" ,depth={self.depth})...')
 
         match self.opcode: #匹配相应的积木名
             case "control_wait":
@@ -102,7 +102,8 @@ class CodeMaker:
             case "procedures_call":
                 self.fstr(kw["mutation"]["proccode"],1,args=())
             case _:
-                log.warning(f'Unknown id "{self.opcode}"!')
+                if self.opcode not in USERSET["blocks"]['ignore']:
+                    log.warning(f'Unknown id "{self.opcode}"!')
 
     def return_result(self):
         return '\n'.join(self.code)
@@ -173,23 +174,25 @@ class CodeMaker:
         while stack:
             current_block = stack.pop()
             parentdict=self.blocks.get(current_block.get('parent',''),{})
-            inputs=parentdict.get('inputs',{})
+            inputs:dict=parentdict.get('inputs',{})
             substack=inputs.get("SUBSTACK",[])
+            substackN=inputs.get("")
             #print(type(current_block))
             if current_block is not None and parentdict:
                 if parentdict['opcode'] not in USERSET["blocks"]['ignore']:
                     if current_block.get('topLevel',False):
                         continue
                     if 'parent' in current_block:
-                        if substack:
+                        if self.opcode in substack:
                             stack.append(parentdict)
                             depth += 1
                         elif not current_block["shadow"]:
                             continue
                         else:
+                            print(current_block,parentdict)
                             #stack.append(parentdict)
                             stack.append({})
-                            depth += 1
+                            #depth += 1
                 else:
                     current_block={}
         return depth,current_block
