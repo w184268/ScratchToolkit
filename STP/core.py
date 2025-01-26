@@ -3,13 +3,14 @@ from path import *
 log.remove()
 log.add(sys.stdout,colorize=True,format="<level>[{time:YYYY-MM-DD HH:mm:ss}] [{level}]: {message}</level>")
 
-class CodeParser: #解析project.json
+class CodeParser:
     def __init__(self,last:UnPackingScratch3File):
         """
-        转换核心，生成python代码。
+        转换核心，解析project.json并生成python代码。
         
         :param pj: project.json解析后的dict类型
         """
+        self.cdir,self.outdir=last.cdir,last.outdir
         self.t=PathTool(self.cdir)
         with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8') as f: #导入project.json
             self.pj=json.load(f)
@@ -17,7 +18,6 @@ class CodeParser: #解析project.json
         self.mod:list[str]=[] #根据情况导入所需要的库
         self.var=dict() #存储变量
         self.array=dict() #存储列表
-        self.cdir,self.outdir=last.cdir,last.outdir
         
         self.depth=0 #默认深度
         self.code=[] #存储代码（总）
