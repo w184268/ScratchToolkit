@@ -23,6 +23,7 @@ Scratch-To-Pygame(Beta v0.0.1) is running!
             log.error('There is something wrong above.')
         else:
             log.success('The file has no wrong.')
+    log.debug('The log was ')
 
 if __name__=='__main__':
     parser=ap.ArgumentParser(description="The command list of Scratch-To-Python")

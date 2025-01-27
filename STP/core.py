@@ -1,8 +1,8 @@
 from path import *
 
 log.remove()
-log.add(sys.stdout,colorize=True,format="<level>[{time:YYYY-MM-DD HH:mm:ss}] [{level}]: {message}</level>")
-
+log.add(sys.stdout,colorize=True,format=LOGFORMAT)
+log.add(LOGPATH,format=LOGFORMAT,retention=USERSET['log']['retention'])
 class CodeParser:
     def __init__(self,last:UnPackingScratch3File):
         """
@@ -67,26 +67,26 @@ class CodeParser:
         self.fstr(mode=2,args=())
         self.funccode={"__init__":[[],[]]} #代码（角色下函数）
         for block in self.blocks.items():
-            id,idinfo=block
+            self.id,idinfo=block
             #print(block)
             if isinstance(idinfo,dict): #一般积木块
-                self.add(id,idinfo)
+                self.add(self.id,idinfo)
                 self.depth=0 #恢复默认
             else: #变量、常量、列表类型
-                self.var_and_list(id,idinfo)
+                self.var_and_list(self.id,idinfo)
     def var_and_list(self,id:str,kw): #变量、常量、列表管理
         ...
     def add(self,id:str,kw): #积木管理
         type_=f"{self.classname} -> {id}"
         try:
-            self.depth,self.base=self.get_nested_depth2(kw)
+            self.depth,self.base=self.get_nested_depth(kw)
             #print(self.get_nested_depth(kw))
         except Exception as e:
             log.warning(e)
-            self.depth,self.base=self.get_nested_depth(kw)
+            self.depth,self.base=self.get_nested_depth2(kw)
         self.opcode=kw["opcode"]
         log.debug(f'Converting {type_} (name="{self.opcode}" ,depth={self.depth})...')
-
+        print(self.base)
         match self.opcode: #匹配相应的积木名
             case "control_wait":
                 self.fstr("")
@@ -136,26 +136,26 @@ class CodeParser:
         :param depth: 当前深度
         :return: 积木块的嵌套深度
         """
-        print(block,type(block))
-        parentdict=self.blocks.get(block.get('parent',''),{})
-        #print(parentdict)
-        if block is not None and parentdict:
-            inputs=parentdict.get('inputs',{})
-            substack=inputs.get("SUBSTACK",[])
-            #print(inputs,substack)
-            if parentdict['opcode'] not in USERSET["blocks"]['ignore']:
-                if block.get('topLevel',False):
-                    return depth,block
-                if 'parent' in block:
-                    if substack: #嵌套类型
-                        return self.get_nested_depth(parentdict, depth+1)
-                    elif not block["shadow"]: #不隐藏的纯积木
-                        return self.get_nested_depth(parentdict, depth)
-                    else:
-                        #return self.get_nested_depth(parentdict, depth + 1)
-                        return self.get_nested_depth({}, depth+1)
-            else:
-                block={}
+        #print(block,type(block))
+        pid=block.get('parent')
+        if pid:
+            parentdict=self.blocks.get(pid,{})
+            #print(parentdict)
+            if parentdict:
+                inputs=parentdict.get('inputs',{})
+                substack=inputs.get("SUBSTACK",[])
+                #print(inputs,substack)
+                if parentdict['opcode'] not in USERSET["blocks"]['ignore']:
+                    if not block.get('topLevel'):
+                        if self.id in substack: #嵌套类型
+                            return self.get_nested_depth(parentdict, depth+1)
+                        elif not block["shadow"]: #不隐藏的纯积木
+                            return self.get_nested_depth(parentdict, depth)
+                        else:
+                            #return self.get_nested_depth(parentdict, depth + 1)
+                            return self.get_nested_depth(parentdict, depth+1)
+                '''else:
+                    block={}'''
 
         return depth,block
     def get_nested_depth2(self,block,depth=0): #备用方法
@@ -178,16 +178,16 @@ class CodeParser:
                     if current_block.get('topLevel',False):
                         continue
                     if 'parent' in current_block:
-                        if self.opcode in substack:
+                        if self.id in substack:
                             stack.append(parentdict)
                             depth += 1
                         elif not current_block["shadow"]:
                             continue
                         else:
                             print(current_block,parentdict)
-                            #stack.append(parentdict)
-                            stack.append({})
-                            #depth += 1
+                            #stack.append({})
+                            stack.append(parentdict)
+                            depth += 1
                 else:
                     current_block={}
         return depth,current_block

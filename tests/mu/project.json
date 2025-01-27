@@ -1,0 +1,1538 @@
+{
+    "targets": [
+        {
+            "isStage": true,
+            "name": "Stage",
+            "variables": {
+                "8e|%;T}RvvV-pxnqxL)O": [
+                    "间距",
+                    5
+                ],
+                "),}:w;yB@Dkc1Qj*IZR?": [
+                    "数量",
+                    50
+                ],
+                "nJlUFxY-66qhJ1lx4K`3": [
+                    "遍历编号",
+                    51
+                ]
+            },
+            "lists": {
+                "JRP58$%Acy-f|^+C;irh": [
+                    "声波",
+                    [
+                        3,
+                        4,
+                        5,
+                        5,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2,
+                        2
+                    ]
+                ]
+            },
+            "broadcasts": {},
+            "blocks": {
+                "Q": {
+                    "opcode": "event_whenflagclicked",
+                    "next": "k",
+                    "parent": null,
+                    "inputs": {},
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": true,
+                    "x": 160,
+                    "y": -73
+                },
+                "l": {
+                    "opcode": "sound_playuntildone",
+                    "next": null,
+                    "parent": "k",
+                    "inputs": {
+                        "SOUND_MENU": [
+                            1,
+                            "R"
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "R": {
+                    "opcode": "sound_sounds_menu",
+                    "next": null,
+                    "parent": "l",
+                    "inputs": {},
+                    "fields": {
+                        "SOUND_MENU": [
+                            "His Theme",
+                            null
+                        ]
+                    },
+                    "shadow": true,
+                    "topLevel": false
+                },
+                "k": {
+                    "opcode": "control_forever",
+                    "next": null,
+                    "parent": "Q",
+                    "inputs": {
+                        "SUBSTACK": [
+                            2,
+                            "l"
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "m": {
+                    "opcode": "procedures_definition",
+                    "next": "S",
+                    "parent": null,
+                    "inputs": {
+                        "custom_block": [
+                            1,
+                            "b"
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": true,
+                    "x": 161,
+                    "y": 164
+                },
+                "b": {
+                    "opcode": "procedures_prototype",
+                    "next": null,
+                    "parent": "m",
+                    "inputs": {
+                        "*.F%cTNr,FG5C#ulLO1.": [
+                            1,
+                            "T"
+                        ],
+                        "G69}WM:GL5gAXb{cahzd": [
+                            1,
+                            "U"
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": true,
+                    "topLevel": false,
+                    "mutation": {
+                        "tagName": "mutation",
+                        "children": [],
+                        "proccode": "test %s %b label text",
+                        "argumentids": "[\"*.F%cTNr,FG5C#ulLO1.\",\"G69}WM:GL5gAXb{cahzd\"]",
+                        "argumentnames": "[\"number or text\",\"boolean\"]",
+                        "argumentdefaults": "[\"\",\"false\"]",
+                        "warp": "false"
+                    }
+                },
+                "T": {
+                    "opcode": "argument_reporter_string_number",
+                    "next": null,
+                    "parent": "b",
+                    "inputs": {},
+                    "fields": {
+                        "VALUE": [
+                            "number or text",
+                            null
+                        ]
+                    },
+                    "shadow": true,
+                    "topLevel": false
+                },
+                "U": {
+                    "opcode": "argument_reporter_boolean",
+                    "next": null,
+                    "parent": "b",
+                    "inputs": {},
+                    "fields": {
+                        "VALUE": [
+                            "boolean",
+                            null
+                        ]
+                    },
+                    "shadow": true,
+                    "topLevel": false
+                },
+                "S": {
+                    "opcode": "control_wait",
+                    "next": null,
+                    "parent": "m",
+                    "inputs": {
+                        "DURATION": [
+                            1,
+                            [
+                                5,
+                                "2"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                }
+            },
+            "comments": {},
+            "currentCostume": 0,
+            "costumes": [
+                {
+                    "name": "splash",
+                    "bitmapResolution": 1,
+                    "dataFormat": "svg",
+                    "assetId": "84fdd188ae545171c558348455306b9e",
+                    "md5ext": "84fdd188ae545171c558348455306b9e.svg",
+                    "rotationCenterX": 247.5,
+                    "rotationCenterY": 185.5
+                }
+            ],
+            "sounds": [
+                {
+                    "name": "His Theme",
+                    "assetId": "16098798268aae19354b705258cfc680",
+                    "dataFormat": "wav",
+                    "rate": 48000,
+                    "sampleCount": 6016383,
+                    "md5ext": "16098798268aae19354b705258cfc680.wav"
+                }
+            ],
+            "volume": 100,
+            "layerOrder": 0,
+            "tempo": 60,
+            "videoTransparency": 50,
+            "videoState": "on",
+            "textToSpeechLanguage": null
+        },
+        {
+            "isStage": false,
+            "name": "角色1",
+            "variables": {},
+            "lists": {},
+            "broadcasts": {},
+            "blocks": {
+                "V": {
+                    "opcode": "event_whenflagclicked",
+                    "next": "n",
+                    "parent": null,
+                    "inputs": {},
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": true,
+                    "x": 378,
+                    "y": 64
+                },
+                "n": {
+                    "opcode": "procedures_call",
+                    "next": "o",
+                    "parent": "V",
+                    "inputs": {},
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false,
+                    "mutation": {
+                        "tagName": "mutation",
+                        "children": [],
+                        "proccode": "初始化",
+                        "argumentids": "[]",
+                        "warp": "true"
+                    }
+                },
+                "o": {
+                    "opcode": "control_forever",
+                    "next": null,
+                    "parent": "n",
+                    "inputs": {
+                        "SUBSTACK": [
+                            2,
+                            "p"
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "p": {
+                    "opcode": "pen_clear",
+                    "next": "W",
+                    "parent": "o",
+                    "inputs": {},
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "W": {
+                    "opcode": "procedures_call",
+                    "next": null,
+                    "parent": "p",
+                    "inputs": {},
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false,
+                    "mutation": {
+                        "tagName": "mutation",
+                        "children": [],
+                        "proccode": "显示声波",
+                        "argumentids": "[]",
+                        "warp": "true"
+                    }
+                },
+                "q": {
+                    "opcode": "procedures_definition",
+                    "next": "r",
+                    "parent": null,
+                    "inputs": {
+                        "custom_block": [
+                            1,
+                            "X"
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": true,
+                    "x": 634,
+                    "y": 64
+                },
+                "X": {
+                    "opcode": "procedures_prototype",
+                    "next": null,
+                    "parent": "q",
+                    "inputs": {},
+                    "fields": {},
+                    "shadow": true,
+                    "topLevel": false,
+                    "mutation": {
+                        "tagName": "mutation",
+                        "children": [],
+                        "proccode": "显示声波",
+                        "argumentids": "[]",
+                        "argumentnames": "[]",
+                        "argumentdefaults": "[]",
+                        "warp": "true"
+                    }
+                },
+                "r": {
+                    "opcode": "data_setvariableto",
+                    "next": "a",
+                    "parent": "q",
+                    "inputs": {
+                        "VALUE": [
+                            3,
+                            [
+                                12,
+                                "数量",
+                                "),}:w;yB@Dkc1Qj*IZR?"
+                            ],
+                            [
+                                10,
+                                "2"
+                            ]
+                        ]
+                    },
+                    "fields": {
+                        "VARIABLE": [
+                            "遍历编号",
+                            "nJlUFxY-66qhJ1lx4K`3"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "a": {
+                    "opcode": "control_repeat",
+                    "next": "c",
+                    "parent": "r",
+                    "inputs": {
+                        "TIMES": [
+                            3,
+                            "Y",
+                            [
+                                6,
+                                "10"
+                            ]
+                        ],
+                        "SUBSTACK": [
+                            2,
+                            "d"
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "Y": {
+                    "opcode": "operator_subtract",
+                    "next": null,
+                    "parent": "a",
+                    "inputs": {
+                        "NUM1": [
+                            3,
+                            [
+                                12,
+                                "数量",
+                                "),}:w;yB@Dkc1Qj*IZR?"
+                            ],
+                            [
+                                4,
+                                ""
+                            ]
+                        ],
+                        "NUM2": [
+                            1,
+                            [
+                                4,
+                                "1"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "d": {
+                    "opcode": "data_replaceitemoflist",
+                    "next": "Z",
+                    "parent": "a",
+                    "inputs": {
+                        "INDEX": [
+                            3,
+                            [
+                                12,
+                                "遍历编号",
+                                "nJlUFxY-66qhJ1lx4K`3"
+                            ],
+                            [
+                                7,
+                                "1"
+                            ]
+                        ],
+                        "ITEM": [
+                            3,
+                            "s",
+                            [
+                                10,
+                                "东西"
+                            ]
+                        ]
+                    },
+                    "fields": {
+                        "LIST": [
+                            "声波",
+                            "JRP58$%Acy-f|^+C;irh"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "s": {
+                    "opcode": "data_itemoflist",
+                    "next": null,
+                    "parent": "d",
+                    "inputs": {
+                        "INDEX": [
+                            3,
+                            "!",
+                            [
+                                7,
+                                "1"
+                            ]
+                        ]
+                    },
+                    "fields": {
+                        "LIST": [
+                            "声波",
+                            "JRP58$%Acy-f|^+C;irh"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "!": {
+                    "opcode": "operator_subtract",
+                    "next": null,
+                    "parent": "s",
+                    "inputs": {
+                        "NUM1": [
+                            3,
+                            [
+                                12,
+                                "遍历编号",
+                                "nJlUFxY-66qhJ1lx4K`3"
+                            ],
+                            [
+                                4,
+                                ""
+                            ]
+                        ],
+                        "NUM2": [
+                            1,
+                            [
+                                4,
+                                "1"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "Z": {
+                    "opcode": "data_changevariableby",
+                    "next": null,
+                    "parent": "d",
+                    "inputs": {
+                        "VALUE": [
+                            1,
+                            [
+                                4,
+                                "-1"
+                            ]
+                        ]
+                    },
+                    "fields": {
+                        "VARIABLE": [
+                            "遍历编号",
+                            "nJlUFxY-66qhJ1lx4K`3"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "c": {
+                    "opcode": "data_replaceitemoflist",
+                    "next": "e",
+                    "parent": "a",
+                    "inputs": {
+                        "INDEX": [
+                            1,
+                            [
+                                7,
+                                "1"
+                            ]
+                        ],
+                        "ITEM": [
+                            3,
+                            "#",
+                            [
+                                10,
+                                "东西"
+                            ]
+                        ]
+                    },
+                    "fields": {
+                        "LIST": [
+                            "声波",
+                            "JRP58$%Acy-f|^+C;irh"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "#": {
+                    "opcode": "sensing_loudness",
+                    "next": null,
+                    "parent": "c",
+                    "inputs": {},
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "e": {
+                    "opcode": "motion_setx",
+                    "next": "t",
+                    "parent": "c",
+                    "inputs": {
+                        "X": [
+                            3,
+                            "u",
+                            [
+                                4,
+                                "0"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "u": {
+                    "opcode": "operator_subtract",
+                    "next": null,
+                    "parent": "e",
+                    "inputs": {
+                        "NUM1": [
+                            1,
+                            [
+                                4,
+                                "0"
+                            ]
+                        ],
+                        "NUM2": [
+                            3,
+                            "v",
+                            [
+                                4,
+                                ""
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "v": {
+                    "opcode": "operator_divide",
+                    "next": null,
+                    "parent": "u",
+                    "inputs": {
+                        "NUM1": [
+                            3,
+                            "%",
+                            [
+                                4,
+                                ""
+                            ]
+                        ],
+                        "NUM2": [
+                            1,
+                            [
+                                4,
+                                "2"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "%": {
+                    "opcode": "operator_multiply",
+                    "next": null,
+                    "parent": "v",
+                    "inputs": {
+                        "NUM1": [
+                            3,
+                            [
+                                12,
+                                "数量",
+                                "),}:w;yB@Dkc1Qj*IZR?"
+                            ],
+                            [
+                                4,
+                                ""
+                            ]
+                        ],
+                        "NUM2": [
+                            3,
+                            [
+                                12,
+                                "间距",
+                                "8e|%;T}RvvV-pxnqxL)O"
+                            ],
+                            [
+                                4,
+                                ""
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "t": {
+                    "opcode": "data_setvariableto",
+                    "next": "w",
+                    "parent": "e",
+                    "inputs": {
+                        "VALUE": [
+                            1,
+                            [
+                                10,
+                                "1"
+                            ]
+                        ]
+                    },
+                    "fields": {
+                        "VARIABLE": [
+                            "遍历编号",
+                            "nJlUFxY-66qhJ1lx4K`3"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "w": {
+                    "opcode": "control_repeat",
+                    "next": null,
+                    "parent": "t",
+                    "inputs": {
+                        "TIMES": [
+                            3,
+                            [
+                                12,
+                                "数量",
+                                "),}:w;yB@Dkc1Qj*IZR?"
+                            ],
+                            [
+                                6,
+                                "10"
+                            ]
+                        ],
+                        "SUBSTACK": [
+                            2,
+                            "x"
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "x": {
+                    "opcode": "pen_setPenSizeTo",
+                    "next": "y",
+                    "parent": "w",
+                    "inputs": {
+                        "SIZE": [
+                            1,
+                            [
+                                4,
+                                "6"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "y": {
+                    "opcode": "pen_setPenColorToColor",
+                    "next": "f",
+                    "parent": "x",
+                    "inputs": {
+                        "COLOR": [
+                            1,
+                            [
+                                9,
+                                "#000000"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "f": {
+                    "opcode": "motion_sety",
+                    "next": "z",
+                    "parent": "y",
+                    "inputs": {
+                        "Y": [
+                            3,
+                            "A",
+                            [
+                                4,
+                                "0"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "A": {
+                    "opcode": "operator_subtract",
+                    "next": null,
+                    "parent": "f",
+                    "inputs": {
+                        "NUM1": [
+                            1,
+                            [
+                                4,
+                                "0"
+                            ]
+                        ],
+                        "NUM2": [
+                            3,
+                            "B",
+                            [
+                                4,
+                                ""
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "B": {
+                    "opcode": "operator_multiply",
+                    "next": null,
+                    "parent": "A",
+                    "inputs": {
+                        "NUM1": [
+                            3,
+                            "(",
+                            [
+                                4,
+                                ""
+                            ]
+                        ],
+                        "NUM2": [
+                            1,
+                            [
+                                4,
+                                "3"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "(": {
+                    "opcode": "data_itemoflist",
+                    "next": null,
+                    "parent": "B",
+                    "inputs": {
+                        "INDEX": [
+                            3,
+                            [
+                                12,
+                                "遍历编号",
+                                "nJlUFxY-66qhJ1lx4K`3"
+                            ],
+                            [
+                                7,
+                                "1"
+                            ]
+                        ]
+                    },
+                    "fields": {
+                        "LIST": [
+                            "声波",
+                            "JRP58$%Acy-f|^+C;irh"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "z": {
+                    "opcode": "pen_penDown",
+                    "next": "g",
+                    "parent": "f",
+                    "inputs": {},
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "g": {
+                    "opcode": "motion_sety",
+                    "next": "C",
+                    "parent": "z",
+                    "inputs": {
+                        "Y": [
+                            3,
+                            "D",
+                            [
+                                4,
+                                "0"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "D": {
+                    "opcode": "operator_multiply",
+                    "next": null,
+                    "parent": "g",
+                    "inputs": {
+                        "NUM1": [
+                            3,
+                            ")",
+                            [
+                                4,
+                                ""
+                            ]
+                        ],
+                        "NUM2": [
+                            1,
+                            [
+                                4,
+                                "3"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                ")": {
+                    "opcode": "data_itemoflist",
+                    "next": null,
+                    "parent": "D",
+                    "inputs": {
+                        "INDEX": [
+                            3,
+                            [
+                                12,
+                                "遍历编号",
+                                "nJlUFxY-66qhJ1lx4K`3"
+                            ],
+                            [
+                                7,
+                                "1"
+                            ]
+                        ]
+                    },
+                    "fields": {
+                        "LIST": [
+                            "声波",
+                            "JRP58$%Acy-f|^+C;irh"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "C": {
+                    "opcode": "pen_penUp",
+                    "next": "E",
+                    "parent": "g",
+                    "inputs": {},
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "E": {
+                    "opcode": "pen_setPenSizeTo",
+                    "next": "F",
+                    "parent": "C",
+                    "inputs": {
+                        "SIZE": [
+                            1,
+                            [
+                                4,
+                                "3"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "F": {
+                    "opcode": "pen_setPenColorToColor",
+                    "next": "h",
+                    "parent": "E",
+                    "inputs": {
+                        "COLOR": [
+                            1,
+                            [
+                                9,
+                                "#ffaeae"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "h": {
+                    "opcode": "motion_sety",
+                    "next": "G",
+                    "parent": "F",
+                    "inputs": {
+                        "Y": [
+                            3,
+                            "H",
+                            [
+                                4,
+                                "0"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "H": {
+                    "opcode": "operator_subtract",
+                    "next": null,
+                    "parent": "h",
+                    "inputs": {
+                        "NUM1": [
+                            1,
+                            [
+                                4,
+                                "0"
+                            ]
+                        ],
+                        "NUM2": [
+                            3,
+                            "I",
+                            [
+                                4,
+                                ""
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "I": {
+                    "opcode": "operator_multiply",
+                    "next": null,
+                    "parent": "H",
+                    "inputs": {
+                        "NUM1": [
+                            3,
+                            "*",
+                            [
+                                4,
+                                ""
+                            ]
+                        ],
+                        "NUM2": [
+                            1,
+                            [
+                                4,
+                                "3"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "*": {
+                    "opcode": "data_itemoflist",
+                    "next": null,
+                    "parent": "I",
+                    "inputs": {
+                        "INDEX": [
+                            3,
+                            [
+                                12,
+                                "遍历编号",
+                                "nJlUFxY-66qhJ1lx4K`3"
+                            ],
+                            [
+                                7,
+                                "1"
+                            ]
+                        ]
+                    },
+                    "fields": {
+                        "LIST": [
+                            "声波",
+                            "JRP58$%Acy-f|^+C;irh"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "G": {
+                    "opcode": "pen_penDown",
+                    "next": "i",
+                    "parent": "h",
+                    "inputs": {},
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "i": {
+                    "opcode": "motion_sety",
+                    "next": "J",
+                    "parent": "G",
+                    "inputs": {
+                        "Y": [
+                            3,
+                            "K",
+                            [
+                                4,
+                                "0"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "K": {
+                    "opcode": "operator_multiply",
+                    "next": null,
+                    "parent": "i",
+                    "inputs": {
+                        "NUM1": [
+                            3,
+                            "+",
+                            [
+                                4,
+                                ""
+                            ]
+                        ],
+                        "NUM2": [
+                            1,
+                            [
+                                4,
+                                "3"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "+": {
+                    "opcode": "data_itemoflist",
+                    "next": null,
+                    "parent": "K",
+                    "inputs": {
+                        "INDEX": [
+                            3,
+                            [
+                                12,
+                                "遍历编号",
+                                "nJlUFxY-66qhJ1lx4K`3"
+                            ],
+                            [
+                                7,
+                                "1"
+                            ]
+                        ]
+                    },
+                    "fields": {
+                        "LIST": [
+                            "声波",
+                            "JRP58$%Acy-f|^+C;irh"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "J": {
+                    "opcode": "pen_penUp",
+                    "next": "L",
+                    "parent": "i",
+                    "inputs": {},
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "L": {
+                    "opcode": "data_changevariableby",
+                    "next": ",",
+                    "parent": "J",
+                    "inputs": {
+                        "VALUE": [
+                            1,
+                            [
+                                4,
+                                "1"
+                            ]
+                        ]
+                    },
+                    "fields": {
+                        "VARIABLE": [
+                            "遍历编号",
+                            "nJlUFxY-66qhJ1lx4K`3"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": false
+                },
+                ",": {
+                    "opcode": "motion_changexby",
+                    "next": null,
+                    "parent": "L",
+                    "inputs": {
+                        "DX": [
+                            3,
+                            [
+                                12,
+                                "间距",
+                                "8e|%;T}RvvV-pxnqxL)O"
+                            ],
+                            [
+                                4,
+                                "10"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "M": {
+                    "opcode": "procedures_definition",
+                    "next": "N",
+                    "parent": null,
+                    "inputs": {
+                        "custom_block": [
+                            1,
+                            "-"
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": true,
+                    "x": 48,
+                    "y": 64
+                },
+                "-": {
+                    "opcode": "procedures_prototype",
+                    "next": null,
+                    "parent": "M",
+                    "inputs": {},
+                    "fields": {},
+                    "shadow": true,
+                    "topLevel": false,
+                    "mutation": {
+                        "tagName": "mutation",
+                        "children": [],
+                        "proccode": "初始化",
+                        "argumentids": "[]",
+                        "argumentnames": "[]",
+                        "argumentdefaults": "[]",
+                        "warp": "true"
+                    }
+                },
+                "N": {
+                    "opcode": "data_setvariableto",
+                    "next": "O",
+                    "parent": "M",
+                    "inputs": {
+                        "VALUE": [
+                            1,
+                            [
+                                10,
+                                "50"
+                            ]
+                        ]
+                    },
+                    "fields": {
+                        "VARIABLE": [
+                            "数量",
+                            "),}:w;yB@Dkc1Qj*IZR?"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "O": {
+                    "opcode": "data_deletealloflist",
+                    "next": "j",
+                    "parent": "N",
+                    "inputs": {},
+                    "fields": {
+                        "LIST": [
+                            "声波",
+                            "JRP58$%Acy-f|^+C;irh"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "j": {
+                    "opcode": "control_repeat",
+                    "next": ".",
+                    "parent": "O",
+                    "inputs": {
+                        "TIMES": [
+                            3,
+                            [
+                                12,
+                                "数量",
+                                "),}:w;yB@Dkc1Qj*IZR?"
+                            ],
+                            [
+                                6,
+                                "10"
+                            ]
+                        ],
+                        "SUBSTACK": [
+                            2,
+                            "/"
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "/": {
+                    "opcode": "data_addtolist",
+                    "next": null,
+                    "parent": "j",
+                    "inputs": {
+                        "ITEM": [
+                            1,
+                            [
+                                10,
+                                "0"
+                            ]
+                        ]
+                    },
+                    "fields": {
+                        "LIST": [
+                            "声波",
+                            "JRP58$%Acy-f|^+C;irh"
+                        ]
+                    },
+                    "shadow": false,
+                    "topLevel": false
+                },
+                ".": {
+                    "opcode": "pen_penUp",
+                    "next": null,
+                    "parent": "j",
+                    "inputs": {},
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "P": {
+                    "opcode": "motion_turnright",
+                    "next": ";",
+                    "parent": ":",
+                    "inputs": {
+                        "DEGREES": [
+                            1,
+                            [
+                                4,
+                                "15"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                ";": {
+                    "opcode": "motion_glidesecstoxy",
+                    "next": null,
+                    "parent": "P",
+                    "inputs": {
+                        "SECS": [
+                            1,
+                            [
+                                4,
+                                "1"
+                            ]
+                        ],
+                        "X": [
+                            1,
+                            [
+                                4,
+                                "125"
+                            ]
+                        ],
+                        "Y": [
+                            1,
+                            [
+                                4,
+                                "6"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                ":": {
+                    "opcode": "motion_gotoxy",
+                    "next": "P",
+                    "parent": null,
+                    "inputs": {
+                        "X": [
+                            1,
+                            [
+                                4,
+                                "125"
+                            ]
+                        ],
+                        "Y": [
+                            1,
+                            [
+                                4,
+                                "6"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": true,
+                    "x": 273,
+                    "y": 518
+                }
+            },
+            "comments": {},
+            "currentCostume": 0,
+            "costumes": [
+                {
+                    "name": "造型1",
+                    "bitmapResolution": 1,
+                    "dataFormat": "svg",
+                    "assetId": "14e46ec3e2ba471c2adfe8f119052307",
+                    "md5ext": "14e46ec3e2ba471c2adfe8f119052307.svg",
+                    "rotationCenterX": 0,
+                    "rotationCenterY": 0
+                }
+            ],
+            "sounds": [],
+            "volume": 100,
+            "layerOrder": 1,
+            "visible": false,
+            "x": 125,
+            "y": 6,
+            "size": 100,
+            "direction": 90,
+            "draggable": false,
+            "rotationStyle": "all around"
+        }
+    ],
+    "monitors": [
+        {
+            "id": "loudness",
+            "mode": "default",
+            "opcode": "sensing_loudness",
+            "params": {},
+            "spriteName": null,
+            "value": 0,
+            "width": 0,
+            "height": 0,
+            "x": 5,
+            "y": 5,
+            "visible": false,
+            "sliderMin": 0,
+            "sliderMax": 100,
+            "isDiscrete": true
+        },
+        {
+            "id": "8e|%;T}RvvV-pxnqxL)O",
+            "mode": "slider",
+            "opcode": "data_variable",
+            "params": {
+                "VARIABLE": "间距"
+            },
+            "spriteName": null,
+            "value": 0,
+            "width": 0,
+            "height": 0,
+            "x": 5,
+            "y": 35,
+            "visible": false,
+            "sliderMin": 4,
+            "sliderMax": 5,
+            "isDiscrete": false
+        },
+        {
+            "id": "),}:w;yB@Dkc1Qj*IZR?",
+            "mode": "default",
+            "opcode": "data_variable",
+            "params": {
+                "VARIABLE": "数量"
+            },
+            "spriteName": null,
+            "value": 0,
+            "width": 0,
+            "height": 0,
+            "x": 5,
+            "y": 65,
+            "visible": false,
+            "sliderMin": 0,
+            "sliderMax": 100,
+            "isDiscrete": true
+        },
+        {
+            "id": "JRP58$%Acy-f|^+C;irh",
+            "mode": "list",
+            "opcode": "data_listcontents",
+            "params": {
+                "LIST": "声波"
+            },
+            "spriteName": null,
+            "value": [],
+            "width": 0,
+            "height": 0,
+            "x": 105,
+            "y": 5,
+            "visible": false
+        },
+        {
+            "id": "nJlUFxY-66qhJ1lx4K`3",
+            "mode": "default",
+            "opcode": "data_variable",
+            "params": {
+                "VARIABLE": "遍历编号"
+            },
+            "spriteName": null,
+            "value": 0,
+            "width": 0,
+            "height": 0,
+            "x": 5,
+            "y": 81,
+            "visible": false,
+            "sliderMin": 0,
+            "sliderMax": 100,
+            "isDiscrete": true
+        }
+    ],
+    "extensions": [
+        "pen"
+    ],
+    "meta": {
+        "semver": "3.0.0",
+        "vm": "0.2.0",
+        "agent": "",
+        "platform": {
+            "name": "TurboWarp",
+            "url": "https://turbowarp.org/"
+        }
+    }
+}

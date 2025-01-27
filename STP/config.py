@@ -3,9 +3,11 @@ from numpy import array,where
 from loguru import logger as log
 
 import json
-import os,sys
+import os,sys,time
 
 THISPATH=os.getcwd()
+LOCALDATE=time.strftime('%Y-%m-%d_%H：%M',time.localtime(time.time()))
+LOGFORMAT="<level>[{time:YYYY-MM-DD HH:mm:ss}] [{level}]: {message}</level>"
 if os.path.basename(THISPATH) != "STP":
     os.chdir('./STP')
 

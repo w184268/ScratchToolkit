@@ -4,5 +4,9 @@
             "event_whenflagclicked",
             "procedures_definition"
         ]
+    },
+    "log":{
+        "outdir":"./log",
+        "retention":"5 minutes"
     }
 }

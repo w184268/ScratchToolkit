@@ -31,6 +31,8 @@ class PathTool:
         elif len(args)!=0:
             return os.path.join(*args)
         
+LOGPATH=PathTool().join((USERSET['log']['outdir'],LOCALDATE+".log"))  
+
 class UnPackingScratch3File:
     def __init__(self,fp:str):
         """

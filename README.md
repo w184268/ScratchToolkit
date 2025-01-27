@@ -3,7 +3,6 @@
 ![logo](./logo.svg)  
 
 # ScratchToolkit
-![GitHub repo size](https://img.shields.io/github/repo-size/EricDing618/Scratch-To-Pygame)
 ![GitHub Repo stars](https://img.shields.io/github/stars/EricDing618/Scratch-To-Pygame?style=flat)
 ![GitHub branch status](https://img.shields.io/github/checks-status/EricDing618/Scratch-To-Pygame/main)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/EricDing618/Scratch-To-Pygame)
