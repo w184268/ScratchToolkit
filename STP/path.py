@@ -1,4 +1,4 @@
-from config import *
+from config import os,json,USERSET,LOCALDATE,THISPATH,log
 
 import zipfile
 import xml.etree.ElementTree as ET
