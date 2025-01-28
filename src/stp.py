@@ -27,15 +27,20 @@ Scratch-To-Pygame(Beta v0.0.1) is running!
 
 if __name__=='__main__':
     parser=ap.ArgumentParser(description="The command list of Scratch-To-Python")
-    parser.add_argument('file_path',type=str,default=None,help="Your .sb3 file's name or path.")
+    parser.add_argument('--remove-log','-rmlog',dest='logcount',required=False, default=None,type=int,help="Remove the previous <logcount> log file(s).")
+    parser.add_argument('-c','--convert',dest='file_path',default=None,type=str,help="Your .sb3 file's name or path.")
     parser.add_argument('--run','-r',dest="run",action="store_true",default=False,help="Run and check the output file.")
     parser.add_argument('--no-log','-nl',dest="no_log",action="store_true",default=False,help="Do not show all the log.")
     args=parser.parse_args()
+    if args.logcount:
+        from __STP.mypath import PathTool,re
+        from __STP.config import USERSET
+        PathTool().rmlog(re('../'+USERSET['log']['outdir']),args.logcount)
     fp=args.file_path
     if fp:
-        from core import log,UnPackingScratch3File,CodeParser
-        from config import os
-        from mypath import LOGPATH
+        from __STP.core import log,UnPackingScratch3File,CodeParser
+        from __STP.config import os
+        from __STP.mypath import LOGPATH
         if args.no_log:
             log.remove()
         try:

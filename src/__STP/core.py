@@ -1,5 +1,5 @@
-from mypath import log,LOGPATH,UnPackingScratch3File,PathTool
-from config import sys,LOGFORMAT,USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE
+from .mypath import log,LOGPATH,UnPackingScratch3File,PathTool
+from .config import sys,LOGFORMAT,USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE
 
 log.remove()
 log.add(sys.stdout,colorize=True,format=LOGFORMAT)
@@ -80,7 +80,7 @@ class CodeParser:
     def add(self,id:str,kw): #积木管理
         type_=f"{self.classname} -> {id}"
         try:
-            self.depth,self.base=self.get_nested_depth(kw)
+            self.depth,self.base=self.get_nested_depth3(kw)
             #print(self.get_nested_depth(kw))
         except Exception as e:
             log.warning(e)
@@ -192,3 +192,34 @@ class CodeParser:
                 else:
                     current_block={}
         return depth,current_block
+    def get_nested_depth3(self, blocks:dict, current_depth=0):
+        print(blocks)
+        block_id = self.id
+        if block_id not in blocks:
+            return current_depth
+        block = blocks[block_id]
+        next_depth = current_depth + 1
+        next_block_id = block.get('parent', '')
+        inputs_depth = next_depth
+        
+        if 'inputs' in block:
+            for input_name, input_value in block['inputs'].items():
+                if isinstance(input_value[1], list) and len(input_value[1]) == 2:
+                    if isinstance(input_value[1][1], str):
+                        inputs_depth = max(inputs_depth, self.get_nested_depth3(input_value[1][1], blocks, next_depth))
+                    elif isinstance(input_value[1][1], int):
+                        inputs_depth = max(inputs_depth, self.get_nested_depth3(str(input_value[1][1]), blocks, next_depth))
+        
+        if isinstance(next_block_id, str):
+            next_depth = max(next_depth, self.get_nested_depth3(next_block_id, blocks, next_depth))
+        elif isinstance(next_block_id, int):
+            next_depth = max(next_depth, self.get_nested_depth3(str(next_block_id), blocks, next_depth))
+        
+        return max(next_depth, inputs_depth)
+
+    def get_max_depth(self, script, blocks):
+        max_depth = 0
+        for block_id in script:
+            depth = self.get_nested_depth3(block_id, blocks)
+            max_depth = max(max_depth, depth)
+        return max_depth

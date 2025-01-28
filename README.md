@@ -22,7 +22,9 @@ python ./src/STP/stp.py <目标.sb3文件路径>
 更多使用方法：
 - `-h`和`--help`：显示命令帮助列表。
 - `-r`和`--run`：转换完毕后自动执行output文件。
-- `-nl`和`--no-log`：不显示输出日志。
+- `-nl`和`--no-log`：不显示输出日志。  
+
+例：`python ./src/stp.py ./../../tests/allblocks.sb3 --run`
 ## 将不考虑支持以下功能：
 - 变量、列表显示功能
 - “说”“思考”“询问...并等待”显示功能
@@ -34,7 +36,7 @@ python ./src/STP/stp.py <目标.sb3文件路径>
 - loguru==0.7.2
 - cairosvg==2.7.1
 - pillow==9.5.0
-- pygame==2.5.2
+- pygame-ce==2.5.2
 - numpy==1.26.2
 - colorama==0.4.6
 

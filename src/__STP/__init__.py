@@ -1,5 +1,5 @@
 __all__=[
-    "path",
+    "mypath",
     "core",
     "config",
     "stp"

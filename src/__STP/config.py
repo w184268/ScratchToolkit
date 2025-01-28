@@ -9,7 +9,7 @@ THISPATH=os.getcwd()
 LOCALDATE=time.strftime('%Y-%m-%d_%H：%M',time.localtime(time.time()))
 LOGFORMAT="<level>[{time:YYYY-MM-DD HH:mm:ss}] [{level}]: {message}</level>"
 if os.path.basename(THISPATH) != "STP":
-    os.chdir('./src/STP')
+    os.chdir('./src/__STP')
 
 with open("./spriteframe.py","r",encoding="utf-8") as f:
     SPRITE_INIT_CODE=f.read()

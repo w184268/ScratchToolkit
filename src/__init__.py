@@ -1,4 +1,4 @@
 __all__=[
-    'STP',
+    'stp',
     'merge'
 ]
