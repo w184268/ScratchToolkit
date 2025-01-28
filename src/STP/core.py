@@ -1,4 +1,4 @@
-from path import log,LOGPATH,UnPackingScratch3File,PathTool
+from mypath import log,LOGPATH,UnPackingScratch3File,PathTool
 from config import sys,LOGFORMAT,USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE
 
 log.remove()

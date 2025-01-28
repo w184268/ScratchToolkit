@@ -33,7 +33,8 @@ if __name__=='__main__':
     args=parser.parse_args()
     fp=args.file_path
     if fp:
-        from core import log,UnPackingScratch3File,CodeParser,os
+        from core import log,UnPackingScratch3File,CodeParser
+        from config import os
         if args.no_log:
             log.remove()
         try:
