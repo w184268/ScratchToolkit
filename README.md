@@ -17,7 +17,7 @@
 ## 快速使用
 在本仓库目录下使用`cmd`执行：
 ```bash
-python ./STP/stp.py <your .sb3 file path>
+python ./src/STP/stp.py <目标.sb3文件路径>
 ```
 更多使用方法：
 - `-h`和`--help`：显示命令帮助列表。

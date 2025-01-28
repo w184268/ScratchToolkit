@@ -18,6 +18,6 @@ jobs:
           pip install mypy pytest
           pip install -r requirements.txt
       - name: "Check"
-        run: mypy ./src
+        run: mypy ./src --check-untyped-defs
       - name: "Test"
         run: pytest
