@@ -23,7 +23,7 @@ Scratch-To-Pygame(Beta v0.0.1) is running!
             log.error('There is something wrong above.')
         else:
             log.success('The file has no wrong.')
-    log.debug('The log was ')
+    log.debug(f'The log was written in {LOGPATH}')
 
 if __name__=='__main__':
     parser=ap.ArgumentParser(description="The command list of Scratch-To-Python")
@@ -35,6 +35,7 @@ if __name__=='__main__':
     if fp:
         from core import log,UnPackingScratch3File,CodeParser
         from config import os
+        from mypath import LOGPATH
         if args.no_log:
             log.remove()
         try:

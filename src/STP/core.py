@@ -3,7 +3,7 @@ from config import sys,LOGFORMAT,USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE
 
 log.remove()
 log.add(sys.stdout,colorize=True,format=LOGFORMAT)
-log.add(LOGPATH,format=LOGFORMAT,retention=USERSET['log']['retention'])
+log.add(LOGPATH,format=LOGFORMAT,retention=USERSET['log']['retention'],rotation=USERSET['log']['rotation'],diagnose=True)
 class CodeParser:
     def __init__(self,last:UnPackingScratch3File):
         """
