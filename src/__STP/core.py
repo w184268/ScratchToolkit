@@ -80,7 +80,7 @@ class CodeParser:
     def add(self,id:str,kw): #积木管理
         type_=f"{self.classname} -> {id}"
         try:
-            self.depth,self.base=self.get_nested_depth3(kw)
+            self.depth,self.base=self.get_nested_depth(kw)
             #print(self.get_nested_depth(kw))
         except Exception as e:
             log.warning(e)
@@ -140,21 +140,22 @@ class CodeParser:
         #print(block,type(block))
         pid=block.get('parent')
         if pid:
-            parentdict=self.blocks.get(pid,{})
+            parentdict=self.blocks.get(pid,{}) #父积木块
             #print(parentdict)
             if parentdict:
-                inputs=parentdict.get('inputs',{})
-                substack=inputs.get("SUBSTACK",[])
+                inputs=parentdict.get('inputs',{}) #父积木块的输入
+                substack=inputs.get("SUBSTACK",[]) #父积木块的子积木块
                 #print(inputs,substack)
                 if parentdict['opcode'] not in USERSET["blocks"]['ignore']:
                     if not block.get('topLevel'):
-                        if self.id in substack: #嵌套类型
-                            return self.get_nested_depth(parentdict, depth+1)
-                        elif not block["shadow"]: #不隐藏的纯积木
-                            return self.get_nested_depth(parentdict, depth)
+                        if not block["shadow"]: #不隐藏的纯积木块
+                            if self.id in substack: #嵌套类型
+                                return self.get_nested_depth(parentdict, depth+1)
+                            else:
+                                return self.get_nested_depth(parentdict, depth)
                         else:
                             #return self.get_nested_depth(parentdict, depth + 1)
-                            return self.get_nested_depth(parentdict, depth+1)
+                            return self.get_nested_depth(parentdict, depth)
                 '''else:
                     block={}'''
 

@@ -16,14 +16,14 @@ Scratch-To-Pygame(Beta v0.0.1) is running!
     info.convert()
     parser=CodeParser(info)
     parser.write_result()
-    log.success(f"Converted successfully (at {parser.outpyfile}) .")
+    log.success(f"Converted successfully (in {re(parser.outpyfile)}) .")
     if run:
         log.debug('Trying to run the output file...')
         if os.system(f'python {parser.outpyfile}'):
             log.error('There is something wrong above.')
         else:
             log.success('The file has no wrong.')
-    log.debug(f'The log was written in {LOGPATH}')
+    log.debug(f'The log was written in {re(LOGPATH)}')
 
 if __name__=='__main__':
     parser=ap.ArgumentParser(description="The command list of Scratch-To-Python")
@@ -33,14 +33,14 @@ if __name__=='__main__':
     parser.add_argument('--no-log','-nl',dest="no_log",action="store_true",default=False,help="Do not show all the log.")
     args=parser.parse_args()
     if args.logcount:
-        from __STP.mypath import PathTool,re
+        from __STP.mypath import PathTool,re,LOGDIR
         from __STP.config import USERSET
-        PathTool().rmlog(re('../'+USERSET['log']['outdir']),args.logcount)
+        PathTool().rmlog(re(LOGDIR),args.logcount)
     fp=args.file_path
     if fp:
         from __STP.core import log,UnPackingScratch3File,CodeParser
         from __STP.config import os
-        from __STP.mypath import LOGPATH
+        from __STP.mypath import LOGPATH,re
         if args.no_log:
             log.remove()
         try:

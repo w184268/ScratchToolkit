@@ -29,7 +29,7 @@ class PathTool:
     def rmlog(self,dirpath:str,count:int=0):
         # 获取目录中的所有文件
         files = os.listdir(dirpath)
-        if len(files) > count:
+        if len(files) >= count:
             # 过滤出文件，而不是目录
             files = [f for f in files if os.path.isfile(os.path.join(dirpath, f))]
             # 获取每个文件的修改时间，并按照修改时间排序
@@ -42,7 +42,8 @@ class PathTool:
         elif len(args)!=0:
             return os.path.join(*(os.path.normpath(p) for p in args))
         
-LOGPATH=PathTool().join((USERSET['log']['outdir'],LOCALDATE+".log"))
+LOGPATH=PathTool().join((USERSET['log']['outdir'],LOCALDATE+".log")) if USERSET['log']['outdir'] != "default" else PathTool().join(('./../log',LOCALDATE+".log"))
+LOGDIR=os.path.dirname(LOGPATH)
 
 class UnPackingScratch3File:
     def __init__(self,fp:str):

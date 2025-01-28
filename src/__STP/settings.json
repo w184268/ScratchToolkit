@@ -6,7 +6,7 @@
         ]
     },
     "log":{
-        "outdir":"./log",
+        "outdir":"default",
         "retention":"10 minutes",
         "rotation":"5 minutes"
     }

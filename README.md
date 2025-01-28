@@ -1,6 +1,6 @@
 <div align="center">
 
-![logo](./logo.svg)  
+![logo](./res/logo.svg)  
 
 # ScratchToolkit
 ![GitHub Repo stars](https://img.shields.io/github/stars/EricDing618/Scratch-To-Pygame?style=flat)
@@ -24,7 +24,7 @@ python ./src/STP/stp.py <目标.sb3文件路径>
 - `-r`和`--run`：转换完毕后自动执行output文件。
 - `-nl`和`--no-log`：不显示输出日志。  
 
-例：`python ./src/stp.py ./../../tests/allblocks.sb3 --run`
+例：`python ./src/stp.py -c ./../../tests/allblocks.sb3 --run`
 ## 将不考虑支持以下功能：
 - 变量、列表显示功能
 - “说”“思考”“询问...并等待”显示功能

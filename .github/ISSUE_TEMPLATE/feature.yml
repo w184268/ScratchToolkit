@@ -1,0 +1,31 @@
+name: "提供功能建议"
+description: "请详细描述你想要实现的功能，并提供相关的操作步骤。"
+labels: [· Feature]
+body:
+- type: checkboxes
+  id: "yml-1"
+  attributes:
+    label: "检查项"
+    description: "请逐个检查下列项目，并勾选确认。"
+    options:
+    - label: "**我所使用的是Scratch3/Turbowarp。**"
+      required: true
+    - label: "**该功能与Scratch和Python有关。**"（见 [README.md](https://github.com/EricDing618/ScratchToolkit/blob/main/README.md) ）
+      required: true
+    - label: "我已在 [Issues 页面](https://github.com/EricDing618/ScratchToolkit/issues?q=is%3Aissue+) 中搜索，确认了这一功能建议未被提交过。"
+      required: false
+- type: textarea
+  id: "yml-2"
+  attributes:
+    label: 描述
+    description: "详细描述你想要实现的功能，并提供相关的操作步骤。"
+  validations:
+    required: true
+- type: textarea
+  id: "yml-3"
+  attributes:
+    label: 其他信息
+    description: "如有，请在此处提供更多信息。"
+  validations:
+    required: false
+
