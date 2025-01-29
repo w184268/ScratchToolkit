@@ -27,7 +27,10 @@ python ./src/stp.py -c <目标.sb3文件路径>
 - `-sl`和`--save-log`：保存输出日志到文件。（一般用于调试）
 - `rmlog`和`--remove-log`：删除输出日志文件的个数。（按照时间顺序，值为0表示所有日志）
 
-例：`python ./src/stp.py -c ./../../tests/allblocks.sb3 --run -sl`
+例：
+```bash
+python ./src/stp.py -c ./../../tests/allblocks.sb3 --run -sl
+```
 ## 将不考虑支持以下功能：
 - 变量、列表显示功能
 - “说”“思考”“询问...并等待”显示功能

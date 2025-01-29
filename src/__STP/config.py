@@ -4,6 +4,7 @@ from loguru import logger as log
 
 import json
 import os,sys,time
+from textwrap import dedent
 
 THISPATH=os.getcwd()
 LOCALDATE=time.strftime('%Y-%m-%d_%H：%M',time.localtime(time.time()))
@@ -17,6 +18,16 @@ with open("./gameframe.py","r",encoding="utf-8") as f:
     GAME_INIT_CODE=''.join(i for i in f.readlines() if 'import' not in i)
 with open("./settings.json",'r',encoding='utf-8') as f:
     USERSET:dict=json.load(f)
+HINT=dedent(f'''\
+#  ____                          _            _               _____                   ____                                             
+# / ___|    ___   _ __    __ _  | |_    ___  | |__           |_   _|   ___           |  _ \   _   _    __ _    __ _   _ __ ___     ___ 
+# \___ \   / __| | '__|  / _` | | __|  / __| | '_ \   _____    | |    / _ \   _____  | |_) | | | | |  / _` |  / _` | | '_ ` _ \   / _ \\
+#  ___) | | (__  | |    | (_| | | |_  | (__  | | | | |_____|   | |   | (_) | |_____| |  __/  | |_| | | (_| | | (_| | | | | | | | |  __/
+# |____/   \___| |_|     \__,_|  \__|  \___| |_| |_|           |_|    \___/          |_|      \__, |  \__, |  \__,_| |_| |_| |_|  \___|
+#                                                                                             |___/   |___/                            
+# Scratch-To-Pygame({USERSET['info']['version']})
+# Made by EricDing618.
+''')
 if os.path.basename(os.getcwd()) == "STP":
     os.chdir('..')
 

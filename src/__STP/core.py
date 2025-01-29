@@ -1,5 +1,5 @@
 from .mypath import log,UnPackingScratch3File,PathTool
-from .config import USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE
+from .config import USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE,HINT
 
 class CodeParser:
     def __init__(self,last:UnPackingScratch3File):
@@ -11,26 +11,20 @@ class CodeParser:
         with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8') as f: #导入project.json
             self.pj=json.load(f)
         self.last=last
-        self.mod={"internal":[],"third-party":[]} #根据情况导入所需要的库
+        self.mod={"internal":{"typing":["",["Any"]],"math":["",[]],"random":["",[]],"sys":["",[]],"threading":["",["Thread","Timer"]]},"third-party":{"pygame":["pg",[]]}} #根据情况导入所需要的库
         self.var=dict() #存储变量
         self.array=dict() #存储列表
 
         self.depth=0 #默认深度
         self.code=[] #存储代码（总）
         self.sprcode:dict[str,dict]={} #代码（每个角色）
+        self.allspr={} #所有角色代码汇总
         self.targets=self.pj["targets"] #所有角色信息
-        self.code.append(SPRITE_INIT_CODE)
         self.fstr(f"pg.display.set_caption('{last.p.NAME}')",3)
         for t in self.targets:
             self.give(t)
-            self.code.extend(self.sprcode)
+            self.allspr[t['name']]=self.sprcode #保存角色代码
             self.sprcode={} #恢复默认
-        self.code.extend([
-            GAME_INIT_CODE,
-            "",
-            "if __name__=='__main__':",
-            "   rungame=Game()"
-        ])
 
     def give(self,tgs:dict): #给予信息,tgs为targets下每个信息
         #为方便后面操作
@@ -63,7 +57,7 @@ class CodeParser:
             self.rotation:str=tgs['rotationStyle'] #角色的旋转样式，可以是all around（围绕中心点旋转）、left-right（左右旋转）或don't rotate（不旋转）
             self.classname='spr_'+self.name
         self.fstr(mode=2,args=())
-        self.funccode={"__init__":[[],[]]} #代码（角色下函数）
+        self.funccode={"__init__":[{},[]]} #代码（角色下函数）
         for block in self.blocks.items():
             self.id,self.idinfo=block
             #print(block)
@@ -104,9 +98,8 @@ class CodeParser:
             case 0:
                 #self.sprcode.append('    '*(self.depth+2)+self.classname+'.'+self.opcode+'('+', '.join(args)+')')
                 if self.base.get('opcode','').startswith('procedures_'): #在某个函数下
-                    if self.base['opcode'] not in self.funccode: #如果函数不存在，则创建
-                        self.funccode[self.base['opcode']]=[[],[]]
-                    self.funccode[self.base['opcode']][1].append('    '*(self.depth+2)+self.classname+'.'+self.opcode+'('+', '.join(args)+')')
+                    funcmutation=self.blocks[self.base['inputs']['custom_block'][1]]['mutation']
+                    self.__functool(funcmutation,args)
                 else: #在角色下
                     self.funccode['__init__'][1].append('    '*(self.depth+2)+self.classname+'.'+self.opcode+'('+', '.join(args)+')')
             case 1:
@@ -114,13 +107,33 @@ class CodeParser:
                 ...
             case 2:
                 #self.code.append('    '*(self.depth+2)+self.classname+'=Sprite('+','.join(args)+')')
-                self.code.extend([
+                '''self.code.extend([
                     'class '+self.classname+'(Sprite):',
                     '    def __init__(self,'+','.join(args)+'):',
                     '        super().__init__()'
-                    ])
+                    ])'''
             case 3:
-                self.code.append('    '*(self.depth+2)+string)
+                '''self.code.append('    '*(self.depth+2)+string)'''
+    def __functool(self,mutation:dict,args=()):
+        type={'%s':'int|float|str','%b':'bool'}
+        name=[]
+        argtypes=[]
+        c=mutation['proccode'].split(' ')
+        for i in range(len(c)):
+            if c[i].isidentifier():
+                if i==0 or not c[i-1].isidentifier():
+                    name.append(c[i])
+                else:
+                    name[-1]+=c[i]
+            else:
+                argtypes.append(c[i])
+
+        funcname='__'+'_'.join(name)
+        if funcname not in self.funccode: #创建函数
+            self.funccode[funcname]=[{},[]]
+        for argname,argdefault,argtype in zip(eval(mutation['argumentnames']),eval(mutation['argumentdefaults']),argtypes):
+            self.funccode[funcname][0][argname]=[argdefault,type.get(argtype,'Any')]
+        self.funccode[funcname][1].append('    '*(self.depth+2)+self.classname+'.'+self.opcode+'('+', '.join(args)+')')
 
     def get_nested_depth(self,id:str,block:dict,depth=0):
         """
@@ -153,6 +166,36 @@ class CodeParser:
         return depth,block
 
     def write_result(self):
+        requirements=[]
+        self.code.append(HINT)
+        for type_,modinfo in self.mod.items():
+            for name,args in modinfo.items():
+                if type_=='third-party':
+                    requirements.append(name)
+                if not args[0] and not args[1]:
+                    self.code.append(f"import {name}")
+                elif args[0] and not args[1]:
+                    self.code.append(f"import {name} as {args[0]}")
+                elif not args[0] and args[1]:
+                    self.code.append(f"from {name} import {', '.join(args[1])}")
+                else:
+                    c=[]
+                    for i,j in zip(args[0],args[1]):
+                        c.append(f"{j} as {i}")
+                    self.code.append(f"from {name} import {', '.join(c)}")
+
+        for i in SPRITE_INIT_CODE.splitlines():
+            if 'import' not in i:
+                self.code.append(i)
+
+        self.code.extend([
+            GAME_INIT_CODE,
+            "",
+            "if __name__=='__main__':",
+            "   rungame=Game()"
+        ])
         self.outpyfile=self.t.join((self.outdir,self.last.p.NAME+".py"))
         with open(self.outpyfile,'w',encoding='utf-8') as f:
             f.write('\n'.join(self.code))
+        with open(self.t.join((self.outdir,"requirements.txt")),'w',encoding='utf-8') as f:
+            f.write('\n'.join(requirements))

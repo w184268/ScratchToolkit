@@ -1,14 +1,18 @@
 #  ____                          _            _               _____                   ____                                             
 # / ___|    ___   _ __    __ _  | |_    ___  | |__           |_   _|   ___           |  _ \   _   _    __ _    __ _   _ __ ___     ___ 
-# \___ \   / __| | '__|  / _` | | __|  / __| | '_ \   _____    | |    / _ \   _____  | |_) | | | | |  / _` |  / _` | | '_ ` _ \   / _ \\
+# \___ \   / __| | '__|  / _` | | __|  / __| | '_ \   _____    | |    / _ \   _____  | |_) | | | | |  / _` |  / _` | | '_ ` _ \   / _ \
 #  ___) | | (__  | |    | (_| | | |_  | (__  | | | | |_____|   | |   | (_) | |_____| |  __/  | |_| | | (_| | | (_| | | | | | | | |  __/
 # |____/   \___| |_|     \__,_|  \__|  \___| |_| |_|           |_|    \___/          |_|      \__, |  \__, |  \__,_| |_| |_| |_|  \___|
 #                                                                                             |___/   |___/                            
 # Scratch-To-Pygame(Beta v0.0.1)
 # Made by EricDing618.
-                  
+
+from typing import Any
+import math
+import random
+import sys
+from threading import Thread, Timer
 import pygame as pg
-import sys,math,random,threading
 
 class Sprite(pg.sprite.Sprite): #角色框架
     def __init__(self, image_file:tuple[str], initxy:tuple[float,float], direction:int):
@@ -31,7 +35,7 @@ class Sprite(pg.sprite.Sprite): #角色框架
     def motion_turnright(self, degrees):
         self.image = pg.transform.rotate(self.image, degrees)
     def control_wait(self,s:float):
-        threading.Timer(s,lambda:0).start()
+        Timer(s,lambda:0).start()
 
 class Function():
     def __init__(self):
@@ -49,14 +53,6 @@ class Function():
         args=self.args[sp][func]
         for e,a in zip(exec,args):
             e(*a)
-        pg.display.set_caption('allblocks')
-class stage_Stage(Sprite):
-    def __init__(self,):
-        super().__init__()
-class spr_角色1(Sprite):
-    def __init__(self,):
-        super().__init__()
-        while True:
 
 class Game:
     def __init__(self):

@@ -1,6 +1,5 @@
 import traceback
 import argparse as ap
-from textwrap import dedent
 
 def main(fp:str='./tests/work1.sb3',args:ap.Namespace=None):
     if args:
@@ -31,7 +30,7 @@ def main(fp:str='./tests/work1.sb3',args:ap.Namespace=None):
 if __name__=='__main__':
     from __STP.mypath import PathTool,re,LOGDIR,LOGPATH
     from __STP.core import log,UnPackingScratch3File,CodeParser
-    from __STP.config import os,sys,LOGFORMAT,USERSET
+    from __STP.config import os,sys,LOGFORMAT,USERSET,dedent
     log.remove()
     log.add(sys.stdout,colorize=True,format=LOGFORMAT)
     parser=ap.ArgumentParser(description="The command list of Scratch-To-Pygame")

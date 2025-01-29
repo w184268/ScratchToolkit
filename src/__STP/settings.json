@@ -1,8 +1,8 @@
 {
     "blocks":{
         "ignore":[
-            "event_whenflagclicked",
-            "procedures_definition"
+            "event_whenflagclicked"
+            
         ]
     },
     "log":{
@@ -10,5 +10,6 @@
     },
     "info":{
         "version":"Beta v0.0.1"
-    }
+    },
+    "cache":["procedures_definition"]
 }
