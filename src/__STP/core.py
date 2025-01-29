@@ -65,19 +65,20 @@ class CodeParser:
         self.fstr(mode=2,args=())
         self.funccode={"__init__":[[],[]]} #代码（角色下函数）
         for block in self.blocks.items():
-            self.id,idinfo=block
+            self.id,self.idinfo=block
             #print(block)
-            if isinstance(idinfo,dict): #一般积木块
-                self.add(idinfo)
-                self.depth=0 #恢复默认
-            else: #变量、常量、列表类型
-                self.var_and_list(idinfo)
-    def var_and_list(self,kw): #变量、常量、列表管理
+            if isinstance(self.idinfo,dict): #一般积木块
+                self.opcode=self.idinfo["opcode"]
+                if not self.idinfo['shadow'] and self.opcode not in USERSET["blocks"]['ignore']: #不隐藏且不被忽略的积木块
+                    self.depth,self.base=self.get_nested_depth(self.id,self.idinfo)
+                    self.add()
+                    self.depth=0 #恢复默认
+            else: #自定义变量、列表类型
+                self.myvarlist(self.idinfo)
+    def myvarlist(self,kw): #自定义变量、列表管理
         ...
-    def add(self,kw): #积木管理
+    def add(self): #积木管理
         type_=f"{self.classname} -> {self.id}"
-        self.depth,self.base=self.get_nested_depth(self.id,kw)
-        self.opcode=kw["opcode"]
         log.debug(f'Converting {type_} (name="{self.opcode}" ,depth={self.depth})...')
         print(self.base)
         match self.opcode: #匹配相应的积木名
@@ -86,15 +87,11 @@ class CodeParser:
             case "control_forever":
                 self.fstr("while True:",3)
             case "procedures_call":
-                self.fstr(kw["mutation"]["proccode"],1,args=())
+                self.fstr(self.idinfo["mutation"]["proccode"],1,args=())
             case _:
                 if self.opcode not in USERSET["blocks"]['ignore']:
                     log.warning(f'Unknown id "{self.opcode}"!')
 
-    def write_result(self):
-        self.outpyfile=self.t.join((self.outdir,self.last.p.NAME+".py"))
-        with open(self.outpyfile,'w',encoding='utf-8') as f:
-            f.write('\n'.join(self.code))
     def fstr(self,string="",mode=0,args=()):
         '''
         mode=0: 调用积木方法，string不填，args为传参  
@@ -143,7 +140,7 @@ class CodeParser:
                 inputs=parentdict.get('inputs',{}) #父积木块的输入
                 substack=inputs.get("SUBSTACK",[]) #父积木块的子积木块
                 #print(inputs,substack)
-                if parentdict['opcode'] not in USERSET["blocks"]['ignore']:
+                if parentdict['opcode'] not in USERSET["blocks"]['ignore']: #父积木块不被忽略
                     if not block.get('topLevel'):
                         if not block["shadow"]: #不隐藏的纯积木块
                             if id in substack: #嵌套类型
@@ -153,8 +150,9 @@ class CodeParser:
                         else:
                             #return self.get_nested_depth(parentdict, depth + 1)
                             return self.get_nested_depth(pid,parentdict, depth)
-                '''else:
-                    block={}'''
-
         return depth,block
-    
+
+    def write_result(self):
+        self.outpyfile=self.t.join((self.outdir,self.last.p.NAME+".py"))
+        with open(self.outpyfile,'w',encoding='utf-8') as f:
+            f.write('\n'.join(self.code))

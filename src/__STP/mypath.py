@@ -34,17 +34,21 @@ class PathTool:
         if len(files) >= count:
             # 过滤出文件，而不是目录
             files = [f for f in files if os.path.isfile(os.path.join(dirpath, f))]
-            # 获取每个文件的修改时间，并按照修改时间排序
-            files.sort(key=lambda f: os.path.getmtime(os.path.join(dirpath, f)))
-            for i in range(count):
-                os.remove(os.path.join(dirpath,files[i]))
+            if count:
+                # 获取每个文件的修改时间，并按照修改时间排序
+                files.sort(key=lambda f: os.path.getmtime(os.path.join(dirpath, f)))
+                for i in range(count):
+                    os.remove(os.path.join(dirpath,files[i]))
+            else:
+                for f in files:
+                    os.remove(os.path.join(dirpath,f))
     def join(self,args:tuple[str]=()):
         if hasattr(PathTool,'j'):
             return self.j
         elif len(args)!=0:
             return os.path.join(*(os.path.normpath(p) for p in args))
         
-LOGPATH=PathTool().join((USERSET['log']['outdir'] if USERSET['log']['outdir'] != "default" else "./../log",LOCALDATE+".log"))
+LOGPATH=PathTool().join((USERSET['log']['outdir'] if USERSET['log']['outdir'] != "default" else "./../../log",LOCALDATE+".log"))
 LOGDIR=os.path.dirname(LOGPATH)
 
 class UnPackingScratch3File:

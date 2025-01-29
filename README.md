@@ -17,14 +17,17 @@
 ## 快速使用
 在本仓库目录下使用`cmd`执行：
 ```bash
-python ./src/STP/stp.py <目标.sb3文件路径>
+python ./src/stp.py -c <目标.sb3文件路径>
 ```
 更多使用方法：
 - `-h`和`--help`：显示命令帮助列表。
 - `-r`和`--run`：转换完毕后自动执行output文件。
 - `-nl`和`--no-log`：不显示输出日志。  
+- `-c`和`--convert`：指定转换目标`.sb3`文件路径。
+- `-sl`和`--save-log`：保存输出日志到文件。（一般用于调试）
+- `rmlog`和`--remove-log`：删除输出日志文件的个数。（按照时间顺序，值为0表示所有日志）
 
-例：`python ./src/stp.py -c ./../../tests/allblocks.sb3 --run`
+例：`python ./src/stp.py -c ./../../tests/allblocks.sb3 --run -sl`
 ## 将不考虑支持以下功能：
 - 变量、列表显示功能
 - “说”“思考”“询问...并等待”显示功能
