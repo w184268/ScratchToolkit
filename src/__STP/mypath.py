@@ -6,8 +6,10 @@ import pathlib
 
 from cairosvg import svg2png
 from PIL import Image
+
 def re(path:str):
     return pathlib.Path(path).resolve(strict=True)
+
 class PathTool:
     def __init__(self,fp:str|tuple[str]=None,mode='p'):
         '''mode = 'p': fp是一个文件路径;    
@@ -42,7 +44,7 @@ class PathTool:
         elif len(args)!=0:
             return os.path.join(*(os.path.normpath(p) for p in args))
         
-LOGPATH=PathTool().join((USERSET['log']['outdir'],LOCALDATE+".log")) if USERSET['log']['outdir'] != "default" else PathTool().join(('./../log',LOCALDATE+".log"))
+LOGPATH=PathTool().join((USERSET['log']['outdir'] if USERSET['log']['outdir'] != "default" else "./../log",LOCALDATE+".log"))
 LOGDIR=os.path.dirname(LOGPATH)
 
 class UnPackingScratch3File:

@@ -1,9 +1,6 @@
-from .mypath import log,LOGPATH,UnPackingScratch3File,PathTool
-from .config import sys,LOGFORMAT,USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE
+from .mypath import log,UnPackingScratch3File,PathTool
+from .config import USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE
 
-log.remove()
-log.add(sys.stdout,colorize=True,format=LOGFORMAT)
-log.add(LOGPATH,format=LOGFORMAT,retention=USERSET['log']['retention'],rotation=USERSET['log']['rotation'],diagnose=True)
 class CodeParser:
     def __init__(self,last:UnPackingScratch3File):
         """
@@ -71,20 +68,15 @@ class CodeParser:
             self.id,idinfo=block
             #print(block)
             if isinstance(idinfo,dict): #一般积木块
-                self.add(self.id,idinfo)
+                self.add(idinfo)
                 self.depth=0 #恢复默认
             else: #变量、常量、列表类型
-                self.var_and_list(self.id,idinfo)
-    def var_and_list(self,id:str,kw): #变量、常量、列表管理
+                self.var_and_list(idinfo)
+    def var_and_list(self,kw): #变量、常量、列表管理
         ...
-    def add(self,id:str,kw): #积木管理
-        type_=f"{self.classname} -> {id}"
-        try:
-            self.depth,self.base=self.get_nested_depth(kw)
-            #print(self.get_nested_depth(kw))
-        except Exception as e:
-            log.warning(e)
-            self.depth,self.base=self.get_nested_depth2(kw)
+    def add(self,kw): #积木管理
+        type_=f"{self.classname} -> {self.id}"
+        self.depth,self.base=self.get_nested_depth(self.id,kw)
         self.opcode=kw["opcode"]
         log.debug(f'Converting {type_} (name="{self.opcode}" ,depth={self.depth})...')
         print(self.base)
@@ -115,7 +107,11 @@ class CodeParser:
             case 0:
                 #self.sprcode.append('    '*(self.depth+2)+self.classname+'.'+self.opcode+'('+', '.join(args)+')')
                 if self.base.get('opcode','').startswith('procedures_'): #在某个函数下
-                    ...
+                    if self.base['opcode'] not in self.funccode: #如果函数不存在，则创建
+                        self.funccode[self.base['opcode']]=[[],[]]
+                    self.funccode[self.base['opcode']][1].append('    '*(self.depth+2)+self.classname+'.'+self.opcode+'('+', '.join(args)+')')
+                else: #在角色下
+                    self.funccode['__init__'][1].append('    '*(self.depth+2)+self.classname+'.'+self.opcode+'('+', '.join(args)+')')
             case 1:
                 #self.funccode.append('    '*(self.depth+1)+"def "+string+'(self,'+', '.join(args)+'):')
                 ...
@@ -129,16 +125,17 @@ class CodeParser:
             case 3:
                 self.code.append('    '*(self.depth+2)+string)
 
-    def get_nested_depth(self,block:dict,depth=0):
+    def get_nested_depth(self,id:str,block:dict,depth=0):
         """
         递归函数，用于计算积木块的嵌套深度。
         
+        :param id: 当前积木块的ID
         :param block: 当前积木块
         :param depth: 当前深度
         :return: 积木块的嵌套深度
         """
         #print(block,type(block))
-        pid=block.get('parent')
+        pid=block.get('parent','')
         if pid:
             parentdict=self.blocks.get(pid,{}) #父积木块
             #print(parentdict)
@@ -149,78 +146,15 @@ class CodeParser:
                 if parentdict['opcode'] not in USERSET["blocks"]['ignore']:
                     if not block.get('topLevel'):
                         if not block["shadow"]: #不隐藏的纯积木块
-                            if self.id in substack: #嵌套类型
-                                return self.get_nested_depth(parentdict, depth+1)
+                            if id in substack: #嵌套类型
+                                return self.get_nested_depth(pid,parentdict, depth+1)
                             else:
-                                return self.get_nested_depth(parentdict, depth)
+                                return self.get_nested_depth(pid,parentdict, depth)
                         else:
                             #return self.get_nested_depth(parentdict, depth + 1)
-                            return self.get_nested_depth(parentdict, depth)
+                            return self.get_nested_depth(pid,parentdict, depth)
                 '''else:
                     block={}'''
 
         return depth,block
-    def get_nested_depth2(self,block,depth=0): #备用方法
-        """
-        使用迭代方法计算积木块的嵌套深度。
-        
-        :param block: 当前积木块
-        :return: 积木块的嵌套深度
-        """
-        stack:list[dict] = [block] 
-        while stack:
-            current_block = stack.pop()
-            parentdict=self.blocks.get(current_block.get('parent',''),{})
-            inputs:dict=parentdict.get('inputs',{})
-            substack=inputs.get("SUBSTACK",[])
-            substackN=inputs.get("")
-            #print(type(current_block))
-            if current_block is not None and parentdict:
-                if parentdict['opcode'] not in USERSET["blocks"]['ignore']:
-                    if current_block.get('topLevel',False):
-                        continue
-                    if 'parent' in current_block:
-                        if self.id in substack:
-                            stack.append(parentdict)
-                            depth += 1
-                        elif not current_block["shadow"]:
-                            continue
-                        else:
-                            print(current_block,parentdict)
-                            #stack.append({})
-                            stack.append(parentdict)
-                            depth += 1
-                else:
-                    current_block={}
-        return depth,current_block
-    def get_nested_depth3(self, blocks:dict, current_depth=0):
-        print(blocks)
-        block_id = self.id
-        if block_id not in blocks:
-            return current_depth
-        block = blocks[block_id]
-        next_depth = current_depth + 1
-        next_block_id = block.get('parent', '')
-        inputs_depth = next_depth
-        
-        if 'inputs' in block:
-            for input_name, input_value in block['inputs'].items():
-                if isinstance(input_value[1], list) and len(input_value[1]) == 2:
-                    if isinstance(input_value[1][1], str):
-                        inputs_depth = max(inputs_depth, self.get_nested_depth3(input_value[1][1], blocks, next_depth))
-                    elif isinstance(input_value[1][1], int):
-                        inputs_depth = max(inputs_depth, self.get_nested_depth3(str(input_value[1][1]), blocks, next_depth))
-        
-        if isinstance(next_block_id, str):
-            next_depth = max(next_depth, self.get_nested_depth3(next_block_id, blocks, next_depth))
-        elif isinstance(next_block_id, int):
-            next_depth = max(next_depth, self.get_nested_depth3(str(next_block_id), blocks, next_depth))
-        
-        return max(next_depth, inputs_depth)
-
-    def get_max_depth(self, script, blocks):
-        max_depth = 0
-        for block_id in script:
-            depth = self.get_nested_depth3(block_id, blocks)
-            max_depth = max(max_depth, depth)
-        return max_depth
+    
