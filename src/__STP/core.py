@@ -1,5 +1,5 @@
 from .mypath import log,UnPackingScratch3File,PathTool
-from .config import USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE,HEAD
+from .config import USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE,HEAD,Any
 
 class CodeParser:
     def __init__(self,last:UnPackingScratch3File):
@@ -7,17 +7,18 @@ class CodeParser:
         转换核心，解析project.json并生成python代码。
         """
         self.classname:str
+        self.funccode:dict[str,Any]
         self.cdir,self.outdir=last.cdir,last.outdir
         self.t=PathTool(self.cdir)
         with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8') as f: #导入project.json
             self.pj=json.load(f)
         self.last=last
         self.mod={"internal":{"typing":["",["Any"]],"math":["",[]],"random":["",[]],"sys":["",[]],"threading":["",["Thread","Timer"]]},"third-party":{"pygame":["pg",[]]}} #根据情况导入所需要的库
-        self.var=dict() #存储变量
-        self.array=dict() #存储列表
+        self.var:dict[str, int|str|float]=dict() #存储变量
+        self.array:dict[str, list]=dict() #存储列表
 
         self.depth=0 #默认深度
-        self.code=[] #存储代码（总）
+        self.code:list[str]=[] #存储代码（总）
         self.sprcode:dict[str,dict]={} #所有角色代码汇总
         self.targets=self.pj["targets"] #所有角色信息
         self.fstr(f"pg.display.set_caption('{last.p.NAME}')",3)
@@ -50,7 +51,7 @@ class CodeParser:
         else:
             self.visible:bool=tgs.get("visible",True) #角色是否可见
             self.x:float=tgs['x'] #x坐标
-            self.y:float=['y'] #y坐标
+            self.y:float=tgs['y'] #y坐标
             self.size:int=tgs['size'] #放大与缩小，100是原始尺寸
             self.direction:int=tgs['direction'] #朝向，0度表示朝右，90度表示朝上，180度表示朝左，270度表示朝下
             self.draggable:bool=tgs['draggable'] #角色的可拖动性
@@ -136,7 +137,7 @@ class CodeParser:
         if funcname not in self.funccode: #创建函数
             self.funccode[funcname]=[{},{}]
         for argname,argdefault,argtype in zip(eval(mutation['argumentnames']),eval(mutation['argumentdefaults']),argtypes):
-            self.funccode[funcname][0][argname.replace(' ','_')]=[argdefault,type.get(argtype,'Any')]
+            self.funccode[funcname][0][argname.replace(' ','_')]=[argdefault,type.get(argtype,'Any')] #type: ignore 
         if not func:
             self.funccode[funcname][1]['self.'+self.opcode+'('+', '.join(args)+')']=self.depth
 

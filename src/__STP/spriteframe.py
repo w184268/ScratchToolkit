@@ -3,7 +3,7 @@ import sys,math,random
 from threading import Timer,Thread
 
 class Sprite(pg.sprite.Sprite): #角色框架
-    def __init__(self, image_file:tuple[str], initxy:tuple[float,float], direction:int):
+    def __init__(self, image_file:tuple[str], initxy:tuple[int,int], direction:int):
         super().__init__()
         self.image:pg.Surface
         self.images={}
@@ -11,10 +11,10 @@ class Sprite(pg.sprite.Sprite): #角色框架
             self.images[i]=pg.image.load(i)
         self.rect = self.image.get_rect() if self.image else pg.Rect(0,0,0,0)
         self.direction=direction
-        self.rect.x=initxy[0],self.rect.y=initxy[1]
+        self.rect.x,self.rect.y=initxy
 
     def motion_gotoxy(self,dx:float,dy:float):
-        self.rect.move_ip(dx,dy)
+        self.rect.move_ip(dx,dy) if self.rect else None
     def motion_glidesecstoxy(self,dx:float,dy:float,duration:int|float):
         distance=duration * 10
         if dx != self.rect.x:

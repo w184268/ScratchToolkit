@@ -1,4 +1,4 @@
-from .config import os,json,USERSET,LOCALDATE,THISPATH,log
+from .config import os,json,USERSET,LOCALDATE,THISPATH,log,Optional
 
 import zipfile
 import xml.etree.ElementTree as ET
@@ -11,7 +11,7 @@ def re(path:str):
     return pathlib.Path(path).resolve(strict=True)
 
 class PathTool:
-    def __init__(self,fp:str|tuple[str,str]=None,mode='p'):
+    def __init__(self,fp:Optional[str|tuple[str, str]]=None,mode='p'):
         '''mode = 'p': fp是一个文件路径;    
            mode = 'n': fp是一个文件名;  
            mode = 'j': 只合并路径，fp的类型为tuple[str,str]。'''
@@ -43,7 +43,7 @@ class PathTool:
             else:
                 for f in files:
                     os.remove(os.path.join(dirpath,f))
-    def join(self,args:str|tuple[str,str]=()):
+    def join(self,args:Optional[str|tuple[str,str]]=()):
         if hasattr(PathTool,'j'):
             return self.j
         elif len(args)!=0:
