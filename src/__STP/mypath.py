@@ -43,7 +43,7 @@ class PathTool:
             else:
                 for f in files:
                     os.remove(os.path.join(dirpath,f))
-    def join(self,args:Union[str,Tuple[str,str],None]=()):
+    def join(self,args:Union[str,Tuple[str,str]]=("","")):
         if hasattr(PathTool,'j'):
             return self.j
         elif args and len(args)!= 0:
