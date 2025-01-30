@@ -8,7 +8,7 @@ from cairosvg import svg2png
 from PIL import Image
 
 def re(path:str):
-    return pathlib.Path(path).resolve(strict=True)
+    return str(pathlib.Path(path).resolve(strict=True))
 
 class PathTool:
     def __init__(self,fp:Optional[str|tuple[str, str]]=None,mode='p'):

@@ -1,4 +1,4 @@
-from .mypath import log,UnPackingScratch3File,PathTool
+from .mypath import log,UnPackingScratch3File,PathTool,re
 from .config import USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE,HEAD,Any
 
 class CodeParser:
@@ -19,6 +19,8 @@ class CodeParser:
 
         self.depth=0 #默认深度
         self.code:list[str]=[] #存储代码（总）
+        self.gamecode:list[str]=[] #存储游戏代码
+        self.gamecode.extend(GAME_INIT_CODE.splitlines()) #游戏初始化代码
         self.sprcode:dict[str,dict]={} #所有角色代码汇总
         self.targets=self.pj["targets"] #所有角色信息
         self.fstr(f"pg.display.set_caption('{last.p.NAME}')",3)
@@ -172,13 +174,13 @@ class CodeParser:
         return depth,block
 
     def write_result(self):
-        requirements=[] #存储第三方库依赖
+        self.requirements=[] #存储第三方库依赖
         self.code.append(HEAD) #加入头注释
         #生成导入库代码
         for type_,modinfo in self.mod.items():
             for name,args in modinfo.items():
                 if type_=='third-party':
-                    requirements.append(name)
+                    self.requirements.append(name)
                 if not args[0] and not args[1]:
                     self.code.append(f"import {name}")
                 elif args[0] and not args[1]:
@@ -193,7 +195,7 @@ class CodeParser:
 
         #生成角色初始化代码
         for i in SPRITE_INIT_CODE.splitlines():
-            if 'import' not in i: self.code.append(i)
+            self.code.append(i)
         self.code.append("")
 
         # 生成角色转换代码
@@ -208,8 +210,6 @@ class CodeParser:
                             c.append(f"{argname}:{arginfo[1]}={argdefault}")
                         elif arginfo[1]=='bool':
                             c.append(f"{argname}:{arginfo[1]}={argdefault.capitalize()}")
-
-
                     self.code.append(f"    def {funcname}(self, {', '.join(c)}):")
                 else: #无参数
                     self.code.append(f"    def {funcname}(self):")
@@ -223,8 +223,10 @@ class CodeParser:
             self.code.append("")
 
         # 生成游戏初始化代码
-        for i in GAME_INIT_CODE.splitlines():
-            if 'import' not in i: self.code.append(i)
+        for i in self.gamecode:
+            self.code.append(i)
+
+        # 生成运行入口
         self.code.extend([
             "",
             "if __name__=='__main__':",
@@ -236,4 +238,16 @@ class CodeParser:
         with open(self.outpyfile,'w',encoding='utf-8') as f:
             f.write('\n'.join(self.code))
         with open(self.t.join((self.outdir,"requirements.txt")),'w',encoding='utf-8') as f:
-            f.write('\n'.join(requirements))
+            f.write('\n'.join(self.requirements))
+
+    def code_tree(self):
+        return {
+            "HEAD": HEAD,
+            "import_modules": self.mod,
+            "init_sprite": SPRITE_INIT_CODE,
+            "sprite_code": self.sprcode,
+            "init_game": GAME_INIT_CODE,
+            "game_code": self.gamecode,
+            "requirements": self.requirements,
+            "outpyfile": re(self.outpyfile)
+        }

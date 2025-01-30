@@ -1,5 +1,6 @@
 import traceback
 import argparse as ap
+import pprint
 
 def main(fp:str='./tests/work1.sb3',args:ap.Namespace=ap.Namespace()):
     if args:
@@ -24,6 +25,9 @@ def main(fp:str='./tests/work1.sb3',args:ap.Namespace=ap.Namespace()):
                 log.error('There is something wrong above.')
             else:
                 log.success('The file has no wrong.')
+            if args.tree:
+                log.debug('Showing the code tree...')
+                log.debug('\n'+pprint.pformat(parser.code_tree()))
         if args.save_log:
             log.debug(f'The log was written in {re(LOGPATH)}')
 
@@ -39,6 +43,7 @@ if __name__=='__main__':
     parser.add_argument('--run','-r',dest="run",action="store_true",default=False,help="Run and check the output file.")
     parser.add_argument('--no-log','-nl',dest="no_log",action="store_true",default=False,help="Do not show the log.")
     parser.add_argument('--save-log','-sl',dest="save_log",action="store_true",default=False,help="Save the log to a file.")
+    parser.add_argument('-t','--tree',dest="tree",action="store_true",default=False,help="Show the code tree.")
     args=parser.parse_args()
     if args.save_log:
         log.add(LOGPATH,format=LOGFORMAT)
