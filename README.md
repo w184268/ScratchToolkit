@@ -11,10 +11,10 @@
 
 </div>
 
-# STP: Scratch-To-Pygame
-## 描述
+## STP: Scratch-To-Pygame
+### 描述
 - Scratch-To-Pygame（STP）是一个用Python实现的将Scratch转换为Pygame的脚本工具，现已支持`.sb3`文件。
-## 快速使用
+### 快速使用
 在本仓库目录下使用`cmd`执行：
 ```bash
 python ./src/stp.py -c <目标.sb3文件路径>
@@ -32,12 +32,15 @@ python ./src/stp.py -c <目标.sb3文件路径>
 ```bash
 python ./src/stp.py -c ./../../tests/allblocks.sb3 --run -sl
 ```
-## 将不考虑支持以下功能：
+### 将不考虑支持以下功能：
 - 变量、列表显示功能
 - “说”“思考”“询问...并等待”显示功能
 - 除画笔、音乐以外的Scratch3扩展功能  
 
 （注：你可以提交建议添加这些功能的Issue，但[EricDing618](https://github.com/EricDing618)可能不会添加，需要等待他人的PR。）
+## merge.py
+### 描述
+- merge.py是一个将两个`.sb3`文件合并为一个文件的脚本。
 # 第三方库&软件
 库：
 - loguru==0.7.2

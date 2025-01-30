@@ -14,9 +14,9 @@ if os.path.basename(THISPATH) != "STP":
     os.chdir('./src/__STP')
 
 with open("./spriteframe.py","r",encoding="utf-8") as f:
-    SPRITE_INIT_CODE='\n'.join([i for i in f.readlines() if 'import' not in i])
+    SPRITE_INIT_CODE='\n'.join([i.rstrip() for i in f.readlines() if 'import' not in i])
 with open("./gameframe.py","r",encoding="utf-8") as f:
-    GAME_INIT_CODE='\n'.join([i for i in f.readlines() if 'import' not in i])
+    GAME_INIT_CODE='\n'.join([i.rstrip() for i in f.readlines() if 'import' not in i])
 with open("./settings.json",'r',encoding='utf-8') as f:
     USERSET:dict=json.load(f)
 HEAD=dedent(f'''\

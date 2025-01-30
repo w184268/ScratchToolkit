@@ -6,58 +6,57 @@
 #                                                                                             |___/   |___/                            
 # Scratch-To-Pygame(Beta v0.0.1)
 # Made by EricDing618.
-                  
+
+from typing import Any
+import math
+import random
+import sys
+from threading import Thread, Timer
 import pygame as pg
-import sys,math,random,threading
 
 class Sprite(pg.sprite.Sprite): #角色框架
-    def __init__(self, image_file:tuple[str], initxy:tuple[float,float], direction:int):
+    def __init__(self, image_file:tuple[str], initxy:tuple[int,int], direction:int):
         super().__init__()
+        self.image:pg.Surface
         self.images={}
         for i in image_file:
-            self.images[i]=pg.image.load(image_file)
-        self.rect = self.image.get_rect()
-        self.rect.x=initxy[0],self.rect.y=initxy[1]
+            self.images[i]=pg.image.load(i)
+        self.rect = self.image.get_rect() if self.image else pg.Rect(0,0,0,0)
+        self.direction=direction
+        self.rect.x,self.rect.y=initxy
 
     def motion_gotoxy(self,dx:float,dy:float):
-        self.rect.move_ip(dx,dy)
+        self.rect.move_ip(dx,dy) if self.rect else None
     def motion_glidesecstoxy(self,dx:float,dy:float,duration:int|float):
         distance=duration * 10
-        if dx != self.rect.x:
-            dx=distance*pg.math.cos(pg.math.radians(self.direction))
-        if dy != self.rect.y:
-            dy=distance*pg.math.sin(pg.math.radians(self.direction))
+        if self.rect:
+            if dx != self.rect.x:
+                dx=distance*math.cos(math.radians(self.direction))
+            if dy != self.rect.y:
+                dy=distance*math.sin(math.radians(self.direction))
 
     def motion_turnright(self, degrees):
         self.image = pg.transform.rotate(self.image, degrees)
     def control_wait(self,s:float):
-        threading.Timer(s,lambda:0).start()
+        Timer(s,lambda:0).start()
 
-class Function():
-    def __init__(self):
-        self.func:dict[Sprite,dict[str,]]={}
-        self.args:dict[Sprite,dict[str,tuple]]={}
-    def add(self,sp:Sprite,func:str,exec,args=()):
-        if self.func.get(sp,{}).get(func):
-            self.func[sp][func]+=exec
-            self.args[sp][func]+=args
-        else:
-            self.func[sp]={func:exec}
-            self.args[sp]={func:args}
-    def run(self,sp:Sprite,func:str):
-        exec=self.func[sp][func]
-        args=self.args[sp][func]
-        for e,a in zip(exec,args):
-            e(*a)
-        pg.display.set_caption('mu')
 class stage_Stage(Sprite):
-    def __init__(self,):
+    def __init__(self):
         super().__init__()
-        while True:
+
+    def _test_labeltext(self, number_or_text:int|float|str="", boolean:bool=False):
+        self.control_wait(2)
+
+
 class spr_角色1(Sprite):
-    def __init__(self,):
+    def __init__(self):
         super().__init__()
-        while True:
+
+    def _显示声波(self):
+        ...
+    def _初始化(self):
+        ...
+
 
 class Game:
     def __init__(self):
