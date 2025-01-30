@@ -17,17 +17,18 @@ class Sprite(pg.sprite.Sprite): #角色框架
         self.rect.move_ip(dx,dy) if self.rect else None
     def motion_glidesecstoxy(self,dx:float,dy:float,duration:int|float):
         distance=duration * 10
-        if dx != self.rect.x:
-            dx=distance*math.cos(math.radians(self.direction))
-        if dy != self.rect.y:
-            dy=distance*math.sin(math.radians(self.direction))
+        if self.rect:
+            if dx != self.rect.x:
+                dx=distance*math.cos(math.radians(self.direction))
+            if dy != self.rect.y:
+                dy=distance*math.sin(math.radians(self.direction))
 
     def motion_turnright(self, degrees):
         self.image = pg.transform.rotate(self.image, degrees)
     def control_wait(self,s:float):
         Timer(s,lambda:0).start()
 
-class Function():
+'''class Function():
     def __init__(self):
         self.func:dict[Sprite,dict[str,]]={}
         self.args:dict[Sprite,dict[str,tuple]]={}
@@ -42,4 +43,4 @@ class Function():
         exec=self.func[sp][func]
         args=self.args[sp][func]
         for e,a in zip(exec,args):
-            e(*a)
+            e(*a)'''

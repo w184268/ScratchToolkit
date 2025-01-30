@@ -1,4 +1,4 @@
-from .config import os,json,USERSET,LOCALDATE,THISPATH,log,Optional
+from .config import os,json,USERSET,LOCALDATE,THISPATH,log,Optional,Union,Tuple
 
 import zipfile
 import xml.etree.ElementTree as ET
@@ -43,10 +43,10 @@ class PathTool:
             else:
                 for f in files:
                     os.remove(os.path.join(dirpath,f))
-    def join(self,args:Optional[str|tuple[str,str]]=()):
+    def join(self,args:Union[str,Tuple[str,str],None]=()):
         if hasattr(PathTool,'j'):
             return self.j
-        elif len(args)!=0:
+        elif args and len(args)!= 0:
             return os.path.join(*(os.path.normpath(p) for p in args))
         
 LOGPATH=PathTool().join((USERSET['log']['outdir'] if USERSET['log']['outdir'] != "default" else "./../../log",LOCALDATE+".log")) #type: ignore
