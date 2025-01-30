@@ -23,7 +23,7 @@ class CodeParser:
         for t in self.targets:
             self.give(t)
             self.sprcode[self.classname]=self.funccode #保存角色代码
-            self.funccode={"__init__":[{},{}]} #恢复默认
+            self.funccode={"__init__":[{},{"super().__init__()":0}]} #恢复默认
 
     def give(self,tgs:dict): #给予信息,tgs为targets下每个信息
         #为方便后面操作
