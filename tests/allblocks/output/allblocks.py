@@ -1,6 +1,6 @@
 #  ____                          _            _               _____                   ____                                             
 # / ___|    ___   _ __    __ _  | |_    ___  | |__           |_   _|   ___           |  _ \   _   _    __ _    __ _   _ __ ___     ___ 
-# \___ \   / __| | '__|  / _` | | __|  / __| | '_ \   _____    | |    / _ \   _____  | |_) | | | | |  / _` |  / _` | | '_ ` _ \   / _ \
+# \___ \   / __| | '__|  / _` | | __|  / __| | '_ \   _____    | |    / _ \   _____  | |_) | | | | |  / _` |  / _` | | '_ ` _ \   / _ \\
 #  ___) | | (__  | |    | (_| | | |_  | (__  | | | | |_____|   | |   | (_) | |_____| |  __/  | |_| | | (_| | | (_| | | | | | | | |  __/
 # |____/   \___| |_|     \__,_|  \__|  \___| |_| |_|           |_|    \___/          |_|      \__, |  \__, |  \__,_| |_| |_| |_|  \___|
 #                                                                                             |___/   |___/                            
@@ -53,6 +53,25 @@ class Function():
         args=self.args[sp][func]
         for e,a in zip(exec,args):
             e(*a)
+
+class stage_Stage(Sprite):
+    def __init__(self):
+        super().__init__()
+
+
+class spr_角色1(Sprite):
+    def __init__(self):
+        super().__init__()
+        self.control_wait(1)
+
+    def _def_labeltext(self, number_or_text:int|float|str="", boolean:bool=False):
+        self.control_wait(1)
+
+    def _积木名称_labeltext(self, number_or_text:int|float|str="", boolean:bool=False):
+        ...
+    def _labeltext_labeltext(self, number_or_text:int|float|str="", boolean:bool=False):
+        ...
+
 
 class Game:
     def __init__(self):
