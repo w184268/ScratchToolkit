@@ -5,10 +5,12 @@ from threading import Timer,Thread
 class Sprite(pg.sprite.Sprite): #角色框架
     def __init__(self, image_file:tuple[str], initxy:tuple[float,float], direction:int):
         super().__init__()
+        self.image:pg.Surface
         self.images={}
         for i in image_file:
-            self.images[i]=pg.image.load(image_file)
-        self.rect = self.image.get_rect()
+            self.images[i]=pg.image.load(i)
+        self.rect = self.image.get_rect() if self.image else pg.Rect(0,0,0,0)
+        self.direction=direction
         self.rect.x=initxy[0],self.rect.y=initxy[1]
 
     def motion_gotoxy(self,dx:float,dy:float):
@@ -16,9 +18,9 @@ class Sprite(pg.sprite.Sprite): #角色框架
     def motion_glidesecstoxy(self,dx:float,dy:float,duration:int|float):
         distance=duration * 10
         if dx != self.rect.x:
-            dx=distance*pg.math.cos(pg.math.radians(self.direction))
+            dx=distance*math.cos(math.radians(self.direction))
         if dy != self.rect.y:
-            dy=distance*pg.math.sin(pg.math.radians(self.direction))
+            dy=distance*math.sin(math.radians(self.direction))
 
     def motion_turnright(self, degrees):
         self.image = pg.transform.rotate(self.image, degrees)

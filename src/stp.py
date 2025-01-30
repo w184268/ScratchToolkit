@@ -1,7 +1,7 @@
 import traceback
 import argparse as ap
 
-def main(fp:str='./tests/work1.sb3',args:ap.Namespace=None):
+def main(fp:str='./tests/work1.sb3',args:ap.Namespace=ap.Namespace()):
     if args:
         log.debug(dedent(f'''
     ==========================

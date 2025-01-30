@@ -6,6 +6,7 @@ class CodeParser:
         """
         转换核心，解析project.json并生成python代码。
         """
+        self.classname:str
         self.cdir,self.outdir=last.cdir,last.outdir
         self.t=PathTool(self.cdir)
         with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8') as f: #导入project.json
@@ -103,7 +104,10 @@ class CodeParser:
                     self.funccode['__init__'][1]['self.'+self.opcode+'('+', '.join(args)+')']=self.depth
             case 1:
                 #self.funccode.append('    '*(self.depth+1)+"def "+string+'(self,'+', '.join(args)+'):')
-                self.__functool(string,args,func=True)
+                if isinstance(string,dict):
+                    self.__functool(string,args,func=True)
+                else:
+                    raise ValueError("Invalid mutation!")
             case 2:
                 #self.code.append('    '*(self.depth+2)+self.classname+'=Sprite('+','.join(args)+')')
                 '''self.code.extend([

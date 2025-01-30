@@ -11,23 +11,24 @@ def re(path:str):
     return pathlib.Path(path).resolve(strict=True)
 
 class PathTool:
-    def __init__(self,fp:str|tuple[str]=None,mode='p'):
+    def __init__(self,fp:str|tuple[str,str]=None,mode='p'):
         '''mode = 'p': fp是一个文件路径;    
            mode = 'n': fp是一个文件名;  
-           mode = 'j': 只合并路径，fp的类型为tuple[str]。'''
+           mode = 'j': 只合并路径，fp的类型为tuple[str,str]。'''
         if fp:
-            if isinstance(fp,str): fp=os.path.normpath(fp)
-            #log.debug("Using the PathTool...")
-            match mode:
-                case 'p':
-                    self.DIR=os.path.dirname(fp)
-                    self.FILE=os.path.basename(fp)
-                    self.NAME,self.SUFFIX=os.path.splitext(self.FILE)
-                case 'n':
-                    self.FILE=fp
-                    self.NAME,self.SUFFIX=os.path.splitext(fp)
-                case 'j':
-                    self.j=os.path.join(*(os.path.normpath(p) for p in fp))
+            if isinstance(fp,str): 
+                fp=os.path.normpath(fp)
+                self.NAME:str
+                match mode:
+                    case 'p':
+                        self.DIR=os.path.dirname(fp)
+                        self.FILE=os.path.basename(fp)
+                        self.NAME,self.SUFFIX=os.path.splitext(self.FILE)
+                    case 'n':
+                        self.FILE=fp
+                        self.NAME,self.SUFFIX=os.path.splitext(fp)
+            elif mode=='j':
+                self.j=os.path.join(*(os.path.normpath(p) for p in fp))
     def rmlog(self,dirpath:str,count:int=0):
         # 获取目录中的所有文件
         files = os.listdir(dirpath)
@@ -42,13 +43,13 @@ class PathTool:
             else:
                 for f in files:
                     os.remove(os.path.join(dirpath,f))
-    def join(self,args:tuple[str]=()):
+    def join(self,args:str|tuple[str,str]=()):
         if hasattr(PathTool,'j'):
             return self.j
         elif len(args)!=0:
             return os.path.join(*(os.path.normpath(p) for p in args))
         
-LOGPATH=PathTool().join((USERSET['log']['outdir'] if USERSET['log']['outdir'] != "default" else "./../../log",LOCALDATE+".log"))
+LOGPATH=PathTool().join((USERSET['log']['outdir'] if USERSET['log']['outdir'] != "default" else "./../../log",LOCALDATE+".log")) #type: ignore
 LOGDIR=os.path.dirname(LOGPATH)
 
 class UnPackingScratch3File:
@@ -118,9 +119,9 @@ class PackingScratch3File:
         if os.path.isdir(dp) and 'project.json' in os.listdir(dp):
             t=PathTool((dp,'project.json'),'j')
             with open(t.join(dp),'r',encoding='utf-8') as f:
-                f:dict=json.load(f)
+                sb3f:dict=json.load(f)
             for i in ('targets','monitors','extensions','meta'):
-                if not f.get(i,[]):
+                if not sb3f.get(i,[]):
                     result=False
                     break
                 elif result != False:
