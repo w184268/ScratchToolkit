@@ -37,7 +37,7 @@ if __name__=='__main__':
     from __STP.mypath import PathTool,re,LOGDIR,LOGPATH
     from __STP.core import log,UnPackingScratch3File,CodeParser
     from __STP.config import os,sys,LOGFORMAT,USERSET,dedent
-    log.remove()
+    
     log.add(sys.stdout,colorize=True,format=LOGFORMAT)
     parser=ap.ArgumentParser(description="The command list of Scratch-To-Pygame")
     parser.add_argument('--remove-log','-rmlog',dest='logcount',required=False, default=None,type=int,help="Remove the previous <logcount> log file(s).")

@@ -119,7 +119,7 @@ class PackingScratch3File:
         """
         log.debug(f"Packing {dp}...")
         self.p=PathTool(dp,'d')
-        fp=[]
+        fp=['project.json']
         with open(self.p.join((self.p.DIR,'project.json')),'r',encoding='utf-8') as f:
             c=json.load(f)
         for t in c['targets']:

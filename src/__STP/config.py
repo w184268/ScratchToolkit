@@ -1,6 +1,7 @@
 import pygame as pg
 from numpy import array,where
 from loguru import logger as log
+log.remove()
 
 import json
 import os,sys,time
