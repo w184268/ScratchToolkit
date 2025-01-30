@@ -38,6 +38,9 @@ python ./src/stp.py -c ./../../tests/allblocks.sb3 --run -sl
 - 除画笔、音乐以外的Scratch3扩展功能  
 
 （注：你可以提交建议添加这些功能的Issue，但[EricDing618](https://github.com/EricDing618)可能不会添加，需要等待他人的PR。）
+## pack.py
+### 描述
+- pack.py是一个将解包后的Scratch项目还原的脚本。
 ## merge.py
 ### 描述
 - merge.py是一个将两个`.sb3`文件合并为一个文件的脚本。
