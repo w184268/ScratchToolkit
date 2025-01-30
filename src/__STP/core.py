@@ -1,5 +1,5 @@
 from .mypath import log,UnPackingScratch3File,PathTool,re
-from .config import USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE,HEAD,Any
+from .config import USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE,HEAD,Any,Union,Tuple
 
 class CodeParser:
     def __init__(self,last:UnPackingScratch3File):
@@ -59,7 +59,6 @@ class CodeParser:
             self.draggable:bool=tgs['draggable'] #角色的可拖动性
             self.rotation:str=tgs['rotationStyle'] #角色的旋转样式，可以是all around（围绕中心点旋转）、left-right（左右旋转）或don't rotate（不旋转）
             self.classname='spr_'+self.name
-        self.fstr(mode=2,args=())
         self.funccode={"__init__":[{},{"super().__init__()":0}]} #代码（角色下函数）
         for block in self.blocks.items():
             self.id,self.idinfo=block
@@ -92,9 +91,9 @@ class CodeParser:
     def fstr(self,string:str|dict="",mode=0,args=()):
         '''
         mode=0: 调用积木方法，string不填，args为传参  
-        mode=1: 创建一个函数，string为mutation，args不填 
-        mode=2: 创建一个角色，string不填，args为角色信息，按照实际操作  
-        mode=3: 灵活性的，args不填，string是代码（如判断、循环等）
+        mode=1: 创建一个函数，string为mutation，args不填   
+        mode=2: 灵活性的，args不填，string是代码（如判断、循环等）  
+        mode=3: 角色基础信息，string为代码，args不填
         '''
         args=(str(i) for i in args)
         match mode:
@@ -112,16 +111,15 @@ class CodeParser:
                 else:
                     raise ValueError("Invalid mutation!")
             case 2:
-                #self.code.append('    '*(self.depth+2)+self.classname+'=Sprite('+','.join(args)+')')
-                '''self.code.extend([
-                    'class '+self.classname+'(Sprite):',
-                    '    def __init__(self,'+','.join(args)+'):',
-                    '        super().__init__()'
-                    ])'''
-            case 3:
                 '''self.code.append('    '*(self.depth+2)+string)'''
-
-    def __functool(self,mutation:dict,args=(),func=False):
+                if self.base.get('opcode','').startswith('procedures_'): #在某个函数下
+                    funcmutation=self.blocks[self.base['inputs']['custom_block'][1]]['mutation']
+                    self.__functool(funcmutation,string,free=True)
+                else: #在角色下
+                    self.funccode['__init__'][1][string]=self.depth
+            case 3:
+                self.funccode['__init__'][1][string]=0 #角色基础信息，无需深度
+    def __functool(self,mutation:dict,args:Union[str,Tuple[str,...]]="",func=False,free=False):
         type={'%s':'int|float|str','%b':'bool'}
         name=[]
         argtypes=[]
@@ -141,7 +139,10 @@ class CodeParser:
         for argname,argdefault,argtype in zip(eval(mutation['argumentnames']),eval(mutation['argumentdefaults']),argtypes):
             self.funccode[funcname][0][argname.replace(' ','_')]=[argdefault,type.get(argtype,'Any')] #type: ignore 
         if not func:
-            self.funccode[funcname][1]['self.'+self.opcode+'('+', '.join(args)+')']=self.depth
+            if not free:
+                self.funccode[funcname][1]['self.'+self.opcode+'('+', '.join(args)+')']=self.depth
+            else:
+                self.funccode[funcname][1][args]=self.depth
 
     def get_nested_depth(self,id:str,block:dict,depth=0):
         """
