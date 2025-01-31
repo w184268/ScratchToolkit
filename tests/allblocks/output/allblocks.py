@@ -14,7 +14,7 @@ import sys
 from threading import Thread, Timer
 import pygame as pg
 
-class Sprite(pg.sprite.Sprite): #角色框架
+class Sprite(pg.sprite.Sprite,Thread): #角色框架
     def __init__(self, image_file:tuple[str], initxy:tuple[int,int], direction:int):
         super().__init__()
         self.image:pg.Surface
@@ -26,7 +26,7 @@ class Sprite(pg.sprite.Sprite): #角色框架
         self.rect.x,self.rect.y=initxy
 
     def motion_gotoxy(self,dx:float,dy:float):
-        self.rect.move_ip(dx,dy) if self.rect else None
+        self.rect.move_ip(dx,dy)
     def motion_glidesecstoxy(self,dx:float,dy:float,duration:int|float):
         distance=duration * 10
         if self.rect:
@@ -49,13 +49,14 @@ class spr_角色1(Sprite):
     def __init__(self):
         super().__init__()
         self.control_wait(1)
+        while True:
 
     def _def_labeltext(self, number_or_text:int|float|str="", boolean:bool=False):
         self.control_wait(1)
 
     def _积木名称_labeltext(self, number_or_text:int|float|str="", boolean:bool=False):
         ...
-    def _labeltext_labeltext(self, number_or_text:int|float|str="", boolean:bool=False):
+    def _self(self):
         ...
 
 
@@ -63,6 +64,7 @@ class Game:
     def __init__(self):
         pg.init() #初始化
         screen = pg.display.set_mode((800,600)) #舞台大小为800,600
+        pg.display.set_caption('allblocks')
 
 if __name__=='__main__':
    rungame=Game()

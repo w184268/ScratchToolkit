@@ -2,7 +2,7 @@ import pygame as pg
 import sys,math,random
 from threading import Timer,Thread
 
-class Sprite(pg.sprite.Sprite): #角色框架
+class Sprite(pg.sprite.Sprite,Thread): #角色框架
     def __init__(self, image_file:tuple[str], initxy:tuple[int,int], direction:int):
         super().__init__()
         self.image:pg.Surface
@@ -12,9 +12,12 @@ class Sprite(pg.sprite.Sprite): #角色框架
         self.rect = self.image.get_rect() if self.image else pg.Rect(0,0,0,0)
         self.direction=direction
         self.rect.x,self.rect.y=initxy
+        self.start()
+        
+
 
     def motion_gotoxy(self,dx:float,dy:float):
-        self.rect.move_ip(dx,dy) if self.rect else None
+        self.rect.move_ip(dx,dy)
     def motion_glidesecstoxy(self,dx:float,dy:float,duration:int|float):
         distance=duration * 10
         if self.rect:

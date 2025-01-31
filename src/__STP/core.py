@@ -23,7 +23,7 @@ class CodeParser:
         self.gamecode.extend(GAME_INIT_CODE.splitlines()) #游戏初始化代码
         self.sprcode:dict[str,dict]={} #所有角色代码汇总
         self.targets=self.pj["targets"] #所有角色信息
-        self.fstr(f"pg.display.set_caption('{last.p.NAME}')",3)
+        self.fstr(f"pg.display.set_caption('{last.p.NAME}')",4)
         for t in self.targets:
             self.give(t)
             self.sprcode[self.classname]=self.funccode #保存角色代码
@@ -80,8 +80,15 @@ class CodeParser:
         match self.opcode: #匹配相应的积木名
             case "control_wait":
                 self.fstr(args=(self.idinfo['inputs']['DURATION'][1][1]))
+            case "control_repeat":
+                self.fstr(f"for _ in range({self.idinfo['inputs']['TIMES'][1][1]}):",3)
             case "control_forever":
                 self.fstr("while True:",3)
+            case "control_if":
+                self.fstr(f"if {self.idinfo['inputs']['CONDITION'][1][1]}:",3)
+            case "control_if_else":
+                self.fstr(f"if {self.idinfo['inputs']['CONDITION'][1][1]}:",3)
+                self.fstr("else:",3)
             case "procedures_definition":
                 self.fstr(self.blocks[self.idinfo['inputs']['custom_block'][1]]['mutation'],1)
             case _:
@@ -93,7 +100,10 @@ class CodeParser:
         mode=0: 调用积木方法，string不填，args为传参  
         mode=1: 创建一个函数，string为mutation，args不填   
         mode=2: 灵活性的，args不填，string是代码（如判断、循环等）  
-        mode=3: 角色基础信息，string为代码，args不填
+        mode=3: 角色基础信息，string为代码，args不填  
+        mode=4: 游戏基础信息，string为代码，args不填
+        mode=5: 列表、变量管理，string为代码，args不填
+        mode=6: 嵌套类型管理，string为代码，args为每个的嵌套深度
         '''
         args=(str(i) for i in args)
         match mode:
@@ -122,6 +132,8 @@ class CodeParser:
                     self.funccode['__init__'][1][string]=self.depth
             case 3:
                 self.funccode['__init__'][1][string]=0 #角色基础信息，无需深度
+            case 4:
+                self.gamecode.append('        '+string)
     def __functool(self,mutation:dict,args:Union[str,Tuple[str,...]]="",func=False,free=False):
         type={'%s':'int|float|str','%b':'bool'}
         name=[]

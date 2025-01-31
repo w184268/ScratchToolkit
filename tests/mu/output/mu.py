@@ -14,7 +14,7 @@ import sys
 from threading import Thread, Timer
 import pygame as pg
 
-class Sprite(pg.sprite.Sprite): #角色框架
+class Sprite(pg.sprite.Sprite,Thread): #角色框架
     def __init__(self, image_file:tuple[str], initxy:tuple[int,int], direction:int):
         super().__init__()
         self.image:pg.Surface
@@ -24,9 +24,12 @@ class Sprite(pg.sprite.Sprite): #角色框架
         self.rect = self.image.get_rect() if self.image else pg.Rect(0,0,0,0)
         self.direction=direction
         self.rect.x,self.rect.y=initxy
+        self.start()
+
+
 
     def motion_gotoxy(self,dx:float,dy:float):
-        self.rect.move_ip(dx,dy) if self.rect else None
+        self.rect.move_ip(dx,dy)
     def motion_glidesecstoxy(self,dx:float,dy:float,duration:int|float):
         distance=duration * 10
         if self.rect:
@@ -43,6 +46,7 @@ class Sprite(pg.sprite.Sprite): #角色框架
 class stage_Stage(Sprite):
     def __init__(self):
         super().__init__()
+        while True:
 
     def _test_labeltext(self, number_or_text:int|float|str="", boolean:bool=False):
         self.control_wait(2)
@@ -51,6 +55,7 @@ class stage_Stage(Sprite):
 class spr_角色1(Sprite):
     def __init__(self):
         super().__init__()
+        while True:
 
     def _显示声波(self):
         ...
@@ -62,6 +67,7 @@ class Game:
     def __init__(self):
         pg.init() #初始化
         screen = pg.display.set_mode((800,600)) #舞台大小为800,600
+        pg.display.set_caption('mu')
 
 if __name__=='__main__':
    rungame=Game()
