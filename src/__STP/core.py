@@ -1,5 +1,6 @@
 from .mypath import log,UnPackingScratch3File,PathTool,repath
 from .config import USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE,HEAD,Any,Union,Tuple
+from .spectype import FuncParser
 
 class CodeParser:
     def __init__(self,last:UnPackingScratch3File):
@@ -110,14 +111,21 @@ class CodeParser:
             case 0:
                 #self.sprcode.append('    '*(self.depth+2)+self.classname+'.'+self.opcode+'('+', '.join(args)+')')
                 if self.base.get('opcode','').startswith('procedures_'): #在某个函数下
-                    funcmutation=self.blocks[self.base['inputs']['custom_block'][1]]['mutation']
-                    self.__functool(funcmutation,args)
+                    func=FuncParser(self.blocks,self.base)
+                    func.create(self.funccode)
+                    func.addcode(False,args,self.opcode,self.depth)
+                    self.funccode=func.update()
+                    #funcmutation=self.blocks[self.base['inputs']['custom_block'][1]]['mutation']
+                    #self.__functool(funcmutation,args)
                 else: #在角色下
                     self.funccode['__init__'][1]['self.'+self.opcode+'('+', '.join(args)+')']=self.depth
             case 1:
                 #self.funccode.append('    '*(self.depth+1)+"def "+string+'(self,'+', '.join(args)+'):')
                 if isinstance(string,dict):
-                    self.__functool(string,args,func=True)
+                    func=FuncParser(self.blocks,self.base)
+                    func.create(self.funccode)
+                    self.funccode=func.update()
+                    #self.__functool(string,args,func=True)
                 else:
                     raise ValueError("Invalid mutation!")
             case 2:
@@ -125,7 +133,11 @@ class CodeParser:
                 if self.base.get('opcode','').startswith('procedures_'): #在某个函数下
                     funcmutation=self.blocks[self.base['inputs']['custom_block'][1]]['mutation']
                     if isinstance(string,str):
-                        self.__functool(funcmutation,string,free=True)
+                        func=FuncParser(self.blocks,self.base)
+                        func.create(self.funccode)
+                        func.addcode(True,string,self.opcode,self.depth)
+                        self.funccode=func.update()
+                        #self.__functool(funcmutation,string,free=True)
                     else:
                         raise ValueError("Invalid code!")
                 else: #在角色下

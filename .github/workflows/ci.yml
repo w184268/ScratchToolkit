@@ -20,7 +20,7 @@ jobs:
           pip install mypy
           pip install -r requirements.txt
       - name: "Check"
-        run: mypy . --config-file setup.cfg
+        run: mypy ./src/ --config-file mypy.ini
   job2:
     runs-on: ubuntu-latest
     steps:
