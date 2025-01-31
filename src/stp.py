@@ -26,10 +26,10 @@ def main(fp:str='./tests/work1.sb3',args:ap.Namespace=ap.Namespace()):
             else:
                 log.success('The file has no wrong.')
             if args.tree:
-                log.debug('Showing the code tree...\n')
+                log.debug('Showing the code tree...')
                 #log.debug('\n'+pprint.pformat(parser.code_tree()))
                 for i,j in parser.code_tree().items():
-                    log.debug(f'{i}: \n{j}')
+                    log.debug(f'{i}: {j}\n')
         if args.save_log:
             log.debug(f'The log was written in {re(LOGPATH)}')
 
@@ -37,7 +37,7 @@ if __name__=='__main__':
     from __STP.mypath import PathTool,re,LOGDIR,LOGPATH
     from __STP.core import log,UnPackingScratch3File,CodeParser
     from __STP.config import os,sys,LOGFORMAT,USERSET,dedent
-    
+
     log.add(sys.stdout,colorize=True,format=LOGFORMAT)
     parser=ap.ArgumentParser(description="The command list of Scratch-To-Pygame")
     parser.add_argument('--remove-log','-rmlog',dest='logcount',required=False, default=None,type=int,help="Remove the previous <logcount> log file(s).")
@@ -62,4 +62,3 @@ if __name__=='__main__':
         except BaseException:
             exc=traceback.format_exc()
             log.error('\n'+exc)
-            exit(1)

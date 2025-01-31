@@ -81,13 +81,13 @@ class CodeParser:
             case "control_wait":
                 self.fstr(args=(self.idinfo['inputs']['DURATION'][1][1]))
             case "control_repeat":
-                self.fstr(f"for _ in range({self.idinfo['inputs']['TIMES'][1][1]}):",3)
+                '''self.fstr(f"for _ in range({self.idinfo['inputs']['TIMES'][1][1]}):",3)'''
             case "control_forever":
                 self.fstr("while True:",3)
             case "control_if":
-                self.fstr(f"if {self.idinfo['inputs']['CONDITION'][1][1]}:",3)
+                '''self.fstr(f"if {self.idinfo['inputs']['CONDITION'][1][1]}:",3)'''
             case "control_if_else":
-                self.fstr(f"if {self.idinfo['inputs']['CONDITION'][1][1]}:",3)
+                '''self.fstr(f"if {self.idinfo['inputs']['CONDITION'][1][1]}:",3)'''
                 self.fstr("else:",3)
             case "procedures_definition":
                 self.fstr(self.blocks[self.idinfo['inputs']['custom_block'][1]]['mutation'],1)
@@ -258,12 +258,9 @@ class CodeParser:
 
     def code_tree(self):
         return {
-            "HEAD": HEAD,
-            "import_modules": self.mod,
-            "init_sprite": SPRITE_INIT_CODE,
-            "sprite_code": self.sprcode,
-            "init_game": GAME_INIT_CODE,
-            "game_code": self.gamecode,
+            "import_modules": json.dumps(self.mod,indent=2,ensure_ascii=False),
             "requirements": self.requirements,
+            "sprite_code": json.dumps(self.sprcode,indent=2,ensure_ascii=False),
+            "game_code": json.dumps(self.gamecode,indent=2,ensure_ascii=False),
             "outpyfile": re(self.outpyfile)
         }

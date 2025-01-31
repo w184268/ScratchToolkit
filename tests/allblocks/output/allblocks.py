@@ -24,6 +24,9 @@ class Sprite(pg.sprite.Sprite,Thread): #角色框架
         self.rect = self.image.get_rect() if self.image else pg.Rect(0,0,0,0)
         self.direction=direction
         self.rect.x,self.rect.y=initxy
+        self.start()
+
+
 
     def motion_gotoxy(self,dx:float,dy:float):
         self.rect.move_ip(dx,dy)
@@ -50,6 +53,7 @@ class spr_角色1(Sprite):
         super().__init__()
         self.control_wait(1)
         while True:
+        else:
 
     def _def_labeltext(self, number_or_text:int|float|str="", boolean:bool=False):
         self.control_wait(1)
