@@ -1,6 +1,5 @@
 import traceback
 import argparse as ap
-#import pprint
 
 def main(fp:str='./tests/work1.sb3',args:ap.Namespace=ap.Namespace()):
     if args:
@@ -23,7 +22,6 @@ def main(fp:str='./tests/work1.sb3',args:ap.Namespace=ap.Namespace()):
         log.debug(f"Time used: {time.time()-start}s") #仅为积木转换时间，不包括解压缩及资源格式转换时间，与积木数量有关
         if args.tree:
             log.debug('Showing the code tree...')
-            #log.debug('\n'+pprint.pformat(parser.code_tree()))
             for i,j in parser.code_tree().items():
                 log.debug(f'{i}: {j}\n')
         if args.tree_path:

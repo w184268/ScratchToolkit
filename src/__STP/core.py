@@ -63,7 +63,6 @@ class CodeParser:
         self.funccode={"__init__":[{},{"super().__init__()":0}]} #代码（角色下函数）
         for block in self.blocks.items():
             self.id,self.idinfo=block
-            #print(block)
             if isinstance(self.idinfo,dict): #一般积木块
                 self.opcode=self.idinfo["opcode"]
                 if not self.idinfo['shadow'] and self.opcode not in USERSET["blocks"]['ignore']: #不隐藏且不被忽略的积木块
@@ -77,7 +76,6 @@ class CodeParser:
     def add(self): #积木管理
         type_=f"{self.classname} -> {self.id}"
         log.debug(f'Converting {type_} (name="{self.opcode}" ,depth={self.depth})...')
-        #print(self.base)
         match self.opcode: #匹配相应的积木名
             case "control_wait":
                 self.fstr(args=(self.idinfo['inputs']['DURATION'][1][1]))
@@ -109,27 +107,21 @@ class CodeParser:
         args=(str(i) for i in args)
         match mode:
             case 0:
-                #self.sprcode.append('    '*(self.depth+2)+self.classname+'.'+self.opcode+'('+', '.join(args)+')')
                 if self.base.get('opcode','').startswith('procedures_'): #在某个函数下
                     func=FuncParser(self.blocks,self.base)
                     func.create(self.funccode)
                     func.addcode(False,args,self.opcode,self.depth)
                     self.funccode=func.update()
-                    #funcmutation=self.blocks[self.base['inputs']['custom_block'][1]]['mutation']
-                    #self.__functool(funcmutation,args)
                 else: #在角色下
                     self.funccode['__init__'][1]['self.'+self.opcode+'('+', '.join(args)+')']=self.depth
             case 1:
-                #self.funccode.append('    '*(self.depth+1)+"def "+string+'(self,'+', '.join(args)+'):')
                 if isinstance(string,dict):
                     func=FuncParser(self.blocks,self.base)
                     func.create(self.funccode)
                     self.funccode=func.update()
-                    #self.__functool(string,args,func=True)
                 else:
                     raise ValueError("Invalid mutation!")
             case 2:
-                '''self.code.append('    '*(self.depth+2)+string)'''
                 if self.base.get('opcode','').startswith('procedures_'): #在某个函数下
                     funcmutation=self.blocks[self.base['inputs']['custom_block'][1]]['mutation']
                     if isinstance(string,str):
@@ -137,7 +129,6 @@ class CodeParser:
                         func.create(self.funccode)
                         func.addcode(True,string,self.opcode,self.depth)
                         self.funccode=func.update()
-                        #self.__functool(funcmutation,string,free=True)
                     else:
                         raise ValueError("Invalid code!")
                 else: #在角色下
@@ -146,6 +137,12 @@ class CodeParser:
                 self.funccode['__init__'][1][string]=0 #角色基础信息，无需深度
             case 4:
                 self.gamecode.append('        '+string)
+            case 5:
+                ...
+            case 6:
+                ...
+            case _:
+                raise ValueError("Invalid mode!")
 
     def get_nested_depth(self,id:str,block:dict,depth=0):
         """
@@ -156,15 +153,12 @@ class CodeParser:
         :param depth: 当前深度
         :return: 积木块的嵌套深度
         """
-        #print(block,type(block))
         pid=block.get('parent','')
         if pid:
             parentdict=self.blocks.get(pid,{}) #父积木块
-            #print(parentdict)
             if parentdict:
                 inputs=parentdict.get('inputs',{}) #父积木块的输入
                 substack=inputs.get("SUBSTACK",[]) #父积木块的子积木块
-                #print(inputs,substack)
                 if parentdict['opcode'] not in USERSET["blocks"]['ignore']: #父积木块不被忽略
                     if not block.get('topLevel'):
                         if not block["shadow"]: #不隐藏的纯积木块
