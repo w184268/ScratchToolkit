@@ -114,7 +114,10 @@ class CodeParser:
                 '''self.code.append('    '*(self.depth+2)+string)'''
                 if self.base.get('opcode','').startswith('procedures_'): #在某个函数下
                     funcmutation=self.blocks[self.base['inputs']['custom_block'][1]]['mutation']
-                    self.__functool(funcmutation,string,free=True)
+                    if isinstance(string,str):
+                        self.__functool(funcmutation,string,free=True)
+                    else:
+                        raise ValueError("Invalid code!")
                 else: #在角色下
                     self.funccode['__init__'][1][string]=self.depth
             case 3:
