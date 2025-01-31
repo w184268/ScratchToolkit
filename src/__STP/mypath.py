@@ -8,7 +8,7 @@ import shutil
 from cairosvg import svg2png
 from PIL import Image
 
-def re(path:str):
+def repath(path:str):
     return str(pathlib.Path(path).resolve(strict=True))
 
 class PathTool:
@@ -64,7 +64,7 @@ class UnPackingScratch3File:
         
         :param fp: .sb3文件位置
         """
-        log.debug(f"Unpacking {fp}...")
+        log.debug(f"Unpacking {repath(fp)}...")
         with zipfile.ZipFile(fp,'r') as self.f: #解压.sb3文件
             if os.path.basename(fp)!=fp: #如果是一段路径
                 self.p=PathTool(fp)
@@ -80,7 +80,7 @@ class UnPackingScratch3File:
                c=json.load(f)
             with open(self.prj_path,'w',encoding='utf-8') as f:
                 json.dump(c,f,ensure_ascii=False,indent=4)
-        log.success(f"Completed unpacking {fp} to {self.cdir}.")
+        log.success(f"Completed unpacking {repath(fp)} -> {repath(self.cdir)}.")
 
     def convert(self):
         self.outdir=self.p.join((self.cdir,'output'))
@@ -88,26 +88,27 @@ class UnPackingScratch3File:
         for fn in os.listdir(self.cdir): #批量转换
             p=PathTool(fn,'n')
             if p.SUFFIX=='.svg':
+                fp=p.join((self.cdir,p.FILE))
                 #with open(p.join((self.cdir,p.FILE)), 'r',encoding='utf-8') as f:
                 #    svg_size = surface.SVGSurface(f.read(),).width, surface.SVGSurface(p.join((self.cdir,p.FILE))).height
-                tree = ET.parse(p.join((self.cdir,p.FILE)))
+                tree = ET.parse(fp)
                 root = tree.getroot()
                 svg_size = float(root.attrib['width']), float(root.attrib['height'])
                 png_path = p.join((self.cdir,"output",p.NAME+".png"))
                 if svg_size != (0,0):
-                    log.debug(f"The size of {fn} is {svg_size}.")
-                    svg2png(url=p.join((self.cdir,p.FILE)),
-                                    write_to=png_path,
-                                    unsafe=True,
-                                    parent_width=svg_size[0],
-                                    parent_height=svg_size[1])
+                    log.debug(f"The size of {repath(fp)} is {svg_size}.")
+                    svg2png(url=fp,
+                            write_to=png_path,
+                            unsafe=True,
+                            parent_width=svg_size[0],
+                            parent_height=svg_size[1])
                 else:
                     log.warning(f"{fn} has no size!")
                     image = Image.new("RGB",(1, 1),(0,0,0))
                     image.save(png_path)
                 #os.remove(p.join((self.cdir,p.FILE)))
                 #log.success(f"Removed {p.join((self.cdir,p.FILE))}.")
-                log.success(f"Converted {p.join((self.cdir,p.FILE))} to {png_path}.")
+                log.success(f"Converted {repath(fp)} -> {repath(png_path)}.")
 
 
 class PackingScratch3File:
@@ -135,4 +136,4 @@ class PackingScratch3File:
         with zipfile.ZipFile(self.outfile,'w') as f:
             for i in fp:
                 f.write(self.p.join((self.p.DIR,i)),i)
-        log.success(f"Completed packing {dp} to {self.outfile}.")
+        log.success(f"Completed packing {repath(dp)} -> {repath(self.outfile)}.")

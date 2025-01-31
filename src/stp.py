@@ -16,27 +16,33 @@ def main(fp:str='./tests/work1.sb3',args:ap.Namespace=ap.Namespace()):
     '''))
         info=UnPackingScratch3File(fp)
         info.convert()
+        start=time.time()
         parser=CodeParser(info)
         parser.write_result()
-        log.success(f"Converted successfully (in {re(parser.outpyfile)}) .")
+        log.success(f"Converted successfully (in {repath(parser.outpyfile)}) .")
+        log.debug(f"Time used: {time.time()-start}s") #仅为积木转换时间，不包括解压缩及资源格式转换时间，与积木数量有关
+        if args.tree:
+            log.debug('Showing the code tree...')
+            #log.debug('\n'+pprint.pformat(parser.code_tree()))
+            for i,j in parser.code_tree().items():
+                log.debug(f'{i}: {j}\n')
+        if args.tree_path:
+            with open(args.tree_path,'w',encoding='utf-8') as f:
+                json.dump(parser.code_tree(),f,indent=4,ensure_ascii=False)
+            log.debug(f'The code tree was saved in {args.tree_path}')
         if args.run:
             log.debug('Trying to run the output file...')
             if os.system(f'python {parser.outpyfile}'):
                 log.error('There is something wrong above.')
             else:
                 log.success('The file has no wrong.')
-            if args.tree:
-                log.debug('Showing the code tree...')
-                #log.debug('\n'+pprint.pformat(parser.code_tree()))
-                for i,j in parser.code_tree().items():
-                    log.debug(f'{i}: {j}\n')
         if args.save_log:
-            log.debug(f'The log was written in {re(LOGPATH)}')
+            log.debug(f'The log was written in {repath(LOGPATH)}')
 
 if __name__=='__main__':
-    from __STP.mypath import PathTool,re,LOGDIR,LOGPATH
+    from __STP.mypath import PathTool,repath,LOGDIR,LOGPATH
     from __STP.core import log,UnPackingScratch3File,CodeParser
-    from __STP.config import os,sys,LOGFORMAT,USERSET,dedent
+    from __STP.config import os,sys,LOGFORMAT,USERSET,dedent,json,time
 
     log.add(sys.stdout,colorize=True,format=LOGFORMAT)
     parser=ap.ArgumentParser(description="The command list of Scratch-To-Pygame")
@@ -46,10 +52,11 @@ if __name__=='__main__':
     parser.add_argument('--no-log','-nl',dest="no_log",action="store_true",default=False,help="Do not show the log.")
     parser.add_argument('--save-log','-sl',dest="save_log",action="store_true",default=False,help="Save the log to a file.")
     parser.add_argument('-t','--tree',dest="tree",action="store_true",default=False,help="Show the code tree.")
+    parser.add_argument('-st','--save-tree',dest="tree_path",help="Save the code tree to a file.")
     args=parser.parse_args()
     if args.save_log:
         log.add(LOGPATH,format=LOGFORMAT)
-    if args.logcount is not None:PathTool().rmlog(re(LOGDIR),args.logcount)
+    if args.logcount is not None:PathTool().rmlog(repath(LOGDIR),args.logcount)
     fp=args.file_path
     if fp:
         if args.no_log:

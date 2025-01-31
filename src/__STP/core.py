@@ -1,4 +1,4 @@
-from .mypath import log,UnPackingScratch3File,PathTool,re
+from .mypath import log,UnPackingScratch3File,PathTool,repath
 from .config import USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE,HEAD,Any,Union,Tuple
 
 class CodeParser:
@@ -76,7 +76,7 @@ class CodeParser:
     def add(self): #积木管理
         type_=f"{self.classname} -> {self.id}"
         log.debug(f'Converting {type_} (name="{self.opcode}" ,depth={self.depth})...')
-        print(self.base)
+        #print(self.base)
         match self.opcode: #匹配相应的积木名
             case "control_wait":
                 self.fstr(args=(self.idinfo['inputs']['DURATION'][1][1]))
@@ -262,5 +262,5 @@ class CodeParser:
             "requirements": self.requirements,
             "sprite_code": json.dumps(self.sprcode,indent=2,ensure_ascii=False),
             "game_code": json.dumps(self.gamecode,indent=2,ensure_ascii=False),
-            "outpyfile": re(self.outpyfile)
+            "outpyfile": repath(self.outpyfile)
         }

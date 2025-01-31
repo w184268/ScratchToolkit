@@ -51,7 +51,7 @@ class stage_Stage(Sprite):
 class spr_角色1(Sprite):
     def __init__(self):
         super().__init__()
-        self.control_wait(1)
+                self.control_wait(1)
         while True:
         else:
 
