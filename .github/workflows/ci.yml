@@ -20,7 +20,7 @@ jobs:
           pip install mypy
           pip install -r requirements.txt
       - name: "Check"
-        run: mypy .
+        run: mypy
   job2:
     runs-on: ubuntu-latest
     steps:
