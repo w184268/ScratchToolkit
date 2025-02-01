@@ -23,6 +23,10 @@ def main(fp:str='./tests/work1.sb3',args:ap.Namespace=ap.Namespace()):
         if args.tree:
             log.debug('Showing the code tree...')
             for i,j in parser.code_tree().items():
+                if isinstance(j,ID):
+                    j=j.blocks
+                elif isinstance(j,(dict,list,tuple)) and i != 'requirements':
+                    j=json.dumps(j,indent=2,ensure_ascii=False)
                 log.debug(f'{i}: {j}\n')
         if args.tree_path:
             with open(args.tree_path,'w',encoding='utf-8') as f:
@@ -41,6 +45,7 @@ if __name__=='__main__':
     from __STP.mypath import PathTool,repath,LOGDIR,LOGPATH
     from __STP.core import log,UnPackingScratch3File,CodeParser
     from __STP.config import os,sys,LOGFORMAT,USERSET,dedent,json,time
+    from __STP.spectype import ID
 
     log.add(sys.stdout,colorize=True,format=LOGFORMAT)
     parser=ap.ArgumentParser(description="The command list of Scratch-To-Pygame")

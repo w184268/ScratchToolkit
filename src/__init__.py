@@ -1,4 +1,6 @@
 __all__=[
     'stp',
-    'merge'
+    'merge',
+    'util',
+    'pack'
 ]

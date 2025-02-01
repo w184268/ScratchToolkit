@@ -1,6 +1,7 @@
-from .mypath import log,UnPackingScratch3File,PathTool,repath
-from .config import USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE,HEAD,Any,Union,Tuple
-from .spectype import FuncParser
+from .config import USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE,HEAD,Any,Union,Tuple,digits,repath,init_path
+init_path()
+from .mypath import log,UnPackingScratch3File,PathTool
+from .spectype import FuncParser,ID,BlockBuffer,NestParser,VarListParser
 
 class CodeParser:
     def __init__(self,last:UnPackingScratch3File):
@@ -9,14 +10,27 @@ class CodeParser:
         """
         self.classname:str
         self.funccode:dict[str,Any]
+        self.buffer=BlockBuffer()
         self.cdir,self.outdir=last.cdir,last.outdir
         self.t=PathTool(self.cdir)
         with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8') as f: #导入project.json
             self.pj=json.load(f)
+        self.semver=self.pj['meta']['semver']
+        self.vmver=self.pj['meta']['vm']
+        self.agent=self.pj['meta']['agent']
+        self.platform_name=self.pj['meta']['platform']['name']
+        self.platform_url=self.pj['meta']['platform']['url']
+        log.debug("="*40)
+        log.debug(f"Project version: {self.semver}")
+        log.debug(f"VM version: {self.vmver}")
+        log.debug(f"Agent: {self.agent if self.agent else 'unknown'}")
+        log.debug(f'Platform name: {self.platform_name}')
+        log.debug(f'Platform url: {self.platform_url}')
+        log.debug("="*40)
         self.last=last
         self.mod={"internal":{"typing":["",["Any"]],"math":["",[]],"random":["",[]],"sys":["",[]],"threading":["",["Thread","Timer"]]},"third-party":{"pygame":["pg",[]]}} #根据情况导入所需要的库
-        self.var:dict[str, int|str|float]=dict() #存储变量
-        self.array:dict[str, list]=dict() #存储列表
+        self.var={"public":{},"private":{}} #存储变量
+        self.array={"public":{},"private":{}} #存储列表
 
         self.depth=0 #默认深度
         self.code:list[str]=[] #存储代码（总）
@@ -88,6 +102,22 @@ class CodeParser:
             case "control_if_else":
                 '''self.fstr(f"if {self.idinfo['inputs']['CONDITION'][1][1]}:",3)'''
                 self.fstr("else:",3)
+            case "operator_add":
+                b=[]
+                for i in range(2):
+                    a=self.idinfo['inputs'][f'NUM{i+1}'][1]
+                    if isinstance(a,str):
+                        b.append(ID(a,self.blocks))
+                    elif isinstance(a[1],str):
+                        if a[1].isdigit():
+                            b.append(int(a[1]))
+                        else:
+                            b.append(float(a[1]))             
+                self.buffer.add(self.id,[b[0]," == ",b[1]])
+            case "operator_subtract":
+                self.fstr(args=["NUM",' - '],mode=7)
+            case "operator_equals":
+               self.fstr(args=["OPERAND",' == '],mode=7)
             case "procedures_definition":
                 self.fstr(self.blocks[self.idinfo['inputs']['custom_block'][1]]['mutation'],1)
             case _:
@@ -100,14 +130,15 @@ class CodeParser:
         mode=1: 创建一个函数，string为mutation，args不填   
         mode=2: 灵活性的，args不填，string是代码（如判断、循环等）  
         mode=3: 角色基础信息，string为代码，args不填  
-        mode=4: 游戏基础信息，string为代码，args不填
-        mode=5: 列表、变量管理，string为代码，args不填
-        mode=6: 嵌套类型管理，string为代码，args为每个的嵌套深度
+        mode=4: 游戏基础信息，string为代码，args不填  
+        mode=5: 列表、变量管理，string为代码，args不填  
+        mode=6: 嵌套类型管理，string为代码，args为每个的嵌套深度  
+        mode=7: 两者运算类，args为（inputs开头参数名，运算符）  
         '''
-        args=(str(i) for i in args)
+        args=list(str(i) for i in args)
         match mode:
             case 0:
-                if self.base.get('opcode','').startswith('procedures_'): #在某个函数下
+                if self.base.get('opcode','')=='procedures_definition': #在某个函数下
                     func=FuncParser(self.blocks,self.base)
                     func.create(self.funccode)
                     func.addcode(False,args,self.opcode,self.depth)
@@ -122,7 +153,7 @@ class CodeParser:
                 else:
                     raise ValueError("Invalid mutation!")
             case 2:
-                if self.base.get('opcode','').startswith('procedures_'): #在某个函数下
+                if self.base.get('opcode','')=='procedures_definition': #在某个函数下
                     funcmutation=self.blocks[self.base['inputs']['custom_block'][1]]['mutation']
                     if isinstance(string,str):
                         func=FuncParser(self.blocks,self.base)
@@ -141,6 +172,18 @@ class CodeParser:
                 ...
             case 6:
                 ...
+            case 7:
+                b=[];head=args[0]
+                for i in range(2):
+                    a=self.idinfo['inputs'][f'{head}{i+1}'][1]
+                    if isinstance(a,str):
+                        b.append(ID(a,self.blocks))
+                    elif isinstance(a[1],str):
+                        if a[1].isdigit():
+                            b.append(int(a[1]))
+                        else:
+                            b.append(float(a[1]))             
+                self.buffer.add(self.id,(b[0],args[1],b[1]))
             case _:
                 raise ValueError("Invalid mode!")
 
@@ -167,11 +210,11 @@ class CodeParser:
                             else:
                                 return self.get_nested_depth(pid,parentdict, depth)
                         else:
-                            #return self.get_nested_depth(parentdict, depth + 1)
                             return self.get_nested_depth(pid,parentdict, depth)
         return depth,block
 
     def write_result(self):
+        self.buffer.update() #更新嵌套缓存区
         self.requirements=[] #存储第三方库依赖
         self.code.append(HEAD) #加入头注释
         #生成导入库代码
@@ -240,9 +283,12 @@ class CodeParser:
 
     def code_tree(self):
         return {
-            "import_modules": json.dumps(self.mod,indent=2,ensure_ascii=False),
+            "import_modules": self.mod,
             "requirements": self.requirements,
-            "sprite_code": json.dumps(self.sprcode,indent=2,ensure_ascii=False),
-            "game_code": json.dumps(self.gamecode,indent=2,ensure_ascii=False),
+            "variables": self.var,
+            "lists": self.array,
+            "block_buffer": self.buffer.buffer,
+            "sprite_code": self.sprcode,
+            "game_code": self.gamecode,
             "outpyfile": repath(self.outpyfile)
         }

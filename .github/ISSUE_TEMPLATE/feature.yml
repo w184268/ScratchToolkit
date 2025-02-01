@@ -1,6 +1,6 @@
 name: "提供功能建议"
 description: "请详细描述你想要实现的功能，并提供相关的操作步骤。"
-labels: [· Feature]
+type: "新功能"
 body:
 - type: checkboxes
   id: "yml-1"

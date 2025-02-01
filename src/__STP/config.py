@@ -1,5 +1,9 @@
-import pygame as pg
-from numpy import array,where
+import sys,pathlib
+def repath(path:str):
+    return str(pathlib.Path(path).resolve(strict=True))
+def init_path():
+    sys.path.append(repath("../.."))
+from numpy import array,where    
 from loguru import logger as log
 log.remove()
 
@@ -7,6 +11,7 @@ import json
 import os,sys,time
 from textwrap import dedent
 from typing import Any,Optional,Union,Tuple
+from string import digits
 
 THISPATH=os.getcwd()
 LOCALDATE=time.strftime('%Y-%m-%d_%H：%M',time.localtime(time.time()))
@@ -33,6 +38,7 @@ HEAD=dedent(f'''\
 if os.path.basename(os.getcwd()) == "STP":
     os.chdir('..')
 
+import pygame as pg
 class Config:
     def __init__(self):
         # Key maps to convert the key option in blocks to pygame constants

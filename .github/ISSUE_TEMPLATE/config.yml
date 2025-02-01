@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "提问"
+    url: https://github.com/EricDing618/ScratchToolkit/discussions/categories/q-a
+    about: 请在此提问并回答问题。
+  - name: "报告错误"
+    url: https://github.com/EricDing618/ScratchToolkit/issues/new?assignees=&labels=bug&template=bug.yml&title=
+    about: 请在此报告错误。
+  - name: "提出改进建议"
+    url: https://github.com/EricDing618/ScratchToolkit/issues/new?assignees=&labels=enhancement&template=feature.yml&title=
+    about: 请在此提出改进建议。
+  - name: "其他"
+    url: https://github.com/EricDing618/ScratchToolkit/discussions/categories/general
+    about: 请在此提出其他问题。

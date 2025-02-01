@@ -1,15 +1,12 @@
-from .config import os,json,USERSET,LOCALDATE,THISPATH,log,Optional,Union,Tuple
+from .config import os,json,USERSET,LOCALDATE,THISPATH,log,Optional,Union,Tuple,repath,init_path
+init_path()
 
 import zipfile
 import xml.etree.ElementTree as ET
-import pathlib
 import shutil
 
 from cairosvg import svg2png
 from PIL import Image
-
-def repath(path:str):
-    return str(pathlib.Path(path).resolve(strict=True))
 
 class PathTool:
     def __init__(self,fp:Optional[str|tuple[str, str]]=None,mode='p'):

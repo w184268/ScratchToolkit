@@ -1,7 +1,57 @@
-from .config import Tuple,Union
+from .config import Tuple,Union,init_path
+init_path()
+from src.util import is_spcial
+
+class ID:
+    def __init__(self,id:str,blocks:dict):
+        self.id=id
+        self.blocks=blocks
+
+class BlockBuffer:
+    def __init__(self):
+        self.buffer={}
+    def add(self,id:str,value:tuple):
+        self.buffer[id]=value
+    def get(self,id:str):
+        return self.buffer.get(id)
+    def update(self):
+        b1=self.buffer.copy()
+        for id,values in b1.items():
+            self.bigupdate(id,values)
+        b2=self.buffer.copy()
+        for id,values in b2.items():
+            self.a=[]
+            print(id,values)
+            self.tidy(values)
+            self.buffer[id]=self.a
+        
+    def tidy(self,v):
+        if isinstance(v,list):
+            for j in v:
+                self.tidy(j)
+        else:
+            self.a.append(v)
+
+    def bigupdate(self,_id="",values=(),recursive=False):
+        a=[]
+        for i in range(len(values)):
+            value=values[i]
+            if isinstance(value,(int,float,list)):
+                a.append(value)
+            elif isinstance(value,str):
+                a.append("'"+value+"'")
+            elif isinstance(value,ID):
+                print(value.id)
+                a.append(self.bigupdate(_id,('(',*self.buffer.get(value.id,()),')'),True))
+            else:
+                raise TypeError(f"Unsupported type {type(value)} in BlockBuffer.update()")
+        self.buffer[_id]=a
+        print(self.buffer)
+        if recursive:
+            return a
 
 class NestParser:
-    def __init__(self,blocks:dict):
+    def __init__(self,blocks:dict,block:dict,baseblock:dict):
         """
         解析嵌套型积木块，生成python代码。
         """
@@ -22,7 +72,7 @@ class FuncParser:
         self.blocks=blocks
         self.base=baseblock
         self.funcmuta=self.blocks[self.base['inputs']['custom_block'][1]]['mutation']
-        type={'%s':'int|float|str','%b':'bool'}
+        self.type={'%s':'int|float|str','%b':'bool'}
         self.name=[]
         self.argtypes=[]
         c=self.funcmuta['proccode'].split(' ')
@@ -40,7 +90,7 @@ class FuncParser:
         判断字符串是否为合法的标识符。
         """
         r=True
-        for i in '!@#$%^&*()_+-=[]{}|;:,.<>?':
+        for i in '!@#$%^&*()/\\+-=[]{}|;:,.<>?':
             if i in s:
                 r=False
                 break
@@ -51,7 +101,7 @@ class FuncParser:
         if self.funcname not in self.funccode: #创建函数
             self.funccode[self.funcname]=[{},{}]
         for argname,argdefault,argtype in zip(eval(self.funcmuta['argumentnames']),eval(self.funcmuta['argumentdefaults']),self.argtypes):
-            self.funccode[self.funcname][0][argname.replace(' ','_')]=[argdefault,type.get(argtype,'Any')] #type: ignore 
+            self.funccode[self.funcname][0][argname.replace(' ','_')]=[argdefault,self.type.get(argtype,'Any')] #type: ignore 
     
     def addcode(self,free=False,args:Union[str,Tuple[str,...]]="",opcode:str="",depth:int=0):
         if not free:

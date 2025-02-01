@@ -1,6 +1,6 @@
 name: "报告bug"
 description: "包括但不限于：报错、结果不符合预期"
-labels: [· Bug]
+type: "漏洞"
 body:
 - type: checkboxes
   id: "yml-1"

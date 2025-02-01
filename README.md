@@ -31,7 +31,7 @@ python ./src/stp.py -c <目标.sb3文件路径>
 
 例：
 ```bash
-python ./src/stp.py -c ./../../tests/allblocks.sb3 --run -sl
+python ./src/stp.py -c ./../../tests/allblocks.sb3 --run -sl --tree -st
 ```
 ### 将不考虑支持以下功能：
 - 变量、列表显示功能
