@@ -98,6 +98,7 @@ class CodeParser:
             case "control_forever":
                 self.fstr("while True:",3)
             case "control_if":
+                self.funccode['__init__'][1][f"id={self.id}"]=self.depth
                 '''self.fstr(f"if {self.idinfo['inputs']['CONDITION'][1][1]}:",3)'''
             case "control_if_else":
                 '''self.fstr(f"if {self.idinfo['inputs']['CONDITION'][1][1]}:",3)'''
@@ -173,9 +174,9 @@ class CodeParser:
             case 6:
                 ...
             case 7:
-                b=[];head=args[0]
+                b=[]
                 for i in range(2):
-                    a=self.idinfo['inputs'][f'{head}{i+1}'][1]
+                    a=self.idinfo['inputs'][f'{args[0]}{i+1}'][1]
                     if isinstance(a,str):
                         b.append(ID(a,self.blocks))
                     elif isinstance(a[1],str):
@@ -256,6 +257,10 @@ class CodeParser:
                     self.code.append(f"    def {funcname}(self):")
                 if funcinfo[1]: #有代码
                     for line,depth in funcinfo[1].items():
+                        if line.startswith('id='):
+                            code=self.buffer.buffer.get(line[3:],[])
+                            if code:
+                                self.code.append('    '*(depth+2)+''.join(code))
                         self.code.append('    '*(depth+2)+line)
                     self.code.append("")
                 else: #无代码
