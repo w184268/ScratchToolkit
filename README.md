@@ -46,19 +46,12 @@ python ./src/stp.py -c ./../../tests/allblocks.sb3 --run -sl --tree -st
 ## merge.py
 ### 描述
 - merge.py是一个将两个`.sb3`文件合并为一个文件的脚本。
-# 第三方库&软件
-库：
-- loguru==0.7.2
-- cairosvg==2.7.1
-- pillow==9.5.0
-- pygame-ce==2.5.2
-- numpy==1.26.2
-- colorama==0.4.6
-
-软件：
-- GTK+ 3.24.31
-
-若您还没有安装这些第三方库或已经遇到了`ImportError`，请使用`pip install -r requirements.txt`，以及解压并安装`dependencies`分支下的软件（仅支持Windows x64）。
+# 安装依赖
+- 在根目录下执行：  
+```bash
+pip install -r requirements.txt
+```
+- 解压并安装`dependencies`分支下的软件（仅支持Windows x64）。
 ## 报错解决
 - `ImportError`：详见**第三方库&软件**。
 

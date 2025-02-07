@@ -1,7 +1,7 @@
 from .config import USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE,HEAD,Any,Union,Tuple,digits,repath,init_path
 init_path()
 from .mypath import log,UnPackingScratch3File,PathTool
-from .spectype import FuncParser,ID,BlockBuffer,NestParser,VarListParser
+from .spectype import FuncParser,ID,BlockBuffer,InputParser,VarListParser
 
 class CodeParser:
     def __init__(self,last:UnPackingScratch3File):
@@ -15,18 +15,7 @@ class CodeParser:
         self.t=PathTool(self.cdir)
         with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8') as f: #导入project.json
             self.pj=json.load(f)
-        self.semver=self.pj['meta']['semver']
-        self.vmver=self.pj['meta']['vm']
-        self.agent=self.pj['meta']['agent']
-        self.platform_name=self.pj['meta']['platform']['name']
-        self.platform_url=self.pj['meta']['platform']['url']
-        log.debug("="*40)
-        log.debug(f"Project version: {self.semver}")
-        log.debug(f"VM version: {self.vmver}")
-        log.debug(f"Agent: {self.agent if self.agent else 'unknown'}")
-        log.debug(f'Platform name: {self.platform_name}')
-        log.debug(f'Platform url: {self.platform_url}')
-        log.debug("="*40)
+        self.baseinfo={"semver":self.pj['meta']['semver'],"vm":self.pj['meta']['vm'],"agent":self.pj['meta']['agent'],"platform_name":self.pj['meta']['platform']['name'],"platform_url":self.pj['meta']['platform']['url']}
         self.last=last
         self.mod={"internal":{"typing":["",["Any"]],"math":["",[]],"random":["",[]],"sys":["",[]],"threading":["",["Thread","Timer"]]},"third-party":{"pygame":["pg",[]]}} #根据情况导入所需要的库
         self.var={"public":{},"private":{}} #存储变量
@@ -134,7 +123,7 @@ class CodeParser:
         mode=4: 游戏基础信息，string为代码，args不填  
         mode=5: 列表、变量管理，string为代码，args不填  
         mode=6: 嵌套类型管理，string为代码，args为每个的嵌套深度  
-        mode=7: 两者运算类，args为（inputs开头参数名，运算符）  
+        mode=7: 含参类，args为（inputs开头参数名，运算符）  
         '''
         args=list(str(i) for i in args)
         match mode:
@@ -257,10 +246,9 @@ class CodeParser:
                     self.code.append(f"    def {funcname}(self):")
                 if funcinfo[1]: #有代码
                     for line,depth in funcinfo[1].items():
-                        if line.startswith('id='):
-                            code=self.buffer.buffer.get(line[3:],[])
-                            if code:
-                                self.code.append('    '*(depth+2)+''.join(code))
+                        if line.startswith('id='): #输入类型占位标识
+                            code=self.buffer.get(line[3:])
+                            self.code.append('    '*(depth+2)+code)
                         self.code.append('    '*(depth+2)+line)
                     self.code.append("")
                 else: #无代码
@@ -288,6 +276,7 @@ class CodeParser:
 
     def code_tree(self):
         return {
+            "project_info": self.baseinfo,
             "import_modules": self.mod,
             "requirements": self.requirements,
             "variables": self.var,

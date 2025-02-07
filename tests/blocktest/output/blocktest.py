@@ -51,10 +51,7 @@ class stage_Stage(Sprite):
 class spr_角色1(Sprite):
     def __init__(self):
         super().__init__()
-        id=a
 
-    def _1(self):
-        ...
 
 
 class Game:

@@ -19,7 +19,7 @@ def main(fp:str='./tests/work1.sb3',args:ap.Namespace=ap.Namespace()):
         parser=CodeParser(info)
         parser.write_result()
         log.success(f"Converted successfully (in {repath(parser.outpyfile)}) .")
-        log.debug(f"Time used: {time.time()-start}s") #仅为积木转换时间，不包括解压缩及资源格式转换时间，与积木数量有关
+        log.success(f"Time used: {time.time()-start}s") #仅为积木转换时间，不包括解压缩及资源格式转换时间，与积木数量有关
         if args.tree:
             log.debug('Showing the code tree...')
             for i,j in parser.code_tree().items():

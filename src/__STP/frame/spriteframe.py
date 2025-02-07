@@ -2,6 +2,17 @@ import pygame as pg
 import sys,math,random
 from threading import Timer,Thread
 
+class JSObject:
+    def __init__(self,obj):
+        self.obj=obj
+    def __eq__(self,other):
+        return str(self.obj)==str(other.obj)
+    def __ne__(self,other):
+        return str(self.obj)!=str(other.obj)
+    def __str__(self):
+        return str(self.obj)
+    def __repr__(self):
+        return str(self.obj)
 class Sprite(pg.sprite.Sprite,Thread): #角色框架
     def __init__(self, image_file:tuple[str], initxy:tuple[int,int], direction:int):
         super().__init__()

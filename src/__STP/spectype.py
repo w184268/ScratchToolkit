@@ -1,4 +1,4 @@
-from .config import Tuple,Union,init_path
+from .config import Tuple,Union,init_path,safe_eval
 init_path()
 from src.util import is_spcial
 
@@ -12,8 +12,8 @@ class BlockBuffer:
         self.buffer={}
     def add(self,id:str,value:tuple):
         self.buffer[id]=value
-    def get(self,id:str):
-        return self.buffer.get(id)
+    def get(self,id:str,default=[]):
+        return ''.join(self.buffer.get(id,default))
     def update(self):
         b1=self.buffer.copy()
         for id,values in b1.items():
@@ -50,12 +50,14 @@ class BlockBuffer:
         if recursive:
             return a
 
-class NestParser:
-    def __init__(self,blocks:dict,block:dict,baseblock:dict):
+class InputParser:
+    def __init__(self,blocks:dict,buffer:BlockBuffer):
         """
-        解析嵌套型积木块，生成python代码。
+        解析含参型积木块，生成python代码。
         """
         self.blocks=blocks
+        self.buffer=buffer
+        self.code=[]
     
 class VarListParser:
     def __init__(self,blocks:dict):
@@ -87,7 +89,7 @@ class FuncParser:
         self.funcname='_'+'_'.join(self.name)
     def isidentifier(self,s:str):
         """
-        判断字符串是否为合法的标识符。
+        判断参数字符串是否为合法的标识符。
         """
         r=True
         for i in '!@#$%^&*()/\\+-=[]{}|;:,.<>?':
@@ -100,7 +102,7 @@ class FuncParser:
         self.funccode=funccode
         if self.funcname not in self.funccode: #创建函数
             self.funccode[self.funcname]=[{},{}]
-        for argname,argdefault,argtype in zip(eval(self.funcmuta['argumentnames']),eval(self.funcmuta['argumentdefaults']),self.argtypes):
+        for argname,argdefault,argtype in zip(safe_eval(self.funcmuta['argumentnames']),safe_eval(self.funcmuta['argumentdefaults']),self.argtypes):
             self.funccode[self.funcname][0][argname.replace(' ','_')]=[argdefault,self.type.get(argtype,'Any')] #type: ignore 
     
     def addcode(self,free=False,args:Union[str,Tuple[str,...]]="",opcode:str="",depth:int=0):

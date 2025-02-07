@@ -7,6 +7,10 @@
                 "`jEk@4|i[#Fk?(8x)AV.-my variable": [
                     "我的变量",
                     0
+                ],
+                "MX9qz6dG}W5xAg@bMvOO": [
+                    "t",
+                    0
                 ]
             },
             "lists": {},
@@ -44,43 +48,14 @@
             "lists": {},
             "broadcasts": {},
             "blocks": {
-                "d": {
-                    "opcode": "event_whenflagclicked",
-                    "next": "a",
-                    "parent": null,
-                    "inputs": {},
-                    "fields": {},
-                    "shadow": false,
-                    "topLevel": true,
-                    "x": 140,
-                    "y": 92
-                },
-                "a": {
-                    "opcode": "control_if",
-                    "next": null,
-                    "parent": "d",
-                    "inputs": {
-                        "CONDITION": [
-                            2,
-                            "b"
-                        ],
-                        "SUBSTACK": [
-                            2,
-                            "e"
-                        ]
-                    },
-                    "fields": {},
-                    "shadow": false,
-                    "topLevel": false
-                },
                 "b": {
                     "opcode": "operator_equals",
                     "next": null,
-                    "parent": "a",
+                    "parent": null,
                     "inputs": {
                         "OPERAND1": [
                             3,
-                            "c",
+                            "a",
                             [
                                 10,
                                 ""
@@ -96,9 +71,11 @@
                     },
                     "fields": {},
                     "shadow": false,
-                    "topLevel": false
+                    "topLevel": true,
+                    "x": 246,
+                    "y": 377
                 },
-                "c": {
+                "a": {
                     "opcode": "operator_add",
                     "next": null,
                     "parent": "b",
@@ -112,7 +89,7 @@
                         ],
                         "NUM2": [
                             3,
-                            "f",
+                            "c",
                             [
                                 4,
                                 "1"
@@ -123,68 +100,10 @@
                     "shadow": false,
                     "topLevel": false
                 },
-                "e": {
-                    "opcode": "looks_sayforsecs",
-                    "next": null,
-                    "parent": "a",
-                    "inputs": {
-                        "MESSAGE": [
-                            1,
-                            [
-                                10,
-                                "你好！"
-                            ]
-                        ],
-                        "SECS": [
-                            1,
-                            [
-                                4,
-                                "2"
-                            ]
-                        ]
-                    },
-                    "fields": {},
-                    "shadow": false,
-                    "topLevel": false
-                },
-                "g": {
-                    "opcode": "procedures_definition",
-                    "next": null,
-                    "parent": null,
-                    "inputs": {
-                        "custom_block": [
-                            1,
-                            "h"
-                        ]
-                    },
-                    "fields": {},
-                    "shadow": false,
-                    "topLevel": true,
-                    "x": 268,
-                    "y": 381
-                },
-                "h": {
-                    "opcode": "procedures_prototype",
-                    "next": null,
-                    "parent": "g",
-                    "inputs": {},
-                    "fields": {},
-                    "shadow": true,
-                    "topLevel": false,
-                    "mutation": {
-                        "tagName": "mutation",
-                        "children": [],
-                        "proccode": "1",
-                        "argumentids": "[]",
-                        "argumentnames": "[]",
-                        "argumentdefaults": "[]",
-                        "warp": "false"
-                    }
-                },
-                "f": {
+                "c": {
                     "opcode": "operator_subtract",
                     "next": null,
-                    "parent": "c",
+                    "parent": "a",
                     "inputs": {
                         "NUM1": [
                             1,
@@ -204,6 +123,118 @@
                     "fields": {},
                     "shadow": false,
                     "topLevel": false
+                },
+                "g": {
+                    "opcode": "motion_gotoxy",
+                    "next": null,
+                    "parent": null,
+                    "inputs": {
+                        "X": [
+                            3,
+                            [
+                                12,
+                                "this",
+                                "6e1Yg*GCr7$s6Qi[7WSI"
+                            ],
+                            [
+                                4,
+                                "0"
+                            ]
+                        ],
+                        "Y": [
+                            3,
+                            [
+                                12,
+                                "我的变量",
+                                "`jEk@4|i[#Fk?(8x)AV.-my variable"
+                            ],
+                            [
+                                4,
+                                "0"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": true,
+                    "x": 231,
+                    "y": 152
+                },
+                "d": {
+                    "opcode": "motion_pointtowards",
+                    "next": null,
+                    "parent": null,
+                    "inputs": {
+                        "TOWARDS": [
+                            3,
+                            "e",
+                            "f"
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": true,
+                    "x": 236,
+                    "y": 271
+                },
+                "f": {
+                    "opcode": "motion_pointtowards_menu",
+                    "next": null,
+                    "parent": null,
+                    "inputs": {},
+                    "fields": {
+                        "TOWARDS": [
+                            "_mouse_",
+                            null
+                        ]
+                    },
+                    "shadow": true,
+                    "topLevel": true,
+                    "x": 284,
+                    "y": 279
+                },
+                "e": {
+                    "opcode": "operator_join",
+                    "next": null,
+                    "parent": "d",
+                    "inputs": {
+                        "STRING1": [
+                            1,
+                            [
+                                10,
+                                "鼠标"
+                            ]
+                        ],
+                        "STRING2": [
+                            1,
+                            [
+                                10,
+                                "指针"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": false
+                },
+                "h": {
+                    "opcode": "operator_round",
+                    "next": null,
+                    "parent": null,
+                    "inputs": {
+                        "NUM": [
+                            1,
+                            [
+                                4,
+                                "3.14"
+                            ]
+                        ]
+                    },
+                    "fields": {},
+                    "shadow": false,
+                    "topLevel": true,
+                    "x": 243,
+                    "y": 535
                 }
             },
             "comments": {},
@@ -245,6 +276,24 @@
             "height": 0,
             "x": 5,
             "y": 5,
+            "visible": true,
+            "sliderMin": 0,
+            "sliderMax": 100,
+            "isDiscrete": true
+        },
+        {
+            "id": "MX9qz6dG}W5xAg@bMvOO",
+            "mode": "default",
+            "opcode": "data_variable",
+            "params": {
+                "VARIABLE": "t"
+            },
+            "spriteName": null,
+            "value": 0,
+            "width": 0,
+            "height": 0,
+            "x": 5,
+            "y": 34,
             "visible": true,
             "sliderMin": 0,
             "sliderMax": 100,
