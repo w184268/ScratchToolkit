@@ -18,21 +18,27 @@ def main(fp:str='./tests/work1.sb3',args:ap.Namespace=ap.Namespace()):
         start=time.time()
         parser=CodeParser(info)
         parser.write_result()
+        codetree=parser.code_tree()
         log.success(f"Converted successfully (in {repath(parser.outpyfile)}) .")
         log.success(f"Time used: {time.time()-start}s") #仅为积木转换时间，不包括解压缩及资源格式转换时间，与积木数量有关
         if args.tree:
             log.debug('Showing the code tree...')
-            for i,j in parser.code_tree().items():
-                if isinstance(j,ID):
+            for i,j in codetree.items():
+                if isinstance(j,BlockID):
                     j=j.blocks
-                elif isinstance(j,(dict,list,tuple)) and i != 'requirements':
+                elif isinstance(j,(dict,list,tuple)):
                     j=json.dumps(j,indent=2,ensure_ascii=False)
                 log.debug(f'{i}: {j}\n')
         if args.tree_path:
             with open(args.tree_path,'w',encoding='utf-8') as f:
-                json.dump(parser.code_tree(),f,indent=4,ensure_ascii=False)
+                json.dump(codetree,f,indent=4,ensure_ascii=False)
             log.debug(f'The code tree was saved in {args.tree_path}')
         if args.run:
+            for i in codetree['requirements']:
+                if not installed(i):
+                    log.debug(f'Installing {i}...')
+                    os.system(f'{sys.executable} -m pip install {i}')
+                log.success(f'Package {i} installed successfully.')
             log.debug('Trying to run the output file...')
             if os.system(f'python {parser.outpyfile}'):
                 log.error('There is something wrong above.')
@@ -45,7 +51,7 @@ if __name__=='__main__':
     from __STP.mypath import PathTool,repath,LOGDIR,LOGPATH
     from __STP.core import log,UnPackingScratch3File,CodeParser
     from __STP.config import os,sys,LOGFORMAT,USERSET,dedent,json,time
-    from __STP.spectype import ID
+    from util import BlockID,installed
 
     log.add(sys.stdout,colorize=True,format=LOGFORMAT)
     parser=ap.ArgumentParser(description="The command list of Scratch-To-Pygame")

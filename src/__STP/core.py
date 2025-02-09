@@ -1,25 +1,21 @@
 from .config import USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE,HEAD,Any,Union,Tuple,digits,repath,init_path
 init_path()
 from .mypath import log,UnPackingScratch3File,PathTool
-from .spectype import FuncParser,ID,BlockBuffer,InputParser,VarListParser
+from .spectype import FuncParser,BlockBuffer,InputParser,VarListParser
+from src.util import BlockID,Data
 
-class CodeParser:
+class CodeParser(Data):
     def __init__(self,last:UnPackingScratch3File):
         """
         转换核心，解析project.json并生成python代码。
         """
-        self.classname:str
-        self.funccode:dict[str,Any]
         self.buffer=BlockBuffer()
         self.cdir,self.outdir=last.cdir,last.outdir
         self.t=PathTool(self.cdir)
         with open(self.t.join((self.cdir,"project.json")),'r',encoding='utf-8') as f: #导入project.json
             self.pj=json.load(f)
-        self.baseinfo={"semver":self.pj['meta']['semver'],"vm":self.pj['meta']['vm'],"agent":self.pj['meta']['agent'],"platform_name":self.pj['meta']['platform']['name'],"platform_url":self.pj['meta']['platform']['url']}
+        super().__init__()
         self.last=last
-        self.mod={"internal":{"typing":["",["Any"]],"math":["",[]],"random":["",[]],"sys":["",[]],"threading":["",["Thread","Timer"]]},"third-party":{"pygame":["pg",[]]}} #根据情况导入所需要的库
-        self.var={"public":{},"private":{}} #存储变量
-        self.array={"public":{},"private":{}} #存储列表
 
         self.depth=0 #默认深度
         self.code:list[str]=[] #存储代码（总）
@@ -97,7 +93,7 @@ class CodeParser:
                 for i in range(2):
                     a=self.idinfo['inputs'][f'NUM{i+1}'][1]
                     if isinstance(a,str):
-                        b.append(ID(a,self.blocks))
+                        b.append(BlockID(a,self.blocks))
                     elif isinstance(a[1],str):
                         if a[1].isdigit():
                             b.append(int(a[1]))
@@ -167,7 +163,7 @@ class CodeParser:
                 for i in range(2):
                     a=self.idinfo['inputs'][f'{args[0]}{i+1}'][1]
                     if isinstance(a,str):
-                        b.append(ID(a,self.blocks))
+                        b.append(BlockID(a,self.blocks))
                     elif isinstance(a[1],str):
                         if a[1].isdigit():
                             b.append(int(a[1]))
@@ -205,13 +201,19 @@ class CodeParser:
 
     def write_result(self):
         self.buffer.update() #更新嵌套缓存区
+        self.builtins=[] #存储导入的内置库
         self.requirements=[] #存储第三方库依赖
         self.code.append(HEAD) #加入头注释
         #生成导入库代码
         for type_,modinfo in self.mod.items():
             for name,args in modinfo.items():
-                if type_=='third-party':
+                if '->' in name: #fix: 修复pygame与pygame-ce的名称冲突
+                    name,real=name.split('->')
+                    self.requirements.append(real)
+                elif type_=='third-party':
                     self.requirements.append(name)
+                else:
+                    self.builtins.append(name)
                 if not args[0] and not args[1]:
                     self.code.append(f"import {name}")
                 elif args[0] and not args[1]:
@@ -278,6 +280,7 @@ class CodeParser:
         return {
             "project_info": self.baseinfo,
             "import_modules": self.mod,
+            "built-in_modules": self.builtins,
             "requirements": self.requirements,
             "variables": self.var,
             "lists": self.array,

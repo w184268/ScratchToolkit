@@ -1,11 +1,6 @@
 from .config import Tuple,Union,init_path,safe_eval
 init_path()
-from src.util import is_spcial
-
-class ID:
-    def __init__(self,id:str,blocks:dict):
-        self.id=id
-        self.blocks=blocks
+from src.util import *
 
 class BlockBuffer:
     def __init__(self):
@@ -13,7 +8,8 @@ class BlockBuffer:
     def add(self,id:str,value:tuple):
         self.buffer[id]=value
     def get(self,id:str,default=[]):
-        return ''.join(self.buffer.get(id,default))
+        a=self.buffer.get(id,default)
+        return a
     def update(self):
         b1=self.buffer.copy()
         for id,values in b1.items():
@@ -40,11 +36,11 @@ class BlockBuffer:
                 a.append(value)
             elif isinstance(value,str):
                 a.append("'"+value+"'")
-            elif isinstance(value,ID):
+            elif isinstance(value,BlockID):
                 print(value.id)
                 a.append(self.bigupdate(_id,('(',*self.buffer.get(value.id,()),')'),True))
-            else:
-                raise TypeError(f"Unsupported type {type(value)} in BlockBuffer.update()")
+            elif isinstance(value,(SArray,SVariable)):
+                '''在InputParser/VarListParser中处理'''
         self.buffer[_id]=a
         print(self.buffer)
         if recursive:
@@ -58,7 +54,8 @@ class InputParser:
         self.blocks=blocks
         self.buffer=buffer
         self.code=[]
-    
+    def generate(self,blockid:str,args=[],symbol='=='):
+        '''注意：symbol必须为js运算符/函数名'''
 class VarListParser:
     def __init__(self,blocks:dict):
         """

@@ -13,7 +13,6 @@ def init_path():
 
 from numpy import array,where    
 from loguru import logger as log
-#from js2py import translate_js
 #import jiphy as jp
 log.remove()
 
