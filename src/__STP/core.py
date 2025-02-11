@@ -168,7 +168,7 @@ class CodeParser(Data):
                         if a[1].isdigit():
                             b.append(int(a[1]))
                         else:
-                            b.append(float(a[1]))             
+                            b.append(float(a[1]))         
                 self.buffer.add(self.id,(b[0],args[1],b[1]))
             case _:
                 raise ValueError("Invalid mode!")
@@ -188,15 +188,14 @@ class CodeParser(Data):
             if parentdict:
                 inputs=parentdict.get('inputs',{}) #父积木块的输入
                 substack=inputs.get("SUBSTACK",[]) #父积木块的子积木块
-                if parentdict['opcode'] not in USERSET["blocks"]['ignore']: #父积木块不被忽略
-                    if not block.get('topLevel'):
-                        if not block["shadow"]: #不隐藏的纯积木块
-                            if id in substack: #嵌套类型
-                                return self.get_nested_depth(pid,parentdict, depth+1)
-                            else:
-                                return self.get_nested_depth(pid,parentdict, depth)
+                if parentdict['opcode'] not in USERSET["blocks"]['ignore'] and not block.get('topLevel'): #父积木块不被忽略且不是顶层积木块
+                    if not block["shadow"]: #不隐藏的纯积木块
+                        if id in substack: #嵌套类型
+                            return self.get_nested_depth(pid,parentdict, depth+1)
                         else:
                             return self.get_nested_depth(pid,parentdict, depth)
+                    else:
+                        return self.get_nested_depth(pid,parentdict, depth)
         return depth,block
 
     def write_result(self):
@@ -249,7 +248,7 @@ class CodeParser(Data):
                 if funcinfo[1]: #有代码
                     for line,depth in funcinfo[1].items():
                         if line.startswith('id='): #输入类型占位标识
-                            code=self.buffer.get(line[3:])
+                            code=self.buffer.get(line[3:],"")
                             self.code.append('    '*(depth+2)+code)
                         self.code.append('    '*(depth+2)+line)
                     self.code.append("")

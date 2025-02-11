@@ -1,18 +1,14 @@
 import traceback
 import argparse as ap
+from art import text2art
 
 def main(fp:str='./tests/work1.sb3',args:ap.Namespace=ap.Namespace()):
     if args:
-        log.debug(dedent(f'''
-    ==========================
-     ____    _____   ____  
-    / ___|  |_   _| |  _ \ 
-    \___ \    | |   | |_) |
-     ___) |   | |   |  __/ 
-    |____/    |_|   |_|    
-    ==========================
-    Scratch-To-Pygame({USERSET['info']['version']}) is running!
-    '''))
+        log.debug(f'''
+==========================
+{text2art('STP')}==========================
+Scratch-To-Pygame({USERSET['info']['version']}) is running!
+    ''')
         info=UnPackingScratch3File(fp)
         info.convert()
         start=time.time()
@@ -50,7 +46,7 @@ def main(fp:str='./tests/work1.sb3',args:ap.Namespace=ap.Namespace()):
 if __name__=='__main__':
     from __STP.mypath import PathTool,repath,LOGDIR,LOGPATH
     from __STP.core import log,UnPackingScratch3File,CodeParser
-    from __STP.config import os,sys,LOGFORMAT,USERSET,dedent,json,time
+    from __STP.config import os,sys,LOGFORMAT,USERSET,json,time
     from util import BlockID,installed
 
     log.add(sys.stdout,colorize=True,format=LOGFORMAT)

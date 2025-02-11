@@ -35,7 +35,7 @@ class BlockBuffer:
             if isinstance(value,(int,float,list)):
                 a.append(value)
             elif isinstance(value,str):
-                a.append("'"+value+"'")
+                a.append("\\\'"+value+"\\\'")
             elif isinstance(value,BlockID):
                 print(value.id)
                 a.append(self.bigupdate(_id,('(',*self.buffer.get(value.id,()),')'),True))
@@ -54,8 +54,12 @@ class InputParser:
         self.blocks=blocks
         self.buffer=buffer
         self.code=[]
-    def generate(self,blockid:str,args=[],symbol='=='):
-        '''注意：symbol必须为js运算符/函数名'''
+    def generate(self,block:list[str,dict],args=[],symbol='==',input='',count=0):
+        '''注意：symbol必须为js运算符/内置函数名'''
+        self.id,self.idinfo=block
+        if symbol.endswith('()'): #内置函数
+            self.buffer.add(self.id,)
+
 class VarListParser:
     def __init__(self,blocks:dict):
         """

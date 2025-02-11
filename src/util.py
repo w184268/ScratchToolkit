@@ -12,6 +12,7 @@ def installed(name:str):
         return False
     else:
         return True
+    
 class Data:
     def __init__(self):
         self.pj:dict

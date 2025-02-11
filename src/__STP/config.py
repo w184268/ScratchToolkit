@@ -13,7 +13,7 @@ def init_path():
 
 from numpy import array,where    
 from loguru import logger as log
-#import jiphy as jp
+from art import text2art
 log.remove()
 
 THISPATH=os.getcwd()
@@ -28,16 +28,13 @@ with open("./frame/gameframe.py","r",encoding="utf-8") as f:
     GAME_INIT_CODE='\n'.join([i.rstrip() for i in f.readlines() if 'import' not in i])
 with open("./settings.json",'r',encoding='utf-8') as f:
     USERSET:dict=json.load(f)
-HEAD=dedent(f'''\
-        #  ____                          _            _               _____                   ____                                             
-        # / ___|    ___   _ __    __ _  | |_    ___  | |__           |_   _|   ___           |  _ \   _   _    __ _    __ _   _ __ ___     ___ 
-        # \___ \   / __| | '__|  / _` | | __|  / __| | '_ \   _____    | |    / _ \   _____  | |_) | | | | |  / _` |  / _` | | '_ ` _ \   / _ \\\\
-        #  ___) | | (__  | |    | (_| | | |_  | (__  | | | | |_____|   | |   | (_) | |_____| |  __/  | |_| | | (_| | | (_| | | | | | | | |  __/
-        # |____/   \___| |_|     \__,_|  \__|  \___| |_| |_|           |_|    \___/          |_|      \__, |  \__, |  \__,_| |_| |_| |_|  \___|
-        #                                                                                             |___/   |___/                            
-        # Scratch-To-Pygame({USERSET['info']['version']})
-        # Made by EricDing618.
-''')
+
+__L='\n'.join('# '+i for i in text2art("Scratch-To-Pygame").splitlines())
+HEAD=f'''\
+{__L}
+# Scratch-To-Pygame({USERSET['info']['version']})
+# Made by EricDing618.
+'''
 if os.path.basename(os.getcwd()) == "STP":
     os.chdir('..')
 
