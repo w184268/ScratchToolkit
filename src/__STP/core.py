@@ -2,7 +2,7 @@ from .config import USERSET,json,SPRITE_INIT_CODE,GAME_INIT_CODE,HEAD,Any,Union,
 init_path()
 from .mypath import log,UnPackingScratch3File,PathTool
 from .spectype import FuncParser,BlockBuffer,InputParser,VarListParser
-from src.util import BlockID,Data
+from src.util import *
 
 class CodeParser(Data):
     def __init__(self,last:UnPackingScratch3File):
@@ -89,21 +89,11 @@ class CodeParser(Data):
                 '''self.fstr(f"if {self.idinfo['inputs']['CONDITION'][1][1]}:",3)'''
                 self.fstr("else:",3)
             case "operator_add":
-                b=[]
-                for i in range(2):
-                    a=self.idinfo['inputs'][f'NUM{i+1}'][1]
-                    if isinstance(a,str):
-                        b.append(BlockID(a,self.blocks))
-                    elif isinstance(a[1],str):
-                        if a[1].isdigit():
-                            b.append(int(a[1]))
-                        else:
-                            b.append(float(a[1]))             
-                self.buffer.add(self.id,[b[0]," == ",b[1]])
+                self.fstr(args=["NUM",'+'],mode=7)
             case "operator_subtract":
-                self.fstr(args=["NUM",' - '],mode=7)
+                self.fstr(args=["NUM",'-'],mode=7)
             case "operator_equals":
-               self.fstr(args=["OPERAND",' == '],mode=7)
+               self.fstr(args=["OPERAND",'=='],mode=7)
             case "procedures_definition":
                 self.fstr(self.blocks[self.idinfo['inputs']['custom_block'][1]]['mutation'],1)
             case _:
@@ -162,14 +152,15 @@ class CodeParser(Data):
                 b=[]
                 for i in range(2):
                     a=self.idinfo['inputs'][f'{args[0]}{i+1}'][1]
+                    print('a: ',a)
                     if isinstance(a,str):
                         b.append(BlockID(a,self.blocks))
                     elif isinstance(a[1],str):
                         if a[1].isdigit():
                             b.append(int(a[1]))
                         else:
-                            b.append(float(a[1]))         
-                self.buffer.add(self.id,(b[0],args[1],b[1]))
+                            b.append(float(a[1]))
+                self.buffer.add(self.id,(b[0],Symbol(args[1]),b[1]))
             case _:
                 raise ValueError("Invalid mode!")
 

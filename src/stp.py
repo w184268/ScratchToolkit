@@ -20,10 +20,7 @@ Scratch-To-Pygame({USERSET['info']['version']}) is running!
         if args.tree:
             log.debug('Showing the code tree...')
             for i,j in codetree.items():
-                if isinstance(j,BlockID):
-                    j=j.blocks
-                elif isinstance(j,(dict,list,tuple)):
-                    j=json.dumps(j,indent=2,ensure_ascii=False)
+                j=json.dumps(j,indent=2,ensure_ascii=False)
                 log.debug(f'{i}: {j}\n')
         if args.tree_path:
             with open(args.tree_path,'w',encoding='utf-8') as f:

@@ -7,19 +7,20 @@ class BlockBuffer:
         self.buffer={}
     def add(self,id:str,value:tuple):
         self.buffer[id]=value
+        print('added',self.buffer)
     def get(self,id:str,default=[]):
         a=self.buffer.get(id,default)
         return a
     def update(self):
-        b1=self.buffer.copy()
-        for id,values in b1.items():
+        for id,values in dict(self.buffer).items():
             self.bigupdate(id,values)
-        b2=self.buffer.copy()
-        for id,values in b2.items():
+            print('bigupdate',self.buffer)
+        for id,values in dict(self.buffer).items():
             self.a=[]
-            print(id,values)
+            print('tidy',id,values)
             self.tidy(values)
             self.buffer[id]=self.a
+            print('tidy',self.buffer)
         
     def tidy(self,v):
         if isinstance(v,list):
@@ -32,19 +33,27 @@ class BlockBuffer:
         a=[]
         for i in range(len(values)):
             value=values[i]
+            if value is None:
+                continue
             if isinstance(value,(int,float,list)):
                 a.append(value)
             elif isinstance(value,str):
-                a.append("\\\'"+value+"\\\'")
+                a.append("\\\""+value+"\\\"")
+            elif isinstance(value,Symbol):
+                print('bigupdate-symin',value.symbol)
+                a.append(value.symbol)
             elif isinstance(value,BlockID):
-                print(value.id)
-                a.append(self.bigupdate(_id,('(',*self.buffer.get(value.id,()),')'),True))
+                print('bigupdate-in',value._id)
+                print('input',self.buffer[value._id])
+                a.append(self.bigupdate(_id,(Symbol('('),*self.buffer[value._id],Symbol(')'),True)))
             elif isinstance(value,(SArray,SVariable)):
                 '''在InputParser/VarListParser中处理'''
-        self.buffer[_id]=a
-        print(self.buffer)
+                print('bigupdate-in-s',value.name,value.value)
         if recursive:
             return a
+        else:
+            self.buffer[_id]=a
+        print('bigupdate-in-a',self.buffer,a,_id,values)
 
 class InputParser:
     def __init__(self,blocks:dict,buffer:BlockBuffer):

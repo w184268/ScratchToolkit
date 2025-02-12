@@ -46,9 +46,12 @@ class Data:
             }
 
 class BlockID:
-    def __init__(self,id:str,blocks:dict):
-        self.id=id
+    def __init__(self,_id:str,blocks:dict):
+        self._id=_id
         self.blocks=blocks
+    
+    def __repr__(self) -> str:
+        return f'BlockID("{self._id}")'
 
 class SVariable:
     def __init__(self,name:str,value:str):
@@ -60,6 +63,14 @@ class SArray:
         self.name='self.arr_'+name
         self.value=value
 
+class Symbol:
+    def __init__(self,symbol:str):
+        self.symbol=symbol
+    def is_func(self):
+        return self.symbol.endswith('()')
+    def __repr__(self) -> str:
+        return f'Symbol("{self.symbol}")'
+    
 class ReduceJSCode:
     def __init__(self,code:list):
         self.code=code
