@@ -7,20 +7,16 @@ class BlockBuffer:
         self.buffer={}
     def add(self,id:str,value:tuple):
         self.buffer[id]=value
-        print('added',self.buffer)
     def get(self,id:str,default=[]):
         a=self.buffer.get(id,default)
         return a
     def update(self):
         for id,values in dict(self.buffer).items():
             self.bigupdate(id,values)
-            print('bigupdate',self.buffer)
         for id,values in dict(self.buffer).items():
             self.a=[]
-            print('tidy',id,values)
             self.tidy(values)
             self.buffer[id]=self.a
-            print('tidy',self.buffer)
         
     def tidy(self,v):
         if isinstance(v,list):
@@ -33,22 +29,16 @@ class BlockBuffer:
         a=[]
         for i in range(len(values)):
             value=values[i]
-            if value is None:
-                continue
             if isinstance(value,(int,float,list)):
-                a.append(value)
+                a.append(str(value))
             elif isinstance(value,str):
-                a.append("\\\""+value+"\\\"")
+                a.append("\""+value+"\"")
             elif isinstance(value,Symbol):
-                print('bigupdate-symin',value.symbol)
                 a.append(value.symbol)
             elif isinstance(value,BlockID):
-                print('bigupdate-in',value._id)
-                print('input',self.buffer[value._id])
-                a.append(self.bigupdate(_id,(Symbol('('),*self.buffer[value._id],Symbol(')'),True)))
+                a.append(self.bigupdate(_id,(Symbol('('),*self.buffer[value._id],Symbol(')')),True))
             elif isinstance(value,(SArray,SVariable)):
                 '''在InputParser/VarListParser中处理'''
-                print('bigupdate-in-s',value.name,value.value)
         if recursive:
             return a
         else:

@@ -152,14 +152,10 @@ class CodeParser(Data):
                 b=[]
                 for i in range(2):
                     a=self.idinfo['inputs'][f'{args[0]}{i+1}'][1]
-                    print('a: ',a)
                     if isinstance(a,str):
                         b.append(BlockID(a,self.blocks))
                     elif isinstance(a[1],str):
-                        if a[1].isdigit():
-                            b.append(int(a[1]))
-                        else:
-                            b.append(float(a[1]))
+                        b.append(a[1])
                 self.buffer.add(self.id,(b[0],Symbol(args[1]),b[1]))
             case _:
                 raise ValueError("Invalid mode!")
