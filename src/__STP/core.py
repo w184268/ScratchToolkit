@@ -149,14 +149,8 @@ class CodeParser(Data):
             case 6:
                 ...
             case 7:
-                b=[]
-                for i in range(2):
-                    a=self.idinfo['inputs'][f'{args[0]}{i+1}'][1]
-                    if isinstance(a,str):
-                        b.append(BlockID(a,self.blocks))
-                    elif isinstance(a[1],str):
-                        b.append(a[1])
-                self.buffer.add(self.id,(b[0],Symbol(args[1]),b[1]))
+                ip=InputParser(self.blocks,self.buffer)
+                ip.generate([self.id,self.idinfo],args[1],)
             case _:
                 raise ValueError("Invalid mode!")
 

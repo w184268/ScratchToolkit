@@ -63,13 +63,35 @@ class SArray:
         self.name='self.arr_'+name
         self.value=value
 
+
+class SFunc:
+    def __init__(self,name:str,args=()):
+        self.name=name
+        self.args=args
+    def __repr__(self):
+        return f'SFunc({self.name}({", ".join(self.args)}))'
+    def get_tuple(self):
+        result_list = []
+        length = len(self.args) 
+        for i in range(length):
+            result_list.append(self.args[i])
+            if i < length - 1:
+                result_list.append(Symbol(','))
+        return (self.name,Symbol('('),*result_list,Symbol(')'))
+
 class Symbol:
-    def __init__(self,symbol:str):
+    def __init__(self,symbol:str|SFunc):
         self.symbol=symbol
     def is_func(self):
-        return self.symbol.endswith('()')
+        return isinstance(self.symbol,SFunc)
     def __repr__(self) -> str:
         return f'Symbol("{self.symbol}")'
+
+class SNumber:
+    def __init__(self,num:int|float):
+        self.num=num
+    def __repr__(self) -> str:
+        return f'SNumber({self.num})'
     
 class ReduceJSCode:
     def __init__(self,code:list):

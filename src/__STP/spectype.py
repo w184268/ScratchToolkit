@@ -13,17 +13,6 @@ class BlockBuffer:
     def update(self):
         for id,values in dict(self.buffer).items():
             self.bigupdate(id,values)
-        for id,values in dict(self.buffer).items():
-            self.a=[]
-            self.tidy(values)
-            self.buffer[id]=self.a
-        
-    def tidy(self,v):
-        if isinstance(v,list):
-            for j in v:
-                self.tidy(j)
-        else:
-            self.a.append(v)
 
     def bigupdate(self,_id="",values=(),recursive=False):
         a=[]
@@ -35,8 +24,10 @@ class BlockBuffer:
                 a.append("\""+value+"\"")
             elif isinstance(value,Symbol):
                 a.append(value.symbol)
+            elif isinstance(value,SFunc):
+                a.append(*value.get_tuple())
             elif isinstance(value,BlockID):
-                a.append(self.bigupdate(_id,(Symbol('('),*self.buffer[value._id],Symbol(')')),True))
+                a.extend(self.bigupdate(_id,(Symbol('('),*self.buffer[value._id],Symbol(')')),True))
             elif isinstance(value,(SArray,SVariable)):
                 '''在InputParser/VarListParser中处理'''
         if recursive:
@@ -53,11 +44,30 @@ class InputParser:
         self.blocks=blocks
         self.buffer=buffer
         self.code=[]
-    def generate(self,block:list[str,dict],args=[],symbol='==',input='',count=0):
-        '''注意：symbol必须为js运算符/内置函数名'''
+    def generate(self,block:list[str,dict],symbol=Symbol('=='),args=[],binput='',types=[int,int]):
+        '''注意：symbol必须为js运算符/内置函数名/关键词'''
         self.id,self.idinfo=block
-        if symbol.endswith('()'): #内置函数
-            self.buffer.add(self.id,)
+        self.args=[]
+        for i,t in zip(args,types):
+            self.args.append(t(i))
+        if symbol.is_func(): #内置函数
+            self.buffer.add(self.id,(SFunc(symbol[:-2],args)))
+        else:
+            match len(args):
+                case 1:
+                    self.buffer.add(self.id,(symbol,args[0],args[1]))
+                case 2:
+                    b=[]
+                    for i in range(2):
+                        a=self.idinfo['inputs'][f'{args[0]}{i+1}'][1]
+                        if isinstance(a,str):
+                            b.append(BlockID(a,self.blocks))
+                        elif isinstance(a[1],str):
+                            if a[1].isdigit():
+                                b.append(int(a[1]))
+                            else:
+                                b.append(float(a[1]))
+                    self.buffer.add(self.id,(b[0],Symbol(args[1]),b[1]))
 
 class VarListParser:
     def __init__(self,blocks:dict):
