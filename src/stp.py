@@ -42,7 +42,7 @@ Scratch-To-Pygame({USERSET['info']['version']}) is running!
 
 if __name__=='__main__':
     from __STP.mypath import PathTool,repath,LOGDIR,LOGPATH
-    from src.__STP.codeparser import log,UnPackingScratch3File,CodeParser
+    from __STP.reg import log,UnPackingScratch3File,CodeParser
     from __STP.config import os,sys,LOGFORMAT,USERSET,json,time
     from util import BlockID,installed
 
