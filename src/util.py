@@ -1,17 +1,14 @@
 from js2py import eval_js
+from pkg_resources import get_distribution,DistributionNotFound
 
 OperatorSymbols=("+","-","*","/","%","==","!=","<",">","<=",">=")
 
 def installed(name:str):
     try:
-        if name=="pygame-ce":
-            __import__("pygame")
-        else:
-            __import__(name)
-    except ImportError:
-        return False
-    else:
+        get_distribution(name)
         return True
+    except DistributionNotFound:
+        return False
     
 class Data:
     def __init__(self):
@@ -33,7 +30,8 @@ class Data:
                 },
             "third-party":{
                 "pygame->pygame-ce":["pg",[]],
-                "js2py":["",["eval_js"]]
+                "js2py":["",["eval_js"]],
+                "numpy":["",["array","where"]]
                 }
             }
         self.var={ #存储变量

@@ -17,11 +17,11 @@ class CodeParser(CodeParser):
                 '''self.fstr(f"if {self.idinfo['inputs']['CONDITION'][1][1]}:",3)'''
                 self.fstr("else:",3)
             case "operator_add":
-                self.fstr(args=["NUM",'+'],mode=7)
+                self.fstr(args=["NUM",'+'],mode=6)
             case "operator_subtract":
-                self.fstr(args=["NUM",'-'],mode=7)
+                self.fstr(args=["NUM",'-'],mode=6)
             case "operator_equals":
-               self.fstr(args=["OPERAND",'=='],mode=7)
+               self.fstr(args=["OPERAND",'=='],mode=6)
             case "procedures_definition":
                 self.fstr(self.blocks[self.idinfo['inputs']['custom_block'][1]]['mutation'],1)
             case _:

@@ -83,9 +83,8 @@ class CodeParser(Data):
         mode=2: 灵活性的，args不填，string是代码（如判断、循环等）  
         mode=3: 角色基础信息，string为代码，args不填  
         mode=4: 游戏基础信息，string为代码，args不填  
-        mode=5: 列表、变量管理，string为代码，args不填  
-        mode=6: 嵌套类型管理，string为代码，args为每个的嵌套深度  
-        mode=7: 含参类，args为（inputs开头参数名，运算符）  
+        mode=5: 列表、变量管理，string为代码，args不填   
+        mode=6: 含参类，args为（inputs开头参数名，运算符）  
         '''
         args=list(str(i) for i in args)
         match mode:
@@ -123,10 +122,8 @@ class CodeParser(Data):
             case 5:
                 ...
             case 6:
-                ...
-            case 7:
                 ip=InputParser(self.blocks,self.buffer)
-                ip.generate([self.id,self.idinfo],args[1],)
+                ip.generate([self.id,self.idinfo],Symbol(args[1]),)
             case _:
                 raise ValueError("Invalid mode!")
 
