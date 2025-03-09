@@ -2,7 +2,7 @@ import traceback
 import argparse as ap
 from art import text2art
 
-def main(fp:str='./tests/work1.sb3',args:ap.Namespace=ap.Namespace()):
+def main(fp:str='./tests/work1.sb3',args=None):
     if args:
         log.debug(f'''
 ==========================
@@ -28,10 +28,15 @@ Scratch-To-Pygame({USERSET['info']['version']}) is running!
             log.debug(f'The code tree was saved in {args.tree_path}')
         if args.run:
             for i in codetree['requirements']:
+                error=False
                 if not installed(i):
                     log.debug(f'Installing {i}...')
-                    os.system(f'{sys.executable} -m pip install {i}')
-                log.success(f'Package {i} installed successfully.')
+                    if os.system(f'{sys.executable} -m pip install {i}'):
+                        error=True
+                if not error:
+                    log.success(f'Package {i} installed successfully.')
+                else:
+                    log.error(f'Failed to install {i}.')
             log.debug('Trying to run the output file...')
             if os.system(f'python {parser.outpyfile}'):
                 log.error('There is something wrong above.')

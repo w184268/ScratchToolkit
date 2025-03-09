@@ -5,6 +5,7 @@ class CodeParser(CodeParser):
         super().add()
         match self.opcode: #匹配相应的积木名
             case "control_wait":
+                self.sleep=True
                 self.fstr(args=(self.idinfo['inputs']['DURATION'][1][1]))
             case "control_repeat":
                 '''self.fstr(f"for _ in range({self.idinfo['inputs']['TIMES'][1][1]}):",3)'''
@@ -12,6 +13,7 @@ class CodeParser(CodeParser):
                 self.fstr("while True:",3)
             case "control_if":
                 self.funccode['__init__'][1][f"id={self.id}"]=self.depth
+                self.fstr(args=())
                 '''self.fstr(f"if {self.idinfo['inputs']['CONDITION'][1][1]}:",3)'''
             case "control_if_else":
                 '''self.fstr(f"if {self.idinfo['inputs']['CONDITION'][1][1]}:",3)'''

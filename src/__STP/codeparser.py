@@ -61,6 +61,7 @@ class CodeParser(Data):
             self.classname='spr_'+self.name
         self.funccode={"__init__":[{},{"super().__init__()":0}]} #代码（角色下函数）
         for block in self.blocks.items():
+            self.sleep=False
             self.id,self.idinfo=block
             if isinstance(self.idinfo,dict): #一般积木块
                 self.opcode=self.idinfo["opcode"]
@@ -75,6 +76,8 @@ class CodeParser(Data):
     def add(self): #积木管理
         type_=f"{self.classname} -> {self.id}"
         log.debug(f'Converting {type_} (name="{self.opcode}" ,depth={self.depth})...')
+        if self.sleep:
+            self.depth+=1
 
     def fstr(self,string:str|dict="",mode=0,args=()):
         '''
@@ -122,8 +125,9 @@ class CodeParser(Data):
             case 5:
                 ...
             case 6:
+                op=args[1] if args[1] else self.opcode+'()'
                 ip=InputParser(self.blocks,self.buffer)
-                ip.generate([self.id,self.idinfo],Symbol(args[1]),)
+                ip.generate([self.id,self.idinfo],Symbol(op),)
             case _:
                 raise ValueError("Invalid mode!")
 
